@@ -1,0 +1,147 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template block_course_audit/floating_analysis
+
+    Template for displaying a floating section analysis.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * section_id - ID of the section being checked
+    * section_name - Name of the section being checked
+    * section_number - Number of the section being checked
+    * course_id - ID of the course
+    * course_shortname - Short name of the course
+    * overall_stats - Object with overall statistics (passed, failed, total, success_rate)
+    * activity_type_rules - Activity type rules results and stats
+    * activity_flow_rules - Activity flow rules results and stats
+}}
+
+<div class="block-course-audit-floating animate-in" id="block-course-audit-floating-{{section_number}}" data-section-number="{{section_number}}">
+    <button class="toggle-minimize" title="{{#str}}minimize{{/str}}">
+        <i class="fa fa-minus"></i>
+    </button>
+    <button class="close-analysis" title="{{#str}}close{{/str}}">
+        <i class="fa fa-times"></i>
+    </button>
+    
+    <div class="card">
+        <div class="card-header">
+            <h4>{{section_name}} - {{#str}}structure_title, block_course_audit{{/str}}</h4>
+            <div class="d-flex mt-2">
+                <div class="d-flex align-items-center mr-3">
+                    <span class="badge badge-success mr-1">{{overall_stats.passed}}</span>
+                    <small>{{#str}}rules_passed, block_course_audit{{/str}}</small>
+                </div>
+                <div class="d-flex align-items-center">
+                    <span class="badge badge-danger mr-1">{{overall_stats.failed}}</span>
+                    <small>{{#str}}rules_failed, block_course_audit{{/str}}</small>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="accordion" id="ruleAccordion-{{section_number}}">
+                <!-- Activity Type Rules -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center" id="activityTypeHeading-{{section_number}}">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" 
+                                    data-target="#activityTypeRules-{{section_number}}" aria-expanded="true" 
+                                    aria-controls="activityTypeRules-{{section_number}}">
+                                {{activity_type_rules.title}}
+                            </button>
+                        </h5>
+                        <div>
+                            <span class="badge badge-success">{{activity_type_rules.stats.passed}}</span>
+                            <span class="badge badge-danger">{{activity_type_rules.stats.failed}}</span>
+                        </div>
+                    </div>
+
+                    <div id="activityTypeRules-{{section_number}}" class="collapse show" 
+                         aria-labelledby="activityTypeHeading-{{section_number}}" data-parent="#ruleAccordion-{{section_number}}">
+                        <div class="card-body">
+                            {{#activity_type_rules.results}}
+                                <div class="rule-result mb-3 pb-2 border-bottom">
+                                    <h6 class="d-flex justify-content-between">
+                                        <span>{{rule_name}}</span>
+                                        {{#status}}
+                                            <span class="badge badge-success">{{#str}}passed, block_course_audit{{/str}}</span>
+                                        {{/status}}
+                                        {{^status}}
+                                            <span class="badge badge-danger">{{#str}}failed, block_course_audit{{/str}}</span>
+                                        {{/status}}
+                                    </h6>
+                                    <div class="messages">
+                                        {{#messages}}
+                                            <p class="mb-1">{{.}}</p>
+                                        {{/messages}}
+                                    </div>
+                                </div>
+                            {{/activity_type_rules.results}}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Flow Rules -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center" id="activityFlowHeading-{{section_number}}">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" 
+                                    data-target="#activityFlowRules-{{section_number}}" aria-expanded="true" 
+                                    aria-controls="activityFlowRules-{{section_number}}">
+                                {{activity_flow_rules.title}}
+                            </button>
+                        </h5>
+                        <div>
+                            <span class="badge badge-success">{{activity_flow_rules.stats.passed}}</span>
+                            <span class="badge badge-danger">{{activity_flow_rules.stats.failed}}</span>
+                        </div>
+                    </div>
+
+                    <div id="activityFlowRules-{{section_number}}" class="collapse" 
+                         aria-labelledby="activityFlowHeading-{{section_number}}" data-parent="#ruleAccordion-{{section_number}}">
+                        <div class="card-body">
+                            {{#activity_flow_rules.results}}
+                                <div class="rule-result mb-3 pb-2 border-bottom">
+                                    <h6 class="d-flex justify-content-between">
+                                        <span>{{rule_name}}</span>
+                                        {{#status}}
+                                            <span class="badge badge-success">{{#str}}passed, block_course_audit{{/str}}</span>
+                                        {{/status}}
+                                        {{^status}}
+                                            <span class="badge badge-danger">{{#str}}failed, block_course_audit{{/str}}</span>
+                                        {{/status}}
+                                    </h6>
+                                    <div class="messages">
+                                        {{#messages}}
+                                            <p class="mb-1">{{.}}</p>
+                                        {{/messages}}
+                                    </div>
+                                </div>
+                            {{/activity_flow_rules.results}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
