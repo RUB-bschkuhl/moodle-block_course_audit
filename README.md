@@ -16,12 +16,10 @@ Add the block to your course page to begin analyzing your course structure.
 
 ## Changelog
 
-### 2025-03-27
-- Added services.php to register external functions for AJAX calls
-
 ### 2025-03-26
 - Removed legacy code
 - Improved structure
+- Code review
 
 ### 2025-03-25
 - Fixed external API class for section analysis
@@ -78,4 +76,4 @@ Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
 For support and bug reports, please use the GitHub issue tracker or contact the author directly.
 
 ---
-Last updated: March 27, 2024
+Last updated: March 29, 2024
