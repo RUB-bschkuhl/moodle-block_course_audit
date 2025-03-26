@@ -35,10 +35,7 @@ The Course audit block is a Moodle plugin that helps analyze and visualize cours
 - Interactive section navigation with visual indicators
 - Detailed analysis of course sections
 - Support for both block and inline display modes
-- Availability condition visualization
 - Course structure analysis
-- Section-by-section review interface
-- Responsive design with floating analysis panels
 
 ## Requirements
 - Moodle 4.4 or higher (tested up to 4.5)
@@ -66,8 +63,6 @@ The Course audit block is a Moodle plugin that helps analyze and visualize cours
 ### Permissions
 - Requires 'block/course_audit:view' capability to view analysis
 - Requires 'moodle/course:update' capability for full functionality
-
-## Technical Details
 
 ## License
 GNU GPL v3 or later
