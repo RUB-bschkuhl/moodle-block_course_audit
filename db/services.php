@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for Course audit
+ * External functions and service definitions for the course audit block.
  *
  * @package    block_course_audit
  * @copyright  2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
@@ -24,9 +24,13 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component    = 'block_course_audit';
-$plugin->release      = '0.1.1';
-$plugin->version      = 2025012014;
-$plugin->requires     = 2024042200;
-$plugin->supported    = [404, 405];
-$plugin->maturity     = MATURITY_STABLE;
+$functions = array(
+    'block_course_audit_get_section_analysis' => array(
+        'classname'     => 'block_course_audit\external\get_section_analysis',
+        'methodname'    => 'execute',
+        'description'   => 'Get analysis data for a course section',
+        'type'          => 'read',
+        'capabilities'  => 'block/course_audit:view',
+        'ajax'          => true,
+    ),
+); 
