@@ -15,30 +15,23 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template block_course_audit/content
+    @template block_course_audit/block/disclaimer
 
     Displays the admin tree as a list of grouped links.
 
+    TODO
     Example context (json):
     {
         "node": {
-            "text": "Root of menu",
-            "key": "test0",
-            "display": true,
-            "children": [
-                {
-                    "text": "Child of menu",
-                    "key": "test1",
-                    "display": true,
-                    "children": []
-                }
-            ]
+            "headline": "Headline"
+            "disclaimertext": "Root of menu",
+            "buttonText": "test0",
         }
     }
 }}
-
-<div class="wiki-container">
-    <div class="wiki-content">
-        <!-- Hier Markdown/HTML-Inhalte einbinden -->
-    </div>
+<div class="disclaimer-alert alert alert-warning">
+    <p>{{#str}} disclaimer_text, block_course_audit, { "url": "{{wiki_url}}" } {{/str}}</p>
+    <a href="{{wiki_url}}" class="btn btn-info btn-sm" target="_blank">
+        {{#str}} wiki_link, block_course_audit {{/str}}
+    </a>
 </div>

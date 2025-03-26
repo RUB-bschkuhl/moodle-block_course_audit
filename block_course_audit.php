@@ -70,7 +70,7 @@ class block_course_audit extends block_base
                 [
                     'type' => 'disclaimer',
                     'title' => get_string('disclaimer_title', 'block_course_audit'),
-                    'content' => $OUTPUT->render_from_template('block_course_audit/disclaimer', [
+                    'content' => $OUTPUT->render_from_template('block_course_audit/block/disclaimer', [
                         'wiki_url' => new moodle_url('/blocks/course_audit/wiki.php')
                     ])
                 ],
@@ -89,7 +89,7 @@ class block_course_audit extends block_base
         $data['pages'][] = [
             'type' => 'summary',
             'title' => get_string('summary_title', 'block_course_audit'),
-            'content' => $OUTPUT->render_from_template('block_course_audit/summary', ['wiki_url' => 'url'])
+            'content' => $OUTPUT->render_from_template('block_course_audit/block/summary', ['wiki_url' => 'url'])
         ];
 
         $data['page_count'] = count($data['pages']);
@@ -155,7 +155,7 @@ class block_course_audit extends block_base
                 'type' => 'section',
                 'title' => get_string('structure_title', 'block_course_audit'),
                 'number' => $sectionnum,
-                'content' => $OUTPUT->render_from_template('block_course_audit/rule_results', $rulecheckresults)
+                'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_results', $rulecheckresults)
             ];
             $index++;
         }

@@ -18,6 +18,7 @@ Add the block to your course page to begin analyzing your course structure.
 
 ### 2025-03-26
 - Removed legacy code
+- Improved structure
 
 ### 2025-03-25
 - Fixed external API class for section analysis

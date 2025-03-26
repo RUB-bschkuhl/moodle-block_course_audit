@@ -154,7 +154,6 @@ function ($, Modal, ModalEvents, Str, Ajax, Templates, Notification) {
 
     // Function to render the floating analysis
     const renderFloatingAnalysis = function(data) {
-        console.log(data);
         if (!data || !data.section_number) {
             return;
         }

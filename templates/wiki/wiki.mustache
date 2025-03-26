@@ -15,10 +15,11 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template block_course_audit/content
+    @template block_course_audit/wiki/wiki
 
     Displays the admin tree as a list of grouped links.
 
+    TODO
     Example context (json):
     {
         "node": {
@@ -45,7 +46,7 @@
     <div class="card-body">
         <div class="wiki-content">
             {{{svgcontent}}} <!-- SVG als Card-Body-Inhalt -->
-            {{> block_course_audit/wiki_content}}
+            {{> block_course_audit/wiki/wiki_content}}
         </div>
     </div>
 {{#courseid}}

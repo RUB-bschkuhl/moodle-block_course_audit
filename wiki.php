@@ -44,5 +44,5 @@ $PAGE->set_title(get_string('wiki_title', 'block_course_audit'));
 $PAGE->set_heading(get_string('wiki_heading', 'block_course_audit'));
 
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template('block_course_audit/wiki', $data);
+echo $OUTPUT->render_from_template('block_course_audit/wiki/wiki', $data);
 echo $OUTPUT->footer();
