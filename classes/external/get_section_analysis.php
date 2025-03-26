@@ -31,6 +31,7 @@ require_once($CFG->libdir . '/externallib.php');
 use external_api;
 use external_function_parameters;
 use external_single_structure;
+use external_multiple_structure;
 use external_value;
 use context_course;
 
@@ -96,16 +97,56 @@ class get_section_analysis extends external_api
      */
     public static function execute_returns()
     {
-        // We're returning a complex structure, but we'll simplify for now
-        // In a real implementation, you'd define the complete structure
         return new external_single_structure([
             'section_id' => new external_value(PARAM_INT, 'ID of the section'),
             'section_name' => new external_value(PARAM_TEXT, 'Name of the section'),
             'section_number' => new external_value(PARAM_INT, 'Number of the section'),
             'course_id' => new external_value(PARAM_INT, 'ID of the course'),
             'course_shortname' => new external_value(PARAM_TEXT, 'Short name of the course'),
-            // The rest of the structure is complex and would need full definition
-            // This is simplified for demonstration purposes
+            'activity_flow_rules' => new external_single_structure([
+                'results' => new external_multiple_structure(
+                    new external_single_structure([
+                        'status' => new external_value(PARAM_BOOL, 'Evaluation result of the rule'),
+                        'messages' => new external_single_structure([
+                            new external_value(PARAM_TEXT, 'Message to the user regarding the result'),
+                        ]),
+                        'rule_name' => new external_value(PARAM_TEXT, 'Name of the rule'),
+                        'rule_category' => new external_value(PARAM_TEXT, 'Name of the rule category'),
+                    ])
+                ),
+                'stats' => new external_single_structure([
+                    'passed' => new external_value(PARAM_INT, 'Count of passed rule checks'),
+                    'failed' => new external_value(PARAM_INT, 'Count of failed rule checks'),
+                    'total' => new external_value(PARAM_INT, 'Count of total rule checks'),
+                    'success_rate' => new external_value(PARAM_INT, 'Success rate of rule checks'),
+                ]),
+                'title' => new external_value(PARAM_TEXT, 'Activity Flow Rules'),
+            ]),
+            'activity_type_rules' => new external_single_structure([
+                'results' => new external_multiple_structure(
+                    new external_single_structure([
+                        'status' => new external_value(PARAM_BOOL, 'Evaluation result of the rule'),
+                        'messages' => new external_single_structure([
+                            new external_value(PARAM_TEXT, 'Message to the user regarding the result'),
+                        ]),
+                        'rule_name' => new external_value(PARAM_TEXT, 'Name of the rule'),
+                        'rule_category' => new external_value(PARAM_TEXT, 'Name of the rule category'),
+                    ])
+                ),
+                'stats' => new external_single_structure([
+                    'passed' => new external_value(PARAM_INT, 'Count of passed rule checks'),
+                    'failed' => new external_value(PARAM_INT, 'Count of failed rule checks'),
+                    'total' => new external_value(PARAM_INT, 'Count of total rule checks'),
+                    'success_rate' => new external_value(PARAM_INT, 'Success rate of rule checks'),
+                ]),
+                'title' => new external_value(PARAM_TEXT, 'Activity Flow Rules'),
+            ]),
+            'overall_stats' => new external_single_structure([
+                'passed' => new external_value(PARAM_INT, 'Count of passed rule checks'),
+                'failed' => new external_value(PARAM_INT, 'Count of failed rule checks'),
+                'total' => new external_value(PARAM_INT, 'Count of total rule checks'),
+                'success_rate' => new external_value(PARAM_INT, 'Success rate of rule checks'),
+            ]),
         ]);
     }
 }
