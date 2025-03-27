@@ -96,6 +96,7 @@ class get_section_analysis extends external_api
      */
     public static function execute_returns()
     {
+        //TODO
         return new external_single_structure([
             'section_id' => new external_value(PARAM_INT, 'ID of the section'),
             'section_name' => new external_value(PARAM_TEXT, 'Name of the section'),
