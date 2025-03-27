@@ -83,9 +83,6 @@ class get_section_analysis extends external_api
         $auditblock = block_instance('course_audit');
         $analysisdata = $auditblock->analyse_section($params['sectionid']);
 
-        // Log the analysis data for debugging
-        error_log('Section analysis data: ' . print_r($analysisdata, true));
-
         return $analysisdata;
     }
 

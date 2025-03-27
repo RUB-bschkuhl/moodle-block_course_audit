@@ -47,27 +47,22 @@
         <div class="card-body">
             <div class="overall-stats text-center mb-4">
                 <h5>{{#str}}summary_title, block_course_audit{{/str}}</h5>
-                <div class="progress mb-2">
-                    <div class="progress-bar bg-success" role="progressbar" 
-                         style="width: {{overall_stats.success_rate}}%" 
-                         aria-valuenow="{{overall_stats.success_rate}}" 
-                         aria-valuemin="0" 
-                         aria-valuemax="100">
+               <div class="progress mb-2">
+                    <div class="progress-bar bg-success" role="progressbar"
+                        style="width: {{overall_stats.success_rate}}%; 
+                                min-width: 3rem; 
+                                white-space: nowrap; 
+                                overflow: visible;"
+                        aria-valuenow="{{overall_stats.success_rate}}" 
+                        aria-valuemin="0" 
+                        aria-valuemax="100">
                         {{overall_stats.success_rate}}%
                     </div>
                 </div>
                 <div class="row text-center">
                     <div class="col">
-                        <span class="badge badge-success">{{overall_stats.passed}}</span>
+                        <span class="badge badge-success">{{overall_stats.passed}} / {{overall_stats.total}}</span>
                         <p>{{#str}}rules_passed, block_course_audit{{/str}}</p>
-                    </div>
-                    <div class="col">
-                        <span class="badge badge-danger">{{overall_stats.failed}}</span>
-                        <p>{{#str}}rules_failed, block_course_audit{{/str}}</p>
-                    </div>
-                    <div class="col">
-                        <span class="badge badge-info">{{overall_stats.total}}</span>
-                        <p>{{#str}}rules_total, block_course_audit{{/str}}</p>
                     </div>
                 </div>
             </div>
@@ -84,8 +79,7 @@
                             </button>
                         </h5>
                         <div>
-                            <span class="badge badge-success">{{activity_type_rules.stats.passed}}</span>
-                            <span class="badge badge-danger">{{activity_type_rules.stats.failed}}</span>
+                            <span class="badge badge-danger">{{activity_type_rules.stats.failed}} {{#str}}rules_failed, block_course_audit{{/str}}</span>
                         </div>
                     </div>
 
@@ -125,8 +119,7 @@
                             </button>
                         </h5>
                         <div>
-                            <span class="badge badge-success">{{activity_flow_rules.stats.passed}}</span>
-                            <span class="badge badge-danger">{{activity_flow_rules.stats.failed}}</span>
+                            <span class="badge badge-danger">{{activity_flow_rules.stats.failed}} {{#str}}rules_failed, block_course_audit{{/str}}</span>
                         </div>
                     </div>
 

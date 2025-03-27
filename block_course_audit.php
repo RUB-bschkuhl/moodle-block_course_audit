@@ -137,19 +137,13 @@ class block_course_audit extends block_base
         // Initialize pages array
         $pages = [];
 
-        // Log for debugging
-        error_log('Getting section pages for course: ' . $course->id);
-
         $modinfo = get_fast_modinfo($course);
         $courseformat = course_get_format($course);
         $sections = $courseformat->get_sections();
 
         $index = 0;
         foreach ($sections as $sectionnum => $sectionid) {
- 
-
             $rulecheckresults = $this->analyse_section($sectionid->id);
-
           
             $pages[] = [
                 'type' => 'section',

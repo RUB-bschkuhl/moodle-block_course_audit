@@ -34,7 +34,7 @@ $string['myaddinstance'] = 'Add a new Course Analysis block to the My Moodle pag
 $string['section'] = 'Section';
 $string['section_title'] = 'Section evaluation';
 $string['structure_title'] = 'Structural evaluation';
-$string['Summary_title'] = 'Summary';
+$string['summary_title'] = 'Summary';
 $string['disclaimer_title'] = 'Disclaimer';
 
 // Navigation and UI elements - used in templates/main.mustache
