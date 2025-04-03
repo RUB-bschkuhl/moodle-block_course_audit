@@ -60,13 +60,10 @@ class block_course_audit extends block_base
 
         $course = $this->page->course;
 
-
         // Pages definieren
         $data = [
-            'has_one' => false,
-            'has_multiple' => false,
-            'page_count' => 0,
-            'pages' => [
+            'tour_data' => [],
+            'wrap_data' => [
                 [
                     'type' => 'disclaimer',
                     'title' => get_string('disclaimer_title', 'block_course_audit'),
@@ -78,28 +75,18 @@ class block_course_audit extends block_base
         ];
 
         // Get section pages and add them to the pages array
-        $sectionPages = $this->get_section_pages($course);
-        if (is_array($sectionPages)) {
-            foreach ($sectionPages as $page) {
-                $data['pages'][] = $page;
-            }
+        $tourData = $this->get_section_pages($course);
+        if (is_array($tourData)) {
+            $data['tourData'][] = $tourData;
         }
 
         // Add summary page
-        $data['pages'][] = [
+        $data['wrap_data'][] = [
             'type' => 'summary',
             'title' => get_string('summary_title', 'block_course_audit'),
             'content' => $OUTPUT->render_from_template('block_course_audit/block/summary', ['wiki_url' => 'url'])
         ];
 
-        $data['page_count'] = count($data['pages']);
-        $data['has_one'] = count($data['pages']) > 0;
-        $data['has_multiple'] = count($data['pages']) > 1;
-
-        foreach ($data['pages'] as $index => &$page) {
-            $page['page_number'] = $index + 1;
-            $page['first'] = $page['page_number'] == 1;
-        }
         unset($page);
 
         $this->content->text = $OUTPUT->render_from_template('block_course_audit/main', $data);
@@ -144,7 +131,7 @@ class block_course_audit extends block_base
         $index = 0;
         foreach ($sections as $sectionnum => $sectionid) {
             $rulecheckresults = $this->analyse_section($sectionid->id);
-          
+
             $pages[] = [
                 'type' => 'section',
                 'title' => get_string('structure_title', 'block_course_audit'),
@@ -157,7 +144,7 @@ class block_course_audit extends block_base
         return $pages;
     }
 
-   
+
     /**
      * Analyse the current section.
      *

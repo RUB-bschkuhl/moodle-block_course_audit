@@ -16,6 +16,12 @@ Add the block to your course page to begin analyzing your course structure.
 
 ## Changelog
 
+### 2025-04-03
+- Rework #2 
+- Frontend replacement with concept of "dynamic user tours"
+  - Based on moodle core feature user tours
+
+
 ### 2025-03-26
 - Removed legacy code
 - Improved structure

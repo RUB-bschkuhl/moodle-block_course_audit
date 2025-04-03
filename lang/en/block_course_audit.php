@@ -24,7 +24,7 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-
+ 
 // Core block strings - used
 $string['pluginname'] = 'Course audit';
 $string['addinstance'] = 'Add a new Course Analysis block';
