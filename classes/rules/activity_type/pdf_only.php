@@ -45,8 +45,8 @@ class pdf_only extends rule_base {
      */
     public function __construct() {
         parent::__construct(
-            get_string('rule_pdf_only_name', 'block_course_audit', '', true),
-            get_string('rule_pdf_only_description', 'block_course_audit', '', true),
+            get_string('rule_pdf_only_name', 'block_course_audit'),
+            get_string('rule_pdf_only_description', 'block_course_audit'),
             'activity_type'
         );
     }
@@ -64,7 +64,7 @@ class pdf_only extends rule_base {
         // If no modules in section, return false
         if (empty($section->modules)) {
             return $this->create_result(false, [
-                get_string('rule_pdf_only_empty_section', 'block_course_audit', '', true)
+                get_string('rule_pdf_only_empty_section', 'block_course_audit')
             ]);
         }
         
@@ -109,11 +109,11 @@ class pdf_only extends rule_base {
         
         // If there are non-PDF resources
         if (!empty($nonpdfresources)) {
-            $messages = [get_string('rule_pdf_only_non_pdf_resources', 'block_course_audit', '', true)];
+            $messages = [get_string('rule_pdf_only_non_pdf_resources', 'block_course_audit')];
             
             foreach ($nonpdfresources as $resource) {
                 $messages[] = get_string('rule_pdf_only_non_pdf_resource_item', 'block_course_audit', 
-                    ['name' => $resource['name'], 'type' => $resource['type']], true);
+                    ['name' => $resource['name'], 'type' => $resource['type']]);
             }
             
             return $this->create_result(false, $messages);
@@ -122,7 +122,7 @@ class pdf_only extends rule_base {
         // If we made it here, all resources are PDFs
         return $this->create_result(true, [
             get_string('rule_pdf_only_success', 'block_course_audit', 
-                ['count' => count($pdfs)], true)
+                ['count' => count($pdfs)])
         ]);
     }
 } 

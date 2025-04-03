@@ -31,6 +31,7 @@ require_once($CFG->libdir . '/externallib.php');
 use external_api;
 use external_function_parameters;
 use external_single_structure;
+use external_multiple_structure;
 use external_value;
 use context_course;
 
@@ -99,60 +100,54 @@ class get_section_analysis extends external_api
             'section_number' => new external_value(PARAM_INT, 'Number of the section'),
             'course_id' => new external_value(PARAM_INT, 'ID of the course'),
             'course_shortname' => new external_value(PARAM_TEXT, 'Short name of the course'),
-            'activity_type_rules' => new external_multiple_structure(
-                new external_single_structure([
-                    'results' => new external_multiple_structure(
-                        new external_single_structure([
-                            'status' => new external_value(PARAM_BOOL, 'Status of the rule'),
-                            'messages' => new external_multiple_structure(
-                                new external_value(PARAM_TEXT, 'Message from rule check')
-                            ),
-                            'rule_name' => new external_value(PARAM_TEXT, 'Total rules checked'),
-                            'rule_category' => new external_value(PARAM_TEXT, 'Rate of passed rule checks'),
-                        ])
-                    ),
-                    'stats' => new external_multiple_structure(
-                        new external_single_structure([
-                            'passed' => new external_value(PARAM_INT, 'Total of passed rule checks'),
-                            'failed' => new external_value(PARAM_INT, 'Total of failed rule checks'),
-                            'total' => new external_value(PARAM_INT, 'Total rules checked'),
-                            'success_rate' => new external_value(PARAM_INT, 'Rate of passed rule checks'),
-                        ])
-                    ),
-                    'title' => new external_value(PARAM_TEXT, 'Human-readable name of the rule')
-                ])
-            ),
-            'activity_flow_rules' => new external_multiple_structure(
-                new external_single_structure([
-                    'results' => new external_multiple_structure(
-                        new external_single_structure([
-                            'status' => new external_value(PARAM_BOOL, 'Status of the rule'),
-                            'messages' => new external_multiple_structure(
-                                new external_value(PARAM_TEXT, 'Message from rule check')
-                            ),
-                            'rule_name' => new external_value(PARAM_TEXT, 'Name of the rule'),
-                            'rule_category' => new external_value(PARAM_TEXT, 'Rule category'),
-                        ])
-                    ),
-                    'stats' => new external_multiple_structure(
-                        new external_single_structure([
-                            'passed' => new external_value(PARAM_INT, 'Total of passed rule checks'),
-                            'failed' => new external_value(PARAM_INT, 'Total of failed rule checks'),
-                            'total' => new external_value(PARAM_INT, 'Total rules checked'),
-                            'success_rate' => new external_value(PARAM_INT, 'Rate of passed rule checks'),
-                        ])
-                    ),
-                    'title' => new external_value(PARAM_TEXT, 'Human-readable name of the rule')
-                ])
-            ),
-            'overall_stats' => new external_multiple_structure(
-                new external_single_structure([
+            'activity_type_rules' => new external_single_structure([
+                'results' => new external_multiple_structure(
+                    new external_single_structure([
+                        'status' => new external_value(PARAM_BOOL, 'Status of the rule'),
+                        'messages' => new external_multiple_structure(
+                            new external_value(PARAM_TEXT, 'Message from rule check')
+                        ),
+                        'rule_name' => new external_value(PARAM_TEXT, 'Total rules checked'),
+                        'rule_category' => new external_value(PARAM_TEXT, 'Rate of passed rule checks'),
+                    ]),
+                    'Optional results',
+                    VALUE_OPTIONAL
+                ),
+                'stats' => new external_single_structure([
                     'passed' => new external_value(PARAM_INT, 'Total of passed rule checks'),
                     'failed' => new external_value(PARAM_INT, 'Total of failed rule checks'),
                     'total' => new external_value(PARAM_INT, 'Total rules checked'),
                     'success_rate' => new external_value(PARAM_INT, 'Rate of passed rule checks'),
-                ])
-            )
+                ]),
+                'title' => new external_value(PARAM_TEXT, 'Human-readable name of the rule', VALUE_OPTIONAL),
+            ]),
+            'activity_flow_rules' => new external_single_structure([
+                'results' => new external_multiple_structure(
+                    new external_single_structure([
+                        'status' => new external_value(PARAM_BOOL, 'Status of the rule'),
+                        'messages' => new external_multiple_structure(
+                            new external_value(PARAM_TEXT, 'Message from rule check'),
+                        ),
+                        'rule_name' => new external_value(PARAM_TEXT, 'Name of the rule'),
+                        'rule_category' => new external_value(PARAM_TEXT, 'Rule category'),
+                    ]),
+                    'Optional results',
+                    VALUE_OPTIONAL
+                ),
+                'stats' => new external_single_structure([
+                    'passed' => new external_value(PARAM_INT, 'Total of passed rule checks'),
+                    'failed' => new external_value(PARAM_INT, 'Total of failed rule checks'),
+                    'total' => new external_value(PARAM_INT, 'Total rules checked'),
+                    'success_rate' => new external_value(PARAM_INT, 'Rate of passed rule checks'),
+                ]),
+                'title' => new external_value(PARAM_TEXT, 'Human-readable name of the rule', VALUE_OPTIONAL),
+            ]),
+            'overall_stats' => new external_single_structure([
+                'passed' => new external_value(PARAM_INT, 'Total of passed rule checks'),
+                'failed' => new external_value(PARAM_INT, 'Total of failed rule checks'),
+                'total' => new external_value(PARAM_INT, 'Total rules checked'),
+                'success_rate' => new external_value(PARAM_INT, 'Rate of passed rule checks'),
+            ])
         ]);
     }
 }

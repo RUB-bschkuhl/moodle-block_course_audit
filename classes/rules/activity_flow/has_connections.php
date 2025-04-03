@@ -45,8 +45,8 @@ class has_connections extends rule_base {
      */
     public function __construct() {
         parent::__construct(
-            get_string('rule_has_connections_name', 'block_course_audit', '', true),
-            get_string('rule_has_connections_description', 'block_course_audit', '', true),
+            get_string('rule_has_connections_name', 'block_course_audit'),
+            get_string('rule_has_connections_description', 'block_course_audit'),
             'activity_flow'
         );
     }
@@ -62,7 +62,7 @@ class has_connections extends rule_base {
         // If no modules in section, return false
         if (empty($section->modules)) {
             return $this->create_result(false, [
-                get_string('rule_has_connections_empty_section', 'block_course_audit', '', true)
+                get_string('rule_has_connections_empty_section', 'block_course_audit')
             ]);
         }
         
@@ -70,7 +70,7 @@ class has_connections extends rule_base {
         if (count($section->modules) < 2) {
             return $this->create_result(false, [
                 get_string('rule_has_connections_single_module', 'block_course_audit', 
-                    ['name' => $section->modules[0]->name], true)
+                    ['name' => $section->modules[0]->name])
             ]);
         }
         
@@ -108,29 +108,29 @@ class has_connections extends rule_base {
         // If no modules have completion conditions
         if (empty($modulesWithConditions)) {
             return $this->create_result(false, [
-                get_string('rule_has_connections_no_conditions', 'block_course_audit', '', true)
+                get_string('rule_has_connections_no_conditions', 'block_course_audit')
             ]);
         }
         
         // Prepare messages about which modules have conditions
         $messages = [
             get_string('rule_has_connections_success', 'block_course_audit',
-                ['count' => count($modulesWithConditions)], true)
+                ['count' => count($modulesWithConditions)])
         ];
         
         // Add details about modules with and without conditions
         foreach ($modulesWithConditions as $moduleName) {
             $messages[] = get_string('rule_has_connections_module_with_condition', 'block_course_audit',
-                ['name' => $moduleName], true);
+                ['name' => $moduleName]);
         }
         
         if (!empty($modulesWithoutConditions)) {
             $messages[] = get_string('rule_has_connections_some_without_conditions', 'block_course_audit',
-                ['count' => count($modulesWithoutConditions)], true);
+                ['count' => count($modulesWithoutConditions)]);
                 
             foreach ($modulesWithoutConditions as $moduleName) {
                 $messages[] = get_string('rule_has_connections_module_without_condition', 'block_course_audit',
-                    ['name' => $moduleName], true);
+                    ['name' => $moduleName]);
             }
         }
         
