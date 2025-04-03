@@ -144,3 +144,16 @@ $string['analysis_mode_help'] = 'Choose how the course analysis is displayed:
 <li>Block mode: Analysis appears in the sidebar block</li>
 <li>Inline mode: Analysis appears directly beneath each course section</li>
 </ul>';
+
+// Tour creation strings
+$string['creatingtour'] = 'Creating tour...';
+$string['toursuccess'] = 'Tour created!';
+$string['startaudit'] = 'Start audit tour';
+$string['startaudit_help'] = 'Start an interactive tour of the course audit features';
+$string['tourstart_button'] = 'Start Tour';
+$string['tourfinished'] = 'Tour finished';
+
+// Capability strings
+$string['course_audit:addinstance'] = 'Add a new course audit block';
+$string['course_audit:myaddinstance'] = 'Add a new course audit block to the My Moodle page';
+$string['course_audit:view'] = 'View course audit information';

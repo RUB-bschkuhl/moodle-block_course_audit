@@ -67,7 +67,8 @@ class manager
         $this->tour->set_description($description);
         $this->tour->set_pathmatch($pathmatch);
         $this->tour->set_enabled(tour::ENABLED);
-        $this->tour->set_filter_values('cssselector', ['#block_course_audit']);
+        $this->tour->set_filter_values('cssselector', ['#block-course-audit']);
+        $this->tour->set_sortorder(0);
 
         // Set configuration options
         foreach ($config as $key => $value) {

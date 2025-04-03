@@ -7,6 +7,7 @@ This block helps analyze and convert course content.
 - Activity flow visualization
 - Rule-based recommendations
 - User tours for guided course exploration
+- Interactive "Start Audit" tour
 
 ## Installation
 1. Copy the course_audit directory to your Moodle blocks directory
@@ -33,6 +34,16 @@ $tourmanager->add_step('Welcome', 'Welcome to the course!', 'body', '.course-con
 $tourmanager->add_step('Navigation', 'Use this menu to navigate', 'selector', '.navbar');
 ```
 
+See more examples in the `classes/tour/examples.php` file.
+
+### Starting a Tour via Button Click
+The course audit block includes a "Start Audit" button that creates and launches an interactive tour:
+
+1. Click the "Start Audit" button in the block
+2. The page will reload and automatically start the tour
+3. Follow the tour steps to learn about the block's features
+4. The tour highlights key areas of the interface with explanations
+
 ## Changelog
 
 ### 2025-04-03
@@ -40,6 +51,12 @@ $tourmanager->add_step('Navigation', 'Use this menu to navigate', 'selector', '.
 - Frontend replacement with concept of "dynamic user tours"
   - Based on moodle core feature user tours
 - Added Tour Manager class for creating and managing user tours
+  - Added classes/tour/manager.php
+  - Added classes/tour/examples.php
+- Added "Start Audit" button to create interactive tours on demand
+  - Added tour_creator.js for handling button clicks
+  - Added create_tour.php external API endpoint
+  - Updated templates to include the tour start button
 
 ### 2025-03-26
 - Removed legacy code
@@ -63,9 +80,11 @@ The Course audit block is a Moodle plugin that helps analyze and visualize cours
 - Support for both block and inline display modes
 - Course structure analysis
 - Guided user tours for better course exploration and understanding
+- On-demand tour creation with the "Start Audit" button
 
 ## Requirements
 - Moodle 4.4 or higher (tested up to 4.5)
+- User Tours API (tool_usertours)
 
 ## Installation
 1. Download the plugin
@@ -87,6 +106,7 @@ The Course audit block is a Moodle plugin that helps analyze and visualize cours
 - **Visual Indicators**: Highlights current section being analyzed
 - **Floating Analysis**: When in inline mode, analysis panels float next to sections
 - **User Tours**: Create guided tours to help users understand course features
+- **Interactive Tour**: Click the "Start Audit" button for an interactive tour
 
 ### Tour Manager
 The block includes a tour manager that allows you to create interactive guided tours:
@@ -95,6 +115,7 @@ The block includes a tour manager that allows you to create interactive guided t
 - **Target Elements**: Target specific page elements using CSS selectors
 - **Customization**: Configure placement, backdrop, and behavior
 - **Manage Tours**: Add, update, reset or remove tours
+- **On-Demand Tours**: Create tours via the user interface with the "Start Audit" button
 
 ### Permissions
 - Requires 'block/course_audit:view' capability to view analysis
