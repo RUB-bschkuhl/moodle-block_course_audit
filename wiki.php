@@ -31,9 +31,7 @@ $svgcontent = '';
 
 if (file_exists($svgpath)) {
     $svgcontent = file_get_contents($svgpath);
-} else {
-    debugging("SVG file not found: {$svgpath}", DEBUG_DEVELOPER);
-}
+} 
 
 // An Template übergeben
 $data = ['svgcontent' => $svgcontent];

@@ -36,6 +36,7 @@ $string['section_title'] = 'Section evaluation';
 $string['structure_title'] = 'Structural evaluation';
 $string['summary_title'] = 'Summary';
 $string['disclaimer_title'] = 'Disclaimer';
+$string['disclaimer_button'] = 'Start audit';
 
 // Navigation and UI elements - used in templates/main.mustache
 $string['page'] = 'Page';
@@ -118,6 +119,7 @@ $string['apply_fix'] = 'Connect to "{$a}"';
 
 // Summary related - used in summary display
 $string['summary_heading'] = 'Course Conversion Summary';
+$string['summary_button'] = 'End audit';
 $string['action_building'] = 'Building knowledge prerequisites added';
 $string['action_testing'] = 'Testing activity gates configured';
 $string['action_additional'] = 'Additional resources linked';

@@ -38,10 +38,9 @@
     }
 }}
 
-<div class="block-course-audit card" id="block-course-audit" data-total-pages="{{page_count}}">
-        {{#has_one}}
-        {{#pages}}
-    <div class="page-wrapper {{#first}}d-block{{/first}}{{^first}}d-none{{/first}}" id="page-content-{{page_number}}" data-section-number="{{number}}">
+<div class="block-course-audit card" id="block-course-audit" >
+        {{#wrap_data}}
+    <div class="page-wrapper d-block">
          <div class="card-header d-flex justify-content-between align-items-start">
         <div class="flex-grow-1">
             <h5 class="m-0">{{title}}</h5>
@@ -51,23 +50,12 @@
             {{{content}}}
         </div>
     </div>
-        {{/pages}}
-        {{/has_one}}
-
-        {{#has_multiple}}
-    <div class="card-footer d-flex justify-content-between">
-        <button type="button" class="btn btn-secondary page-nav" data-direction="prev" disabled>
-            {{#str}} previous {{/str}}
-        </button>
-        <span class="align-self-center">
-            {{#str}} page, block_course_audit {{/str}} 
-            <span id="current-page">1</span>/{{page_count}}
-        </span>
-        <button type="button" class="btn btn-secondary page-nav" data-direction="next">
-            {{#str}} next {{/str}}
+    <div class="card-footer d-flex justify-content-end">
+        <button type="button" class="btn btn-secondary page-nav" id="{{{button_id}}}" >
+            {{{button_done}}}
         </button>
     </div>
-        {{/has_multiple}}
+        {{/wrap_data}}
 
 </div>
 

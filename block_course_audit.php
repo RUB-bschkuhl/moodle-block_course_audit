@@ -69,7 +69,9 @@ class block_course_audit extends block_base
                     'title' => get_string('disclaimer_title', 'block_course_audit'),
                     'content' => $OUTPUT->render_from_template('block_course_audit/block/disclaimer', [
                         'wiki_url' => new moodle_url('/blocks/course_audit/wiki.php')
-                    ])
+                    ]),
+                    'button_done' => get_string('disclaimer_button', 'block_course_audit'),
+                    'button_id' => 'audit-start'
                 ],
             ]
         ];
@@ -84,7 +86,9 @@ class block_course_audit extends block_base
         $data['wrap_data'][] = [
             'type' => 'summary',
             'title' => get_string('summary_title', 'block_course_audit'),
-            'content' => $OUTPUT->render_from_template('block_course_audit/block/summary', ['wiki_url' => 'url'])
+            'content' => $OUTPUT->render_from_template('block_course_audit/block/summary'),
+            'button_done' => get_string('summary_button', 'block_course_audit'),
+            'button_id' => 'audit-end'
         ];
 
         unset($page);
