@@ -67,9 +67,9 @@ class manager
         $this->tour->set_description($description);
         $this->tour->set_pathmatch($pathmatch);
         $this->tour->set_enabled(tour::ENABLED);
+        $this->tour->set_filter_values('cssselector', ['#block_course_audit']);
 
         // Set configuration options
-
         foreach ($config as $key => $value) {
             $this->tour->set_config($key, $value);
         }
@@ -84,6 +84,9 @@ class manager
         tour::SHOW_TOUR_UNTIL_COMPLETE (value: 1) - Show the tour until the user completes it
         tour::SHOW_TOUR_ON_EACH_PAGE_VISIT (value: 2) - Show the tour every time the page is visited
         Example: 'showtourwhen' => tour::SHOW_TOUR_UNTIL_COMPLETE
+        filtervalues.cssselector (string)
+        Only show the tour when the specified CSS selector is found on the page.
+        Example: '#block_course_audit'
         endtourlabel (string)
         Custom label for the button that ends the tour
         Example: 'endtourlabel' => 'Finish tour'
