@@ -21,18 +21,17 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery', 'core/ajax', 'core/notification', 'core/str'], function($, Ajax, Notification, Str) {
-
+define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], function ($, Ajax, Notification, Str, Config) {
     /**
      * Initialize the module.
      *
      * @param {int} courseId The course ID
      */
-    const init = function(courseId) {
-        console.log('Tour creator module initialized for course:', courseId);
+    const init = function (courseId) {
+        addMiauSprite(); //For fun. Ggf ausklammern
 
         // Add click handler to the audit-start button
-        $('#audit-start').on('click', function(e) {
+        $('#audit-start').on('click', function (e) {
             e.preventDefault();
 
             // Show loading indicator
@@ -40,7 +39,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str'], function($, Aja
             const originalText = $button.text();
             $button.prop('disabled', true);
 
-            Str.get_string('creatingtour', 'block_course_audit').then(function(loadingText) {
+            Str.get_string('creatingtour', 'block_course_audit').then(function (loadingText) {
                 $button.text(loadingText);
 
                 // Call AJAX to create the tour
@@ -50,19 +49,19 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str'], function($, Aja
                         courseid: courseId
                     }
                 }])[0];
-            }).then(function(response) {
+            }).then(function (response) {
                 console.log('Tour created successfully:', response);
 
                 // Show success message briefly before reloading
                 return Str.get_string('toursuccess', 'block_course_audit');
-            }).then(function(successText) {
+            }).then(function (successText) {
                 $button.text(successText);
 
                 // Reload the page after a short delay to start the tour
-                setTimeout(function() {
+                setTimeout(function () {
                     window.location.reload();
                 }, 500);
-            }).catch(function(error) {
+            }).catch(function (error) {
                 console.error('Error creating tour:', error);
                 Notification.exception(error);
                 $button.text(originalText);
@@ -70,6 +69,49 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str'], function($, Aja
             });
         });
     };
+
+    const moveBlockToSprite = function () {
+        var $original = $('#block-course-audit');
+        var $copy = $original.clone();
+        $original.hide();
+        $('#miau-speech-bubble').append($copy);
+    };
+
+    const addMiauSprite = function () {
+        const $speechBubble = $('<div>').attr({
+            'id': 'miau-speech-bubble',
+            'aria-hidden': 'true'
+        }).html(`<a href="` + Config.wwwroot + `/blocks/course_audit/wiki.php" target="_blank">
+            <span id="miau-title">MIau.nrw</span></a>`);
+        $speechBubble.append(
+            $('<div>').attr({ 'id': 'miau-speech-bubble-inner' })
+        );
+
+        const $miauContainer = $('<div>').attr({
+            'id': 'miau-gif',
+            'aria-hidden': 'true',
+            'role': 'presentation',
+            'tabindex': '0'
+        });
+
+        const $bubbleContainer = $('<div>').attr({
+            'id': 'bubble-container',
+            'aria-hidden': 'true',
+            'role': 'presentation',
+        });
+
+        $bubbleContainer.append($speechBubble);
+        $('#page').append($miauContainer);
+        $miauContainer.click(function () {
+            if ($speechBubble.is(":visible")) {
+                $bubbleContainer.remove();
+            } else {
+                $miauContainer.append($bubbleContainer);
+                moveBlockToSprite();
+            }
+        });
+    };
+
     return {
         init: init
     };
