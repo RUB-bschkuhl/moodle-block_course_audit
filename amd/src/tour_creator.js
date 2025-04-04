@@ -28,9 +28,17 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
      * @param {int} courseId The course ID
      */
     const init = function (courseId) {
-        addMiauSprite(); //For fun. Ggf ausklammern
+        addMiauSprite();
 
-        // Add click handler to the audit-start button
+        $('.btn-minimize').on('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if ($('#bubble-container').is(":visible")) {
+                $('#miau-gif').removeClass('miau-talk');
+                $('#bubble-container').hide();
+            }
+        });
+
         $('#audit-start').on('click', function (e) {
             e.preventDefault();
 
@@ -41,8 +49,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
 
             Str.get_string('creatingtour', 'block_course_audit').then(function (loadingText) {
                 $button.text(loadingText);
-
-                // Call AJAX to create the tour
                 return Ajax.call([{
                     methodname: 'block_course_audit_create_tour',
                     args: {
@@ -50,19 +56,15 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
                     }
                 }])[0];
             }).then(function (response) {
-                console.log('Tour created successfully:', response);
-
-                // Show success message briefly before reloading
+                console.log(response);
                 return Str.get_string('toursuccess', 'block_course_audit');
             }).then(function (successText) {
                 $button.text(successText);
-
                 // Reload the page after a short delay to start the tour
                 setTimeout(function () {
                     window.location.reload();
                 }, 500);
             }).catch(function (error) {
-                console.error('Error creating tour:', error);
                 Notification.exception(error);
                 $button.text(originalText);
                 $button.prop('disabled', false);
@@ -73,19 +75,21 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
     const moveBlockToSprite = function () {
         var $original = $('#block-course-audit');
         var $copy = $original.clone();
-        $original.hide();
         $('#miau-speech-bubble').append($copy);
+        $copy.show();
     };
 
     const addMiauSprite = function () {
+        //TODO move to and load from mustache template
+        const $miauWrapper = $('<div>').attr({
+            'id': 'miau-wrapper',
+            'class': 'slide-in'
+        });
+
         const $speechBubble = $('<div>').attr({
             'id': 'miau-speech-bubble',
             'aria-hidden': 'true'
-        }).html(`<a href="` + Config.wwwroot + `/blocks/course_audit/wiki.php" target="_blank">
-            <span id="miau-title">MIau.nrw</span></a>`);
-        $speechBubble.append(
-            $('<div>').attr({ 'id': 'miau-speech-bubble-inner' })
-        );
+        });
 
         const $miauContainer = $('<div>').attr({
             'id': 'miau-gif',
@@ -98,18 +102,40 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
             'id': 'bubble-container',
             'aria-hidden': 'true',
             'role': 'presentation',
+            'style': 'display: none;'
         });
 
+        $speechBubble.append(
+            $('<div>').attr({ 'id': 'miau-speech-bubble-inner' })
+        );
         $bubbleContainer.append($speechBubble);
-        $('#page').append($miauContainer);
-        $miauContainer.click(function () {
-            if ($speechBubble.is(":visible")) {
-                $bubbleContainer.remove();
-            } else {
-                $miauContainer.append($bubbleContainer);
-                moveBlockToSprite();
+        $miauContainer.append($bubbleContainer);
+        $miauWrapper.append($miauContainer);
+        $('#page').append($miauWrapper);
+
+        setTimeout(function () {
+            //Consider Animation time
+            $('#miau-wrapper').css('opacity', '1');
+            $('#miau-wrapper').removeClass('slide-in');
+        }, 2000);
+
+        moveBlockToSprite();
+
+        $miauWrapper.click(function () {
+            triggerTalkAnimation();
+            if (!$bubbleContainer.is(":visible")) {
+                $bubbleContainer.show();
             }
         });
+    };
+
+    const triggerTalkAnimation = function () {
+        $('#miau-gif').removeClass('miau-talk');
+        $('#miau-gif').addClass('miau-talk');
+        setTimeout(function () {
+            //Consider Animation time
+            $('#miau-gif').removeClass('miau-talk');
+        }, 8000);
     };
 
     return {

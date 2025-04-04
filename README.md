@@ -4,122 +4,19 @@ This block helps analyze and convert course content.
 
 ## Features
 - Section analysis
-- Activity flow visualization
 - Rule-based recommendations
 - User tours for guided course exploration
-- Interactive "Start Audit" tour
+- Dynamic "Audit" tour
 
 ## Installation
 1. Copy the course_audit directory to your Moodle blocks directory
-2. Visit the notifications page to install
+2. Install on reload as usual
 
 ## Usage
-Add the block to your course page to begin analyzing your course structure.
+Add the block to your course page to begin analyzing your course structure by clicking on the MIau companion.
 
-### Using the Tour Manager
-The block includes a tour manager that can create interactive guided tours for users:
-
-```php
-// Example: Create a course introduction tour
-$tourmanager = new \block_course_audit\tour\manager();
-$tour = $tourmanager->create_tour(
-    'Course Introduction',
-    'Introduce users to course features',
-    '/course/view.php\?id=\d+',
-    ['displaystepnumbers' => true]
-);
-
-// Add steps to the tour
-$tourmanager->add_step('Welcome', 'Welcome to the course!', 'body', '.course-content');
-$tourmanager->add_step('Navigation', 'Use this menu to navigate', 'selector', '.navbar');
-```
-
-See more examples in the `classes/tour/examples.php` file.
-
-### Starting a Tour via Button Click
-The course audit block includes a "Start Audit" button that creates and launches an interactive tour:
-
-1. Click the "Start Audit" button in the block
-2. The page will reload and automatically start the tour
-3. Follow the tour steps to learn about the block's features
-4. The tour highlights key areas of the interface with explanations
-
-## Changelog
-
-### 2025-04-03
-- Rework #2 
-- Frontend replacement with concept of "dynamic user tours"
-  - Based on moodle core feature user tours
-- Added Tour Manager class for creating and managing user tours
-  - Added classes/tour/manager.php
-  - Added classes/tour/examples.php
-- Added "Start Audit" button to create interactive tours on demand
-  - Added tour_creator.js for handling button clicks
-  - Added create_tour.php external API endpoint
-  - Updated templates to include the tour start button
-
-### 2025-03-26
-- Removed legacy code
-- Improved structure
-- Code review
-
-### 2025-03-25
-- Fixed external API class for section analysis
-- Fixed block instantiation in external API
-- Improved error handling and logging
-- Modified files:
-  - blocks/course_audit/classes/external/get_section_analysis.php
-  - blocks/course_audit/block_course_audit.php
-
-## Overview
-The Course audit block is a Moodle plugin that helps analyze and visualize course sections and their content. It provides an interactive interface for reviewing course structure, availability conditions, and section-specific analysis.
-
-## Features
-- Interactive section navigation with visual indicators
-- Detailed analysis of course sections
-- Support for both block and inline display modes
-- Course structure analysis
-- Guided user tours for better course exploration and understanding
-- On-demand tour creation with the "Start Audit" button
-
-## Requirements
-- Moodle 4.4 or higher (tested up to 4.5)
-- User Tours API (tool_usertours)
-
-## Installation
-1. Download the plugin
-2. Extract the contents to /blocks/course_audit in your Moodle installation
-3. Visit Site Administration > Notifications to complete the installation
-4. Add the block to your course page
-
-## Usage
-### Adding the Block
-1. Turn editing on in your course
-2. Add the "Course audit" block from the "Add a block" menu
-
-### Features
-- **Section Analysis**: Review each section's structure and content
-- **Display Modes**: 
-  - Block Mode: Analysis shown in the block
-  - Inline Mode: Analysis shown next to each section
-- **Navigation**: Use the pagination controls to move between sections
-- **Visual Indicators**: Highlights current section being analyzed
-- **Floating Analysis**: When in inline mode, analysis panels float next to sections
-- **User Tours**: Create guided tours to help users understand course features
-- **Interactive Tour**: Click the "Start Audit" button for an interactive tour
-
-### Tour Manager
-The block includes a tour manager that allows you to create interactive guided tours:
-
-- **Create Tours**: Build tours for specific pages with multiple steps
-- **Target Elements**: Target specific page elements using CSS selectors
-- **Customization**: Configure placement, backdrop, and behavior
-- **Manage Tours**: Add, update, reset or remove tours
-- **On-Demand Tours**: Create tours via the user interface with the "Start Audit" button
-
-### Permissions
-- Requires 'block/course_audit:view' capability to view analysis
-- Requires 'moodle/course:update' capability for full functionality
+## TODO
+Rest of the Documentation will follow when the plugin reaches completion
 
 ## License
 GNU GPL v3 or later
@@ -131,5 +28,3 @@ Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
 ## Support
 For support and bug reports, please use the GitHub issue tracker or contact the author directly.
 
----
-Last updated: April 3, 2024
