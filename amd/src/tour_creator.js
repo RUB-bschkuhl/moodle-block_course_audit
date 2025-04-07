@@ -21,7 +21,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], function ($, Ajax, Notification, Str, Config) {
+define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], function ($, Ajax, Notification, Str) {
     /**
      * Initialize the module.
      *
@@ -56,14 +56,23 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
                     }
                 }])[0];
             }).then(function (response) {
-                console.log(response);
-                return Str.get_string('toursuccess', 'block_course_audit');
+                var tourdata = response.tourdata;
+
+                if (!tourdata || !response.status) {
+                    let errorMessage = response.message || 'Unknown error creating tour data.';
+                    console.error('Tour creation failed:', errorMessage);
+                    throw new Error(errorMessage);
+                }
+
+                if (response.status) {
+                    require(['tool_usertours/usertours'], function (usertours) {
+                        usertours.init(tourdata.tourDetails, tourdata.filterNames);
+                    });
+
+                    return Str.get_string('toursuccess', 'block_course_audit');
+                }
             }).then(function (successText) {
                 $button.text(successText);
-                // Reload the page after a short delay to start the tour
-                setTimeout(function () {
-                    window.location.reload();
-                }, 500);
             }).catch(function (error) {
                 Notification.exception(error);
                 $button.text(originalText);
@@ -73,10 +82,9 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
     };
 
     const moveBlockToSprite = function () {
-        var $original = $('#block-course-audit');
-        var $copy = $original.clone();
-        $('#miau-speech-bubble').append($copy);
-        $copy.show();
+        var $block = $('#block-course-audit');
+        $('#miau-speech-bubble').append($block);
+        $block.show();
     };
 
     const addMiauSprite = function () {
