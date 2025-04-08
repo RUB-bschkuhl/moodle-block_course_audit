@@ -8,18 +8,18 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * External API for creating tours.
  *
- * @package    block_course_audit
- * @copyright  2024 Your Name <your.email@example.com>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package block_course_audit
+ * @copyright 2024 Your Name <your.email@example.com>
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace block_course_audit\external;
@@ -35,6 +35,7 @@ use external_single_structure;
 use external_multiple_structure;
 use context_course;
 use block_course_audit\tour\manager as tour_manager;
+use block_course_audit\audit\auditor;
 use moodle_exception;
 use tool_usertours\tour;
 use tool_usertours\helper;
@@ -43,9 +44,9 @@ use tool_usertours\target;
 /**
  * External API for creating tours
  *
- * @package    block_course_audit
- * @copyright  2024 Your Name <your.email@example.com>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package block_course_audit
+ * @copyright 2024 Your Name <your.email@example.com>
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class create_tour extends external_api
 {
@@ -70,7 +71,7 @@ class create_tour extends external_api
     public static function execute_returns()
     {
         return new external_single_structure([
-            'status'  => new external_value(PARAM_BOOL, 'Status of the operation'),
+            'status' => new external_value(PARAM_BOOL, 'Status of the operation'),
             'message' => new external_value(PARAM_TEXT, 'Response message'),
             'tourdata' => new external_single_structure([
                 'tourDetails' => new external_multiple_structure(
@@ -98,7 +99,7 @@ class create_tour extends external_api
 
 
     /**
-     * 
+     *
      */
     private static function init_tour($tour)
     {
@@ -115,14 +116,14 @@ class create_tour extends external_api
                 // Convert stdClass object {0 => 'selector'} to array ['selector']
                 $filtervalues['cssselector'] = array_values((array)$filtervalues['cssselector']);
             } else if (!isset($filtervalues['cssselector'])) {
-                 // Ensure it's at least an empty array if not set, to match the structure.
-                 $filtervalues['cssselector'] = [];
+                // Ensure it's at least an empty array if not set, to match the structure.
+                $filtervalues['cssselector'] = [];
             }
-            
+
             // Ensure other potential filter value types are also arrays if needed
             // Example for a hypothetical 'role' filter:
             // if (isset($filtervalues['role']) && is_object($filtervalues['role'])) {
-            //    $filtervalues['role'] = array_values((array)$filtervalues['role']);
+            // $filtervalues['role'] = array_values((array)$filtervalues['role']);
             // }
 
             return [
@@ -168,7 +169,7 @@ class create_tour extends external_api
         // Check if a tour already exists for this course
         $existingtours = $DB->get_records_sql(
             "SELECT * FROM {tool_usertours_tours} WHERE pathmatch = ? AND name LIKE ?",
-            ["/course/view.php\\?id=$courseid", "Course Audit Tour: $course->shortname%"]
+            ["/course/view.php\\?id=$courseid", "Course Audit: Course #$courseid%"]
         );
 
         // If a tour already exists, delete it
@@ -176,69 +177,61 @@ class create_tour extends external_api
             $manager->delete_tour($existingtour->id);
         }
 
+        // Execute audit
+        $auditor = new auditor();
+        $audit_results = $auditor->get_audit_results($course);
+
         // Create a new tour
         $pathmatch = "/course/view.php?id=$courseid";
         $tourconfig = [
             'displaystepnumbers' => true,
-            'showtourwhen' => tour::SHOW_TOUR_ON_EACH_PAGE_VISIT,
+            'showtourwhen' => tour::SHOW_TOUR_UNTIL_COMPLETE,
             'backdrop' => true,
             'reflex' => false
         ];
 
         $tour = $manager->create_tour(
-            "Course Audit Tour: $course->shortname",
-            "This tour will guide you through the course audit features for $course->fullname",
+            "Course Audit: Course #$courseid",
+            "This tour will guide the user through the course audit for $course->fullname",
             $pathmatch,
             $tourconfig
         );
 
-        // TODO If step cant be created delete tour
+        // Create steps for the tour with error handling
+        try {
+            foreach ($audit_results as $audit_result) {
+                if ($audit_result->type == "section") {
+                    $manager->add_step(
+                        $audit_result->title,
+                        $audit_result->content,
+                        target::TARGET_SELECTOR,
+                        "#$audit_result->type" . "-" . "$audit_result->number",
+                        ['placement' => 'right', 'backdrop' => true]
+                    );
+                }
+                // TODO else if (mod und course)
+            }
+        } catch (\Exception $e) {
+            // If any step fails to be created, delete the tour
+            debugging('Failed to create tour step: ' . $e->getMessage() . '. Deleting tour.', DEBUG_DEVELOPER);
+            $manager->delete_tour($tour->get_id());
 
-        // Create steps for the tour
-        $manager->add_step(
-            'Welcome to Course Audit',
-            'This tour will show you how to use the Course Audit block to analyze your course content.',
-            target::TARGET_SELECTOR,
-            '.block_course_audit',
-            ['placement' => 'right', 'backdrop' => true]
-        );
-
-        $manager->add_step(
-            'Section Analysis',
-            'The Course Audit tool analyzes your course sections and provides recommendations for improvement.',
-            target::TARGET_SELECTOR,
-            '.block_course_audit .content',
-            ['placement' => 'bottom']
-        );
-
-        $manager->add_step(
-            'Audit Features',
-            'Click on different sections to see detailed analysis and recommendations.',
-            target::TARGET_SELECTOR,
-            '.block_course_audit .section-list',
-            ['placement' => 'top']
-        );
-
-        $manager->add_step(
-            'Activity Flow',
-            'The Activity Flow visualization helps you understand how students progress through your course.',
-            target::TARGET_SELECTOR,
-            '.block_course_audit .flow-visualization',
-            ['placement' => 'left']
-        );
-
-        $manager->add_step(
-            'Start Your Audit',
-            'Click here to begin a new audit of your course.',
-            target::TARGET_SELECTOR,
-            '#audit-start',
-            ['placement' => 'bottom', 'backdrop' => true]
-        );
+            // Re-throw the exception to be caught by the outer try-catch
+            throw $e;
+        }
 
         $manager->reset_tour_for_all_users($tour->get_id());
 
+        // Store the tour reference in our plugin's database table
+        $tourrecord = new \stdClass();
+        $tourrecord->tourid = $tour->get_id();
+        $tourrecord->courseid = $courseid;
+        $tourrecord->timecreated = time();
+        $tourrecord->timemodified = time();
+        $DB->insert_record('block_course_audit_tours', $tourrecord);
+
         $tourdata = self::init_tour($tour);
-        $resp =  [
+        $resp = [
             'status' => true,
             'message' => 'Tour created successfully',
             'tourdata' => $tourdata

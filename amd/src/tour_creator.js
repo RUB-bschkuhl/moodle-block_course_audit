@@ -7,29 +7,26 @@
 //
 // Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 /**
- * JavaScript for handling tour creation via button click.
- *
- * @module     block_course_audit/tour_creator
- * @copyright  2024 Your Name <your.email@example.com>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
+* JavaScript for handling tour creation via button click.
+*
+* @module block_course_audit/tour_creator
+* @copyright 2024 Your Name <your.email@example.com>
+* @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+*/
 define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], function ($, Ajax, Notification, Str) {
     /**
-     * Initialize the module.
-     *
-     * @param {int} courseId The course ID
-     */
+    * Initialize the module.
+    *
+    * @param {int} courseId The course ID
+    */
     const init = function (courseId) {
         addMiauSprite();
-
         $('.btn-minimize').on('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -38,15 +35,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
                 $('#bubble-container').hide();
             }
         });
-
         $('#audit-start').on('click', function (e) {
             e.preventDefault();
-
             // Show loading indicator
             const $button = $(this);
             const originalText = $button.text();
             $button.prop('disabled', true);
-
             Str.get_string('creatingtour', 'block_course_audit').then(function (loadingText) {
                 $button.text(loadingText);
                 return Ajax.call([{
@@ -57,18 +51,15 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
                 }])[0];
             }).then(function (response) {
                 var tourdata = response.tourdata;
-
                 if (!tourdata || !response.status) {
                     let errorMessage = response.message || 'Unknown error creating tour data.';
                     console.error('Tour creation failed:', errorMessage);
                     throw new Error(errorMessage);
                 }
-
                 if (response.status) {
                     require(['tool_usertours/usertours'], function (usertours) {
                         usertours.init(tourdata.tourDetails, tourdata.filterNames);
                     });
-
                     return Str.get_string('toursuccess', 'block_course_audit');
                 }
             }).then(function (successText) {
@@ -80,39 +71,33 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
             });
         });
     };
-
     const moveBlockToSprite = function () {
         var $block = $('#block-course-audit');
         $('#miau-speech-bubble').append($block);
         $block.show();
     };
-
     const addMiauSprite = function () {
         //TODO move to and load from mustache template
         const $miauWrapper = $('<div>').attr({
             'id': 'miau-wrapper',
             'class': 'slide-in'
         });
-
         const $speechBubble = $('<div>').attr({
             'id': 'miau-speech-bubble',
             'aria-hidden': 'true'
         });
-
         const $miauContainer = $('<div>').attr({
             'id': 'miau-gif',
             'aria-hidden': 'true',
             'role': 'presentation',
             'tabindex': '0'
         });
-
         const $bubbleContainer = $('<div>').attr({
             'id': 'bubble-container',
             'aria-hidden': 'true',
             'role': 'presentation',
             'style': 'display: none;'
         });
-
         $speechBubble.append(
             $('<div>').attr({ 'id': 'miau-speech-bubble-inner' })
         );
@@ -120,15 +105,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
         $miauContainer.append($bubbleContainer);
         $miauWrapper.append($miauContainer);
         $('#page').append($miauWrapper);
-
         setTimeout(function () {
             //Consider Animation time
             $('#miau-wrapper').css('opacity', '1');
             $('#miau-wrapper').removeClass('slide-in');
         }, 2000);
-
         moveBlockToSprite();
-
         $miauWrapper.click(function () {
             triggerTalkAnimation();
             if (!$bubbleContainer.is(":visible")) {
@@ -136,7 +118,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
             }
         });
     };
-
     const triggerTalkAnimation = function () {
         $('#miau-gif').removeClass('miau-talk');
         $('#miau-gif').addClass('miau-talk');
@@ -145,7 +126,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
             $('#miau-gif').removeClass('miau-talk');
         }, 8000);
     };
-
     return {
         init: init
     };

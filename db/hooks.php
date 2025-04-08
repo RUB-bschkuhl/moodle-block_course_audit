@@ -15,21 +15,19 @@
 // along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for Course audit
+ * Hook definitions for the course_audit block.
  *
  * @package block_course_audit
- * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
+ * @copyright 2024 Your Name <your.email@example.com>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'block_course_audit';
-$plugin->release = '0.1.7';
-$plugin->version = 2025040801;
-$plugin->requires = 2024042200;
-$plugin->supported = [404, 405];
-$plugin->maturity = MATURITY_STABLE;
-$plugin->dependencies = [
-    'tool_usertours' => ANY_VERSION,
+$hooks = [
+    [
+        'hook' => \tool_usertours\hook\tour_completed::class,
+        'callback' => \block_course_audit\hooks\tour_completed::class . '::callback',
+        'priority' => 100,
+    ],
 ];

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="blocks/course_audit/db" VERSION="20240315" COMMENT="XMLDB file for Moodle blocks/course_audit"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
+    <TABLES>
+        <TABLE NAME="block_course_audit_tours" COMMENT="Stores references to tours created by the Course Audit block">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" COMMENT="Primary key"/>
+                <FIELD NAME="tourid" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="ID of the tour in tool_usertours_tours table"/>
+                <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="ID of the course this tour belongs to"/>
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Timestamp when the tour was created"/>
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Timestamp when the tour was last modified"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+                <KEY NAME="tourid" TYPE="foreign" FIELDS="tourid" REFTABLE="tool_usertours_tours" REFFIELDS="id"/>
+                <KEY NAME="courseid" TYPE="foreign" FIELDS="courseid" REFTABLE="course" REFFIELDS="id"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="courseid" UNIQUE="false" FIELDS="courseid"/>
+            </INDEXES>
+        </TABLE>
+    </TABLES>
+</XMLDB>
