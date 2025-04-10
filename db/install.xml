@@ -19,5 +19,25 @@
                 <INDEX NAME="courseid" UNIQUE="false" FIELDS="courseid"/>
             </INDEXES>
         </TABLE>
+        <TABLE NAME="block_course_audit_results" COMMENT="Stores results of individual audit rule checks for a specific audit run (tour)">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" COMMENT="Primary key"/>
+                <FIELD NAME="auditid" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="ID of the corresponding audit run in block_course_audit_tours"/>
+                <FIELD NAME="rulekey" TYPE="char" LENGTH="100" NOTNULL="true" COMMENT="Unique identifier for the audit rule checked"/>
+                <FIELD NAME="status" TYPE="char" LENGTH="10" NOTNULL="true" COMMENT="Outcome of the rule check (e.g., pass, fail, info)"/>
+                <FIELD NAME="message" TYPE="text" NOTNULL="false" COMMENT="Optional message or details about the result"/>
+                <FIELD NAME="targettype" TYPE="char" LENGTH="50" NOTNULL="false" COMMENT="Type of Moodle entity the rule targets (e.g., course, section, module)"/>
+                <FIELD NAME="targetid" TYPE="int" LENGTH="10" NOTNULL="false" COMMENT="ID of the Moodle entity the rule targets"/>
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="Timestamp when this result was recorded"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+                <KEY NAME="auditid" TYPE="foreign" FIELDS="auditid" REFTABLE="block_course_audit_tours" REFFIELDS="id"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="auditid_rulekey" UNIQUE="true" FIELDS="auditid, rulekey" COMMENT="Ensure only one result per rule per audit"/>
+                <INDEX NAME="target" UNIQUE="false" FIELDS="targettype, targetid"/>
+            </INDEXES>
+        </TABLE>
     </TABLES>
 </XMLDB>

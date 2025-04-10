@@ -172,22 +172,44 @@ class create_tour extends external_api
         // Create the tour manager
         $manager = new tour_manager();
 
-        // Check if a tour already exists for this course
+        // Check if a tour already exists for this course and delete it
         $existingtours = $DB->get_records_sql(
-            "SELECT * FROM {tool_usertours_tours} WHERE pathmatch = ? AND name LIKE ?",
-            ["/course/view.php\\?id=$courseid", "Course Audit: Course #$courseid%"]
+            "SELECT t.* FROM {tool_usertours_tours} t JOIN {block_course_audit_tours} ca ON t.id = ca.tourid WHERE ca.courseid = ? AND t.name LIKE ?",
+            [$courseid, "Course Audit: Course #$courseid%"]
         );
 
-        // If a tour already exists, delete it
+        // If a tour already exists, delete it using the tour manager
         foreach ($existingtours as $existingtour) {
-            $manager->delete_tour($existingtour->id);
+            try {
+                // We need the tour_manager instance from block_course_audit namespace
+                \block_course_audit\tour_manager::delete_tour($existingtour->id);
+                mtrace("Deleted existing tour ID: {$existingtour->id} for course ID: {$courseid}");
+                error_log("Deleted existing tour ID: {$existingtour->id} for course ID: {$courseid}");
+                // Also delete the corresponding entry in block_course_audit_tours
+                $DB->delete_records('block_course_audit_tours', ['tourid' => $existingtour->id]);
+            } catch (\Exception $e) {
+                // Log the error but continue, as we are creating a new tour anyway
+                mtrace("Error deleting existing tour ID: {$existingtour->id}. Error: " . $e->getMessage());
+                error_log("Error deleting existing tour ID: {$existingtour->id}. Error: " . $e->getMessage());
+            }
         }
 
         // Execute audit
         $auditor = new auditor();
-        $audit_results = $auditor->get_audit_results($course);
+        $audit_data = $auditor->get_audit_results($course);
+        $tour_steps_data = $audit_data['tour_steps']; // Data for creating tour steps
+        $raw_audit_results = $audit_data['raw_results']; // Raw results for DB storage
 
-        // Create a new tour
+        // Check if we actually got any steps/results
+        if (empty($tour_steps_data)) {
+            return [
+                'status' => false,
+                'message' => get_string('noauditresults', 'block_course_audit'), // Add this string
+                'tourdata' => null
+            ];
+        }
+
+        // Create a new user tour
         $pathmatch = "/course/view.php?id=$courseid";
         $tourconfig = [
             'displaystepnumbers' => true,
@@ -203,44 +225,71 @@ class create_tour extends external_api
             $tourconfig
         );
 
-        //TODO in js move the cats head to above #tour-step-tool_usertours_ etc (tour-step-tool_usertours_2_56_1744122087-0 eg)
-        //TODO step placement
-        // Create steps for the tour with error handling
+        // Record the main audit run in our table FIRST
+        $auditrunrecord = new \stdClass();
+        $auditrunrecord->tourid = $tour->get_id();
+        $auditrunrecord->courseid = $courseid;
+        $auditrunrecord->timecreated = time();
+        $auditrunrecord->timemodified = time();
+        $auditrunid = $DB->insert_record('block_course_audit_tours', $auditrunrecord); // Get the ID of this audit run
+
+        // Now, try to create steps and store individual results
         try {
-            foreach ($audit_results as $audit_result) {
-                if ($audit_result["type"] == "section") {
-                    $manager->add_step(
-                        $audit_result["title"],
-                        $audit_result["content"],
-                        target::TARGET_SELECTOR,
-                        "#" . $audit_result["type"] . "-" . $audit_result["number"],
-                        ['placement' => 'right', 'backdrop' => true]
-                    );
-                }
-                // TODO else if (mod und course)
+            // Create tour steps
+            foreach ($tour_steps_data as $step_data) {
+                // Ensure target selector is valid
+                $targetselector = '#' . $step_data['type'] . '-' . $step_data['number'];
+                // Potentially add checks here if target might not exist
+
+                $manager->add_step(
+                    $step_data['title'],
+                    $step_data['content'],
+                    target::TARGET_SELECTOR,
+                    $targetselector,
+                    ['placement' => 'right', 'backdrop' => true]
+                );
             }
+
+            // Store individual audit results
+            $now = time();
+            foreach ($raw_audit_results as $result) {
+                $resultrecord = new \stdClass();
+                $resultrecord->auditid = $auditrunid;
+                $resultrecord->rulekey = $result['key']; // Assuming 'key' field exists
+                $resultrecord->status = $result['status']; // Assuming 'status' field exists
+                $resultrecord->message = $result['message'] ?? null; // Assuming 'message' field exists
+                $resultrecord->targettype = $result['targettype'] ?? null; // Assuming 'targettype' field exists
+                $resultrecord->targetid = $result['targetid'] ?? null; // Assuming 'targetid' field exists
+                $resultrecord->timecreated = $now;
+                $DB->insert_record('block_course_audit_results', $resultrecord);
+            }
+
+            // Reset tour for users only after steps and results are successfully created
+            $manager->reset_tour_for_all_users($tour->get_id());
+
+            $tourdata = self::init_tour($tour);
+            $resp = [
+                'status' => true,
+                'message' => get_string('createtoursuccess', 'block_course_audit'), // Add this string
+                'tourdata' => $tourdata
+            ];
+            return $resp;
+
         } catch (\Exception $e) {
-            // If any step fails to be created, delete the tour
-            $manager->delete_tour($tour->get_id());
+            // If any step or result saving fails, delete the tour and the audit run record
+            mtrace("Error during step creation or result saving for tour ID: {$tour->get_id()}. Error: " . $e->getMessage());
+            error_log("Error during step creation or result saving for tour ID: {$tour->get_id()}. Error: " . $e->getMessage());
+            try {
+                \block_course_audit\tour_manager::delete_tour($tour->get_id());
+                // Also delete the main audit run record if steps failed
+                $DB->delete_records('block_course_audit_tours', ['id' => $auditrunid]);
+            } catch (\Exception $delEx) {
+                // Log deletion error but prioritize original exception
+                mtrace("Failed to clean up tour ID: {$tour->get_id()} after error. Deletion Error: " . $delEx->getMessage());
+                error_log("Failed to clean up tour ID: {$tour->get_id()} after error. Deletion Error: " . $delEx->getMessage());
+            }
+            // Re-throw the original exception
             throw $e;
         }
-
-        $manager->reset_tour_for_all_users($tour->get_id());
-
-        // Store the tour reference in our plugin's database table
-        $tourrecord = new \stdClass();
-        $tourrecord->tourid = $tour->get_id();
-        $tourrecord->courseid = $courseid;
-        $tourrecord->timecreated = time();
-        $tourrecord->timemodified = time();
-        $DB->insert_record('block_course_audit_tours', $tourrecord);
-
-        $tourdata = self::init_tour($tour);
-        $resp = [
-            'status' => true,
-            'message' => 'Tour created successfully',
-            'tourdata' => $tourdata
-        ];
-        return $resp;
     }
 }

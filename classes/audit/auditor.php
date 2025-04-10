@@ -25,38 +25,74 @@ defined('MOODLE_INTERNAL') || die();
 class auditor
 {
     /**
-     * Return section data as pages
+     * Return section data as pages for the tour and raw rule results for DB storage.
      *
      * @param object $course The course object
-     * @return array Array of section pages
+     * @return array An array containing two keys: 'tour_steps' and 'raw_results'.
+     *               'tour_steps': Array formatted for creating tour steps.
+     *               'raw_results': Array of all individual rule check results.
      */
     public function get_audit_results($course)
     {
         global $CFG, $DB, $OUTPUT;
         require_once($CFG->dirroot . '/course/lib.php');
-        // Initialize pages array
-        $pages = [];
+        require_once($CFG->dirroot . '/blocks/course_audit/classes/rules/rule_manager.php'); // Ensure rule manager is available for summary
+
+        // Initialize arrays
+        $tour_steps = [];
+        $raw_results = [];
         $courseformat = course_get_format($course);
         $sections = $courseformat->get_sections();
         $index = 0;
-        foreach ($sections as $sectionnum => $sectionid) {
-            $rulecheckresults = $this->audit_section($sectionid->id);
-            $pages[] = [
-                'type' => 'section',
-                'title' => get_string('structure_title', 'block_course_audit'),
-                'number' => $sectionnum,
-                'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_results', $rulecheckresults)
+
+        // Create rule manager instance needed for summary generation
+        $rulemanager = new \block_course_audit\rules\rule_manager();
+
+        foreach ($sections as $sectionnum => $sectionobj) {
+            // Get raw results for this section
+            $section_results = $this->audit_section($sectionobj->id);
+            $raw_results = array_merge($raw_results, $section_results);
+
+            // Prepare data for template rendering (similar to previous logic)
+            $section_template_data = [
+                'section_id' => $sectionobj->id,
+                'section_name' => get_section_name($course, $sectionobj),
+                'section_number' => $sectionobj->section,
+                'course_id' => $course->id,
+                'course_shortname' => $course->shortname,
+                // We need to categorize the results again for the template summary
+                'activity_type_rules' => [
+                    'results' => array_filter($section_results, function($res) { return $res['category'] === 'activity_type'; }), // Assuming results have a 'category' key
+                    'stats' => $rulemanager->get_summary(array_filter($section_results, function($res) { return $res['category'] === 'activity_type'; })),
+                    'title' => get_string('rules_activity_type_category', 'block_course_audit')
+                ],
+                'activity_flow_rules' => [
+                    'results' => array_filter($section_results, function($res) { return $res['category'] === 'activity_flow'; }), // Assuming results have a 'category' key
+                    'stats' => $rulemanager->get_summary(array_filter($section_results, function($res) { return $res['category'] === 'activity_flow'; })),
+                    'title' => get_string('rules_activity_flow_category', 'block_course_audit')
+                ],
+                'overall_stats' => $rulemanager->get_summary($section_results)
+            ];
+
+            // Create the tour step entry
+            $tour_steps[] = [
+                'type' => 'section', // Identifies the target type for the step
+                'title' => get_string('structure_title', 'block_course_audit') . " - " . $section_template_data['section_name'], // More specific title
+                'number' => $sectionobj->section, // Corresponds to #section-<number> ID
+                'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_results', $section_template_data)
             ];
             $index++;
         }
-        return $pages;
+
+        // Return both the steps and the raw results
+        return [
+            'tour_steps' => $tour_steps,
+            'raw_results' => $raw_results
+        ];
     }
 
-
-
-
     /**
-     * Analyse the current section.
+     * Analyse the current section and return raw rule results.
      *
      * @return string The block HTML.
      * @param string $visiblename localised
@@ -89,12 +125,18 @@ class auditor
         $rulemanager = new \block_course_audit\rules\rule_manager();
         // Run activity type rules
         $activityTypeResults = $rulemanager->run_rules($section, $course, 'activity_type');
-        $activityTypeStats = $rulemanager->get_summary($activityTypeResults);
         // Run activity flow rules
         $activityFlowResults = $rulemanager->run_rules($section, $course, 'activity_flow');
-        $activityFlowStats = $rulemanager->get_summary($activityFlowResults);
         // Combine results
         $allResults = array_merge($activityTypeResults, $activityFlowResults);
+
+        // Return the raw results directly
+        // The caller (get_audit_results) will handle formatting for display and DB storage.
+        return $allResults;
+
+        /* --- Previous code for template data preparation (removed) ---
+        $activityTypeStats = $rulemanager->get_summary($activityTypeResults);
+        $activityFlowStats = $rulemanager->get_summary($activityFlowResults);
         $overallStats = $rulemanager->get_summary($allResults);
         // Prepare data for output
         $data = [
@@ -116,5 +158,6 @@ class auditor
             'overall_stats' => $overallStats
         ];
         return $data;
+        */
     }
 }
