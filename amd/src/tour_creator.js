@@ -19,6 +19,9 @@
 * @copyright 2024 Your Name <your.email@example.com>
 * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
+import moodleConfig from 'core/config';
+import {call as fetch} from 'core/ajax';
+
 define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], function ($, Ajax, Notification, Str) {
     /**
     * Initialize the module.
@@ -30,10 +33,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
         $('.btn-minimize').on('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
-            if ($('#bubble-container').is(":visible")) {
-                $('#miau-gif').removeClass('miau-talk');
-                $('#bubble-container').hide();
-            }
+            hideBubble();
         });
         $('#audit-start').on('click', function (e) {
             e.preventDefault();
@@ -43,6 +43,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
             $button.prop('disabled', true);
             Str.get_string('creatingtour', 'block_course_audit').then(function (loadingText) {
                 $button.text(loadingText);
+
                 return Ajax.call([{
                     methodname: 'block_course_audit_create_tour',
                     args: {
@@ -57,6 +58,24 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
                     throw new Error(errorMessage);
                 }
                 if (response.status) {
+                    hideBubble();
+                    // TODO use usertour external:
+                    // * @param   int     $tourid     The ID of the tour to fetch.
+                    // * @param   int     $context    The Context ID of the current page.
+                    // * @param   string  $pageurl    The path of the current page.
+                    // * @return  array               As described in fetch_and_start_tour_returns
+                    // */
+                    // public static function fetch_and_start_tour($tourid, $context, $pageurl) {
+                    // tool_usertours_fetch_and_start_tour
+
+                    // return Ajax.call([{
+                    //     methodname: 'tool_usertours_fetch_and_start_tour',
+                    //     args: {
+                    //     tourid,
+                    //     context: moodleConfig.contextid,
+                    //     pageurl: window.location.href,
+                    // }
+                    // }])[0];
                     require(['tool_usertours/usertours'], function (usertours) {
                         usertours.init(tourdata.tourDetails, tourdata.filterNames);
                     });
@@ -75,6 +94,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
         var $block = $('#block-course-audit');
         $('#miau-speech-bubble').append($block);
         $block.show();
+    };
+    const hideBubble = function () {
+        if ($('#bubble-container').is(":visible")) {
+            $('#miau-gif').removeClass('miau-talk');
+            $('#bubble-container').hide();
+        }
     };
     const addMiauSprite = function () {
         //TODO move to and load from mustache template

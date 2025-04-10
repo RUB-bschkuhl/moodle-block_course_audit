@@ -149,16 +149,22 @@ class create_tour extends external_api
      */
     public static function execute($courseid)
     {
-        global $DB;
+        global $DB, $USER;
 
         // Parameter validation
         $params = self::validate_parameters(self::execute_parameters(), ['courseid' => $courseid]);
         $courseid = $params['courseid'];
 
-        // Get the course context and check capability
+        // Get the course context
         $coursecontext = context_course::instance($courseid);
+
+        // Validate the context exists and is the correct type
         self::validate_context($coursecontext);
-        require_capability('block/course_audit:view', $coursecontext);
+
+        // Check if the user has permission to manage activities in this course context.
+        // This throws an exception if the user lacks the capability.
+        require_capability('moodle/course:manageactivities', $coursecontext);
+        mtrace("Capability 'moodle/course:manageactivities' checked successfully for User ID: {$USER->id} in Context ID: {$coursecontext->id}");
 
         // Get course information
         $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
@@ -197,15 +203,17 @@ class create_tour extends external_api
             $tourconfig
         );
 
+        //TODO in js move the cats head to above #tour-step-tool_usertours_ etc (tour-step-tool_usertours_2_56_1744122087-0 eg)
+        //TODO step placement
         // Create steps for the tour with error handling
         try {
             foreach ($audit_results as $audit_result) {
-                if ($audit_result->type == "section") {
+                if ($audit_result["type"] == "section") {
                     $manager->add_step(
-                        $audit_result->title,
-                        $audit_result->content,
+                        $audit_result["title"],
+                        $audit_result["content"],
                         target::TARGET_SELECTOR,
-                        "#$audit_result->type" . "-" . "$audit_result->number",
+                        "#" . $audit_result["type"] . "-" . $audit_result["number"],
                         ['placement' => 'right', 'backdrop' => true]
                     );
                 }
@@ -213,10 +221,7 @@ class create_tour extends external_api
             }
         } catch (\Exception $e) {
             // If any step fails to be created, delete the tour
-            debugging('Failed to create tour step: ' . $e->getMessage() . '. Deleting tour.', DEBUG_DEVELOPER);
             $manager->delete_tour($tour->get_id());
-
-            // Re-throw the exception to be caught by the outer try-catch
             throw $e;
         }
 
