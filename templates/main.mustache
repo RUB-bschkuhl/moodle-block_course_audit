@@ -38,24 +38,34 @@
     }
 }}
 
-<div class="block-course-audit card" style="display: none;" id="block-course-audit">
-        {{#wrap_data}}
-    <div class="page-wrapper d-block">
-        <div class="card-header d-flex justify-content-between align-items-start">
-            <div class="d-flex flex-grow-1 justify-content-between">
-                <h5 class="m-0">{{title}}</h5>
-                <button type="button" class="btn btn-secondary btn-minimize">
+<div class="block-course-audit card" id="block-course-audit">
+    <div id="miau-wrapper" class="slide-in">
+        <div id="miau-gif" aria-hidden="true" role="presentation" tabindex="0">
+            <div id="bubble-container" role="presentation" style="display: none;">
+                <div id="miau-speech-bubble" aria-hidden="true" role="presentation" style="display: none;">
+                    <div id="miau-speech-bubble-inner">
+                    {{#wrap_data}}
+                        <div class="page-wrapper d-block">
+                            <div class="card-header d-flex justify-content-between align-items-start">
+                                <div class="d-flex flex-grow-1 justify-content-between">
+                                    <h5 class="m-0">{{title}}</h5>
+                                    <button type="button" class="btn btn-secondary btn-minimize">
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                {{{content}}}
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-end">
+                            <button type="button" class="btn btn-secondary page-nav" id="{{{button_id}}}" >
+                                {{{button_done}}}
+                            </button>
+                        </div>
+                    {{/wrap_data}}
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="card-body">
-            {{{content}}}
-        </div>
     </div>
-    <div class="card-footer d-flex justify-content-end">
-        <button type="button" class="btn btn-secondary page-nav" id="{{{button_id}}}" >
-            {{{button_done}}}
-        </button>
-    </div>
-        {{/wrap_data}}
 </div>
 

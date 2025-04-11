@@ -47,6 +47,41 @@
   padding: 1rem 1.5rem;
 }
 
+/* Positioning of button from another plugin */
+/* stylelint-disable */
+#block-course-audit #miau-wrapper {
+  visibility: visible;
+  position: fixed;
+  bottom: 4.5rem;
+  right: 2rem;
+  transition: 0.2s;
+  z-index: 1000;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border: 1px solid #6c757d;
+  ;
+
+  &:hover {
+    filter: hue-rotate(10deg) brightness(90%);
+  }
+}
+
+@media (max-width: 576px) {
+  #block-course-audit #miau-wrapper {
+    top: 87vh;
+    right: .5rem;
+    bottom: unset;
+  }
+}
+
+.drawer-right.show #block-course-audit #miau-wrapper,
+.show-drawer-right #block-course-audit #miau-wrapper {
+  right: calc(315px + 2rem);
+}
+
 #miau-wrapper {
   position: fixed;
   bottom: 0;

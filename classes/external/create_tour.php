@@ -166,7 +166,6 @@ class create_tour extends external_api
         require_capability('moodle/course:manageactivities', $coursecontext);
         mtrace("Capability 'moodle/course:manageactivities' checked successfully for User ID: {$USER->id} in Context ID: {$coursecontext->id}");
 
-        // Get course information
         $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 
         // Create the tour manager
@@ -181,16 +180,14 @@ class create_tour extends external_api
         // If a tour already exists, delete it using the tour manager
         foreach ($existingtours as $existingtour) {
             try {
-                // We need the tour_manager instance from block_course_audit namespace
-                \block_course_audit\tour_manager::delete_tour($existingtour->id);
+                // Call the instance method delete_tour on the existing $manager object
+                $manager->delete_tour($existingtour->id);
                 mtrace("Deleted existing tour ID: {$existingtour->id} for course ID: {$courseid}");
-                error_log("Deleted existing tour ID: {$existingtour->id} for course ID: {$courseid}");
                 // Also delete the corresponding entry in block_course_audit_tours
                 $DB->delete_records('block_course_audit_tours', ['tourid' => $existingtour->id]);
             } catch (\Exception $e) {
                 // Log the error but continue, as we are creating a new tour anyway
                 mtrace("Error deleting existing tour ID: {$existingtour->id}. Error: " . $e->getMessage());
-                error_log("Error deleting existing tour ID: {$existingtour->id}. Error: " . $e->getMessage());
             }
         }
 
@@ -278,7 +275,6 @@ class create_tour extends external_api
         } catch (\Exception $e) {
             // If any step or result saving fails, delete the tour and the audit run record
             mtrace("Error during step creation or result saving for tour ID: {$tour->get_id()}. Error: " . $e->getMessage());
-            error_log("Error during step creation or result saving for tour ID: {$tour->get_id()}. Error: " . $e->getMessage());
             try {
                 \block_course_audit\tour_manager::delete_tour($tour->get_id());
                 // Also delete the main audit run record if steps failed
@@ -286,7 +282,6 @@ class create_tour extends external_api
             } catch (\Exception $delEx) {
                 // Log deletion error but prioritize original exception
                 mtrace("Failed to clean up tour ID: {$tour->get_id()} after error. Deletion Error: " . $delEx->getMessage());
-                error_log("Failed to clean up tour ID: {$tour->get_id()} after error. Deletion Error: " . $delEx->getMessage());
             }
             // Re-throw the original exception
             throw $e;

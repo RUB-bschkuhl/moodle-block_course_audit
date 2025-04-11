@@ -19,18 +19,47 @@
 * @copyright 2024 Your Name <your.email@example.com>
 * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
-import moodleConfig from 'core/config';
-import {call as fetch} from 'core/ajax';
 
 define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], function ($, Ajax, Notification, Str) {
+
+    // DOM element references obtained after templates are rendered.
+    let speechBubble = null;
+    let miauContainer = null;
+    let bubbleContainer = null;
+    let speechBubbleInner = null;
+    let miauWrapper = null; // Added reference for the wrapper
+
+    /**
+     * Gets references to the DOM elements created by templates.
+     * Should be called after the templates are rendered (e.g., in init or addMiauSprite).
+     */
+    const getElements = function () {
+        miauWrapper = document.getElementById('miau-wrapper');
+        speechBubble = document.getElementById('miau-speech-bubble');
+        miauContainer = document.getElementById('miau-gif');
+        bubbleContainer = document.getElementById('bubble-container');
+        speechBubbleInner = document.getElementById('miau-speech-bubble-inner');
+        // Basic check to ensure elements were found
+        if (!miauWrapper || !speechBubble || !miauContainer || !bubbleContainer || !speechBubbleInner) {
+            console.error('Course Audit: Could not find one or more required sprite/bubble elements. Ensure templates are loaded.');
+        }
+    };
+
     /**
     * Initialize the module.
     *
     * @param {int} courseId The course ID
     */
     const init = function (courseId) {
+        getElements(); // Get references after page load
+        // Ensure elements exist before attaching handlers
+        if (!miauWrapper) {
+            return; // Stop initialization if elements aren't found
+        }
+
         addMiauSprite();
-        $('.btn-minimize').on('click', function (e) {
+        // Use the variable references for event handlers
+        $(bubbleContainer).find('.btn-minimize').on('click', function (e) { // Assuming button is inside bubble
             e.preventDefault();
             e.stopPropagation();
             hideBubble();
@@ -91,65 +120,56 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
         });
     };
     const moveBlockToSprite = function () {
-        var $block = $('#block-course-audit');
-        $('#miau-speech-bubble').append($block);
-        $block.show();
+        // TODO rework
+        // Use the variable references
+        // if (!speechBubble) {
+        //     getElements();
+        // }
+        // // Ensure elements are grabbed if not already
+        // if (speechBubble) {
+        //     var $block = $('#block-course-audit');
+        //     $(speechBubble).append($block);
+        //     $block.show();
+        // } else {
+        //     console.error('Course Audit: Cannot move block, speechBubble element not found.');
+        // }
     };
     const hideBubble = function () {
-        if ($('#bubble-container').is(":visible")) {
-            $('#miau-gif').removeClass('miau-talk');
-            $('#bubble-container').hide();
+        // Use the variable references
+        if (bubbleContainer && $(bubbleContainer).is(":visible")) {
+            $(miauContainer).removeClass('miau-talk');
+            $(bubbleContainer).hide();
         }
     };
     const addMiauSprite = function () {
-        //TODO move to and load from mustache template
-        const $miauWrapper = $('<div>').attr({
-            'id': 'miau-wrapper',
-            'class': 'slide-in'
-        });
-        const $speechBubble = $('<div>').attr({
-            'id': 'miau-speech-bubble',
-            'aria-hidden': 'true'
-        });
-        const $miauContainer = $('<div>').attr({
-            'id': 'miau-gif',
-            'aria-hidden': 'true',
-            'role': 'presentation',
-            'tabindex': '0'
-        });
-        const $bubbleContainer = $('<div>').attr({
-            'id': 'bubble-container',
-            'aria-hidden': 'true',
-            'role': 'presentation',
-            'style': 'display: none;'
-        });
-        $speechBubble.append(
-            $('<div>').attr({ 'id': 'miau-speech-bubble-inner' })
-        );
-        $bubbleContainer.append($speechBubble);
-        $miauContainer.append($bubbleContainer);
-        $miauWrapper.append($miauContainer);
-        $('#page').append($miauWrapper);
+        // References are now obtained by getElements() called in init()
+
+        // Original logic using the variables:
         setTimeout(function () {
-            //Consider Animation time
-            $('#miau-wrapper').css('opacity', '1');
-            $('#miau-wrapper').removeClass('slide-in');
+            if (miauWrapper) {
+                $(miauWrapper).css('opacity', '1');
+                $(miauWrapper).removeClass('slide-in');
+            }
         }, 2000);
         moveBlockToSprite();
-        $miauWrapper.click(function () {
-            triggerTalkAnimation();
-            if (!$bubbleContainer.is(":visible")) {
-                $bubbleContainer.show();
-            }
-        });
+        if (miauWrapper) {
+            $(miauWrapper).click(function () {
+                triggerTalkAnimation();
+                if (bubbleContainer && !$(bubbleContainer).is(":visible")) {
+                    $(bubbleContainer).show();
+                }
+            });
+        }
     };
     const triggerTalkAnimation = function () {
-        $('#miau-gif').removeClass('miau-talk');
-        $('#miau-gif').addClass('miau-talk');
-        setTimeout(function () {
-            //Consider Animation time
-            $('#miau-gif').removeClass('miau-talk');
-        }, 8000);
+        // Use the variable references
+        if (miauContainer) {
+            $(miauContainer).removeClass('miau-talk');
+            $(miauContainer).addClass('miau-talk');
+            setTimeout(function () {
+                $(miauContainer).removeClass('miau-talk');
+            }, 8000);
+        }
     };
     return {
         init: init
