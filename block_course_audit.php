@@ -55,16 +55,13 @@ class block_course_audit extends block_base
         $this->content = new stdClass();
         $this->content->footer = '';
 
-
-
-
         if (!isloggedin() || isguestuser()) {
             return $this->content;
         }
 
         $course = $this->page->course;
 
-        // Pages definieren
+        // Structure for the template
         $data = [
             'tour_data' => [],
             'wrap_data' => [
@@ -81,12 +78,9 @@ class block_course_audit extends block_base
         ];
 
         // $auditor = new auditor();
-        // $tourData = $auditor->get_section_pages($course);
-        // if (is_array($tourData)) {
-        // $data['tourData'][] = $tourData;
-        // }
+        // $auditData = $auditor->get_audit_results($course); // Assume returns ['tour_steps' => [], 'raw_results' => []]
+        // $data['tour_data'] = $auditData['tour_steps'];
 
-        // Add summary page
         $data['wrap_data'][] = [
             'type' => 'summary',
             'title' => get_string('summary_title', 'block_course_audit'),
@@ -95,17 +89,18 @@ class block_course_audit extends block_base
             'button_id' => 'audit-end'
         ];
 
-        unset($page);
-
         $this->content->text = $OUTPUT->render_from_template('block_course_audit/main', $data);
 
+        // Return empty content if user cannot update the course, although button might be hidden by JS/template
         if (!has_capability('moodle/course:update', $this->context)) {
-            return $this->content;
+             $this->content->text = ''; 
         }
+
+        return $this->content;
     }
 
     /**
-     * Gets js.
+     * Add required JavaScript.
      *
      * @return void
      */
@@ -115,7 +110,6 @@ class block_course_audit extends block_base
 
         parent::get_required_javascript();
 
-        // Initialize the tour creator module
         if ($this->page->course->id !== SITEID) {
             $PAGE->requires->js_call_amd('block_course_audit/tour_creator', 'init', [$this->page->course->id]);
         }
@@ -124,7 +118,7 @@ class block_course_audit extends block_base
     /**
      * Defines in which pages this block can be added.
      *
-     * @return array of the pages where the block can be added.
+     * @return array 
      */
     public function applicable_formats()
     {

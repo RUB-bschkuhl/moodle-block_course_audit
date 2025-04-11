@@ -22,24 +22,19 @@
 
 define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], function ($, Ajax, Notification, Str) {
 
-    // DOM element references obtained after templates are rendered.
     let speechBubble = null;
     let miauContainer = null;
     let bubbleContainer = null;
     let speechBubbleInner = null;
-    let miauWrapper = null; // Added reference for the wrapper
+    let miauWrapper = null;
 
-    /**
-     * Gets references to the DOM elements created by templates.
-     * Should be called after the templates are rendered (e.g., in init or addMiauSprite).
-     */
     const getElements = function () {
         miauWrapper = document.getElementById('miau-wrapper');
         speechBubble = document.getElementById('miau-speech-bubble');
         miauContainer = document.getElementById('miau-gif');
         bubbleContainer = document.getElementById('bubble-container');
         speechBubbleInner = document.getElementById('miau-speech-bubble-inner');
-        // Basic check to ensure elements were found
+
         if (!miauWrapper || !speechBubble || !miauContainer || !bubbleContainer || !speechBubbleInner) {
             console.error('Course Audit: Could not find one or more required sprite/bubble elements. Ensure templates are loaded.');
         }
@@ -51,14 +46,14 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
     * @param {int} courseId The course ID
     */
     const init = function (courseId) {
-        getElements(); // Get references after page load
-        // Ensure elements exist before attaching handlers
+        getElements();
+
         if (!miauWrapper) {
-            return; // Stop initialization if elements aren't found
+            return;
         }
 
         addMiauSprite();
-        // Use the variable references for event handlers
+
         $(bubbleContainer).find('.btn-minimize').on('click', function (e) { // Assuming button is inside bubble
             e.preventDefault();
             e.stopPropagation();
@@ -66,7 +61,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
         });
         $('#audit-start').on('click', function (e) {
             e.preventDefault();
-            // Show loading indicator
+
             const $button = $(this);
             const originalText = $button.text();
             $button.prop('disabled', true);
@@ -121,11 +116,9 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
     };
     const moveBlockToSprite = function () {
         // TODO rework
-        // Use the variable references
         // if (!speechBubble) {
         //     getElements();
         // }
-        // // Ensure elements are grabbed if not already
         // if (speechBubble) {
         //     var $block = $('#block-course-audit');
         //     $(speechBubble).append($block);
@@ -135,16 +128,12 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
         // }
     };
     const hideBubble = function () {
-        // Use the variable references
         if (bubbleContainer && $(bubbleContainer).is(":visible")) {
             $(miauContainer).removeClass('miau-talk');
             $(bubbleContainer).hide();
         }
     };
     const addMiauSprite = function () {
-        // References are now obtained by getElements() called in init()
-
-        // Original logic using the variables:
         setTimeout(function () {
             if (miauWrapper) {
                 $(miauWrapper).css('opacity', '1');
@@ -162,7 +151,6 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
         }
     };
     const triggerTalkAnimation = function () {
-        // Use the variable references
         if (miauContainer) {
             $(miauContainer).removeClass('miau-talk');
             $(miauContainer).addClass('miau-talk');
