@@ -252,11 +252,16 @@ class create_tour extends external_api
             foreach ($raw_audit_results as $result) {
                 $resultrecord = new \stdClass();
                 $resultrecord->auditid = $auditrunid;
-                $resultrecord->rulekey = $result['key']; // Assuming 'key' field exists
-                $resultrecord->status = $result['status']; // Assuming 'status' field exists
-                $resultrecord->message = $result['message'] ?? null; // Assuming 'message' field exists
-                $resultrecord->targettype = $result['targettype'] ?? null; // Assuming 'targettype' field exists
-                $resultrecord->targetid = $result['targetid'] ?? null; // Assuming 'targetid' field exists
+                $resultrecord->rulekey = $result->rule_key;
+                $resultrecord->status = $result->status;
+                if (isset($result->messages) && is_array($result->messages)) {
+                    $resultrecord->messages = json_encode($result->messages);
+                } else {
+                    $resultrecord->messages = null;
+                }
+                $resultrecord->rulecategory = $result->rule_category;
+                $resultrecord->targettype = $result->rule_target ?? null;
+                $resultrecord->targetid = $result->rule_target_id ?? null;
                 $resultrecord->timecreated = $now;
                 $DB->insert_record('block_course_audit_results', $resultrecord);
             }
@@ -271,7 +276,6 @@ class create_tour extends external_api
                 'tourdata' => $tourdata
             ];
             return $resp;
-
         } catch (\Exception $e) {
             // If any step or result saving fails, delete the tour and the audit run record
             mtrace("Error during step creation or result saving for tour ID: {$tour->get_id()}. Error: " . $e->getMessage());

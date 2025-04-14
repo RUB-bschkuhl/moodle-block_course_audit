@@ -52,7 +52,7 @@
 #block-course-audit #miau-wrapper {
   visibility: visible;
   position: fixed;
-  bottom: 4.5rem;
+  bottom: 4.75rem;
   right: 2rem;
   transition: 0.2s;
   z-index: 1000;
@@ -61,18 +61,15 @@
   justify-content: center;
   align-items: center;
 
-  border: 1px solid #6c757d;
-  ;
-
-  &:hover {
-    filter: hue-rotate(10deg) brightness(90%);
-  }
+  border: 2px solid #cec4da;
+  border-radius: 2rem;
+  background-color: #cec4da;
 }
 
 @media (max-width: 576px) {
   #block-course-audit #miau-wrapper {
     top: 87vh;
-    right: .5rem;
+    right: 0.5rem;
     bottom: unset;
   }
 }
@@ -86,9 +83,9 @@
   position: fixed;
   bottom: 0;
   right: 25vw;
-  width: 4rem;
-  height: 3rem;
-  opacity: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  opacity: 1;
   z-index: 10000;
   cursor: pointer;
 }
@@ -99,30 +96,30 @@
   inset: 0;
   background-image: url([[pix:block_course_audit|miau_wink_sprite]]);
   background-repeat: no-repeat;
-  background-position: 0 0rem;
-  background-size: 4rem 15rem;
+  background-position: 0 2px;
+  background-size: 2rem 8.75rem;
   z-index: 0;
 }
 
-#miau-wrapper.slide-in {
+/* #miau-wrapper.slide-in {
   animation: slide-in 1s ease forwards 0.2s;
-}
+} */
 
 #miau-gif {
   background-image: url([[pix:block_course_audit|miau_wink_sprite]]);
   background-repeat: no-repeat;
-  background-position: 0 0;
-  background-size: 4rem 15rem;
+  background-position: 0 0px;
+  background-size: 2rem 8.75rem;
   position: relative;
-  width: 4rem;
-  height: 3rem;
+  width: 2rem;
+  height: 1.75rem;
   animation: animate-sprite-wink 8s steps(1) infinite 2s;
   z-index: 1;
 }
 
 #miau-gif.miau-talk {
   background-image: url([[pix:block_course_audit|miau_talk_sprite]]);
-  background-size: 4rem 12rem;
+  background-size: 2rem 7rem;
   animation: animate-sprite-talk 2s steps(1) infinite 0.2s;
   opacity: 1;
 }
@@ -137,15 +134,15 @@
   }
 
   11% {
-    background-position: 0 -3rem;
+    background-position: 0 -1.75rem;
   }
 
   12.5% {
-    background-position: 0 -6rem;
+    background-position: 0 -3.5rem;
   }
 
   14% {
-    background-position: 0 -3rem;
+    background-position: 0 -1.75rem;
   }
 
   15% {
@@ -163,39 +160,39 @@
   }
 
   9% {
-    background-position: 0 -3rem;
+    background-position: 0 -1.75rem;
   }
 
   18% {
-    background-position: 0 -6rem;
+    background-position: 0 -3.5rem;
   }
 
   27% {
-    background-position: 0 -9rem;
+    background-position: 0 -5.25rem;
   }
 
   36% {
-    background-position: 0 -6rem;
+    background-position: 0 -3.5rem;
   }
 
   45% {
-    background-position: 0 -9rem;
+    background-position: 0 -5.25rem;
   }
 
   54% {
-    background-position: 0 -6rem;
+    background-position: 0 -3.5rem;
   }
 
   63% {
-    background-position: 0 -9rem;
+    background-position: 0 -5.25rem;
   }
 
   72% {
-    background-position: 0 -6rem;
+    background-position: 0 -3.5rem;
   }
 
   81% {
-    background-position: 0 -3rem;
+    background-position: 0 -1.75rem;
   }
 
   90% {
@@ -210,7 +207,7 @@
 #miau-speech-bubble {
   position: absolute;
   bottom: calc(100% + 10px);
-  right: -245px;
+  right: 0;
   width: 20rem;
   background-color: white;
   border-radius: 3px;
@@ -233,7 +230,7 @@
 #miau-speech-bubble-inner {
   position: absolute;
   bottom: -8px;
-  right: 270px;
+  right: 10px;
   width: 14px;
   height: 14px;
   border-right: 1px solid white;

@@ -62,7 +62,7 @@ class activity_type_template extends rule_base {
         
         // If no modules in section, handle empty section case
         if (empty($section->modules)) {
-            return $this->create_result(false, ['No activities found in this section']);
+            return $this->create_result(false, ['No activities found in this section'], $section->id);
         }
         
         // Arrays to track activities meeting or not meeting the rule criteria
@@ -123,12 +123,12 @@ class activity_type_template extends rule_base {
                 $messages[] = "Activity '{$activity['name']}' is of type '{$activity['type']}'";
             }
             
-            return $this->create_result(false, $messages);
+            return $this->create_result(false, $messages, $section->id);
         }
         
         // If all activities are compliant
         return $this->create_result(true, [
             'All ' . count($compliantactivities) . ' activities meet the requirements.'
-        ]);
+        ], $section->id);
     }
 } 

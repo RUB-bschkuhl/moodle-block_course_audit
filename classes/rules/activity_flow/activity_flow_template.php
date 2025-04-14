@@ -60,14 +60,14 @@ class activity_flow_template extends rule_base {
     public function check_section($section, $course) {
         // If no modules in section, return false
         if (empty($section->modules)) {
-            return $this->create_result(false, ['No activities found in this section']);
+            return $this->create_result(false, ['No activities found in this section'], $section->id);
         }
         
         // If only one module, you might need to handle this case specifically
         if (count($section->modules) < 2) {
             return $this->create_result(false, [
                 'Section has only one activity (' . $section->modules[0]->name . '), need at least two for flow analysis'
-            ]);
+            ], $section->id);
         }
         
         // Arrays to track flow-related information
@@ -166,7 +166,7 @@ class activity_flow_template extends rule_base {
             }
         }
         
-        return $this->create_result($result, $messages);
+        return $this->create_result($result, $messages, $section->id);
     }
     
     /**

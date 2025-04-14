@@ -40,11 +40,17 @@ use block_course_audit\rules\rule_base;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class pdf_only extends rule_base {
+
+    const rule_key = 'pdf_only';
+    const target_type = 'section';
+
     /**
      * Constructor
      */
     public function __construct() {
         parent::__construct(
+            self::rule_key,
+            self::target_type,
             get_string('rule_pdf_only_name', 'block_course_audit'),
             get_string('rule_pdf_only_description', 'block_course_audit'),
             'activity_type'
@@ -65,7 +71,7 @@ class pdf_only extends rule_base {
         if (empty($section->modules)) {
             return $this->create_result(false, [
                 get_string('rule_pdf_only_empty_section', 'block_course_audit')
-            ]);
+            ], $section->id);
         }
         
         $nonpdfresources = [];
@@ -116,13 +122,13 @@ class pdf_only extends rule_base {
                     ['name' => $resource['name'], 'type' => $resource['type']]);
             }
             
-            return $this->create_result(false, $messages);
+            return $this->create_result(false, $messages, $section->id);
         }
         
         // If we made it here, all resources are PDFs
         return $this->create_result(true, [
             get_string('rule_pdf_only_success', 'block_course_audit', 
                 ['count' => count($pdfs)])
-        ]);
+        ], $section->id);
     }
 } 

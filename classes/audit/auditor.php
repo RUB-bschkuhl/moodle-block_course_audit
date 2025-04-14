@@ -57,13 +57,13 @@ class auditor
                 'course_id' => $course->id,
                 'course_shortname' => $course->shortname,
                 'activity_type_rules' => [
-                    'results' => array_filter($section_results, function($res) { return $res['category'] === 'activity_type'; }), // Assuming results have a 'category' key
-                    'stats' => $rulemanager->get_summary(array_filter($section_results, function($res) { return $res['category'] === 'activity_type'; })),
+                    'results' => array_filter($section_results, function($res) { return $res->rule_category === 'activity_type'; }), 
+                    'stats' => $rulemanager->get_summary(array_filter($section_results, function($res) { return $res->rule_category === 'activity_type'; })),
                     'title' => get_string('rules_activity_type_category', 'block_course_audit')
                 ],
                 'activity_flow_rules' => [
-                    'results' => array_filter($section_results, function($res) { return $res['category'] === 'activity_flow'; }), // Assuming results have a 'category' key
-                    'stats' => $rulemanager->get_summary(array_filter($section_results, function($res) { return $res['category'] === 'activity_flow'; })),
+                    'results' => array_filter($section_results, function($res) { return $res->rule_category === 'activity_flow'; }), 
+                    'stats' => $rulemanager->get_summary(array_filter($section_results, function($res) { return $res->rule_category === 'activity_flow'; })),
                     'title' => get_string('rules_activity_flow_category', 'block_course_audit')
                 ],
                 'overall_stats' => $rulemanager->get_summary($section_results)

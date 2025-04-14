@@ -54,7 +54,7 @@ define(['jquery', 'core/ajax', 'core/notification', 'core/str', 'core/config'], 
 
         addMiauSprite();
 
-        $(bubbleContainer).find('.btn-minimize').on('click', function (e) { // Assuming button is inside bubble
+        $(bubbleContainer).find('.btn-minimize').on('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
             hideBubble();

@@ -40,11 +40,17 @@ use block_course_audit\rules\rule_base;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class has_connections extends rule_base {
+
+    const rule_key = 'has_connections';
+    const target_type = 'section';
+
     /**
      * Constructor
      */
     public function __construct() {
         parent::__construct(
+            self::rule_key,
+            self::target_type,
             get_string('rule_has_connections_name', 'block_course_audit'),
             get_string('rule_has_connections_description', 'block_course_audit'),
             'activity_flow'
@@ -63,7 +69,7 @@ class has_connections extends rule_base {
         if (empty($section->modules)) {
             return $this->create_result(false, [
                 get_string('rule_has_connections_empty_section', 'block_course_audit')
-            ]);
+            ], $section->id);
         }
         
         // If only one module, return false (can't have connections with only one module)
@@ -71,7 +77,7 @@ class has_connections extends rule_base {
             return $this->create_result(false, [
                 get_string('rule_has_connections_single_module', 'block_course_audit', 
                     ['name' => $section->modules[0]->name])
-            ]);
+            ], $section->id);
         }
         
         $modulesWithConditions = [];
@@ -109,7 +115,7 @@ class has_connections extends rule_base {
         if (empty($modulesWithConditions)) {
             return $this->create_result(false, [
                 get_string('rule_has_connections_no_conditions', 'block_course_audit')
-            ]);
+            ], $section->id);
         }
         
         // Prepare messages about which modules have conditions
@@ -134,6 +140,6 @@ class has_connections extends rule_base {
             }
         }
         
-        return $this->create_result(true, $messages);
+        return $this->create_result(true, $messages, $section->id);
     }
 } 

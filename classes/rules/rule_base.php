@@ -33,27 +33,50 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class rule_base implements rule_interface {
+abstract class rule_base implements rule_interface
+{
+
+    /** @var string The rule key */
+    protected $key;
+
+    /** @var string The rule target */
+    protected $target;
+
     /** @var string The rule name */
     protected $name;
-    
+
     /** @var string The rule description */
     protected $description;
-    
+
     /** @var string The rule category */
     protected $category;
 
     /**
      * Constructor.
      *
+     * @param string $key The rule key
+     * @param string $target_type The rule target
      * @param string $name The rule name
      * @param string $description The rule description
      * @param string $category The rule category ('activity_type' or 'activity_flow')
      */
-    public function __construct($name, $description, $category) {
+    public function __construct($key, $target_type, $name, $description, $category)
+    {
+        $this->key = $key;
+        $this->target = $target_type;
         $this->name = $name;
         $this->description = $description;
         $this->category = $category;
+    }
+
+    /**
+     * Get the rule target
+     *
+     * @return string
+     */
+    public function get_target()
+    {
+        return $this->target;
     }
 
     /**
@@ -61,7 +84,18 @@ abstract class rule_base implements rule_interface {
      *
      * @return string
      */
-    public function get_name() {
+    public function get_key()
+    {
+        return $this->key;
+    }
+
+    /**
+     * Get the rule name (for display)
+     *
+     * @return string
+     */
+    public function get_name()
+    {
         return $this->name;
     }
 
@@ -70,7 +104,8 @@ abstract class rule_base implements rule_interface {
      *
      * @return string
      */
-    public function get_description() {
+    public function get_description()
+    {
         return $this->description;
     }
 
@@ -79,7 +114,8 @@ abstract class rule_base implements rule_interface {
      *
      * @return string One of 'activity_type', 'activity_flow'
      */
-    public function get_category() {
+    public function get_category()
+    {
         return $this->category;
     }
 
@@ -90,12 +126,16 @@ abstract class rule_base implements rule_interface {
      * @param array $messages Messages to display, typically explaining the result
      * @return object Result object
      */
-    protected function create_result($status, $messages = []) {
+    protected function create_result($status, $messages = [], $target_id)
+    {
         return (object) [
             'status' => $status,
             'messages' => $messages,
             'rule_name' => $this->name,
-            'rule_category' => $this->category
+            'rule_category' => $this->category,
+            'rule_key' => $this->key,
+            'rule_target' => $this->target,
+            'rule_target_id' => $target_id
         ];
     }
-} 
+}
