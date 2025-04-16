@@ -84,7 +84,6 @@ class create_tour extends external_api
                                 'List of CSS selectors'
                             )
                         ], 'Filter values object', VALUE_OPTIONAL)
-
                     ]),
                     'List of tours in tourdata'
                 ),
@@ -97,39 +96,24 @@ class create_tour extends external_api
         ]);
     }
 
-
-    /**
-     *
-     */
-    private static function init_tour($tour)
+    private static function init_tour_data($tour)
     {
-        // Needed because finished core tours might block init otherwise.
         global $PAGE;
         $filters = helper::get_all_clientside_filters();
 
-        // Create tourdetails for init
         $tourdetails = array_map(function ($t) use ($filters) {
             $filtervalues = $t->get_client_filter_values($filters);
 
-            // Ensure cssselector is an array as expected by external_multiple_structure.
             if (isset($filtervalues['cssselector']) && is_object($filtervalues['cssselector'])) {
-                // Convert stdClass object {0 => 'selector'} to array ['selector']
                 $filtervalues['cssselector'] = array_values((array)$filtervalues['cssselector']);
             } else if (!isset($filtervalues['cssselector'])) {
-                // Ensure it's at least an empty array if not set, to match the structure.
                 $filtervalues['cssselector'] = [];
             }
-
-            // Ensure other potential filter value types are also arrays if needed
-            // Example for a hypothetical 'role' filter:
-            // if (isset($filtervalues['role']) && is_object($filtervalues['role'])) {
-            // $filtervalues['role'] = array_values((array)$filtervalues['role']);
-            // }
 
             return [
                 'tourId' => $t->get_id(),
                 'startTour' => $t->should_show_for_user(),
-                'filtervalues' => $filtervalues, // Now filtervalues['cssselector'] is guaranteed to be an array
+                'filtervalues' => $filtervalues,
             ];
         }, [$tour]);
 
@@ -149,7 +133,7 @@ class create_tour extends external_api
      */
     public static function execute($courseid)
     {
-        global $DB, $USER;
+        global $DB;
 
         // Parameter validation
         $params = self::validate_parameters(self::execute_parameters(), ['courseid' => $courseid]);
@@ -164,8 +148,6 @@ class create_tour extends external_api
         // Check if the user has permission to manage activities in this course context.
         // This throws an exception if the user lacks the capability.
         require_capability('moodle/course:manageactivities', $coursecontext);
-        mtrace("Capability 'moodle/course:manageactivities' checked successfully for User ID: {$USER->id} in Context ID: {$coursecontext->id}");
-
         $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 
         // Create the tour manager
@@ -182,12 +164,11 @@ class create_tour extends external_api
             try {
                 // Call the instance method delete_tour on the existing $manager object
                 $manager->delete_tour($existingtour->id);
-                mtrace("Deleted existing tour ID: {$existingtour->id} for course ID: {$courseid}");
                 // Also delete the corresponding entry in block_course_audit_tours
                 $DB->delete_records('block_course_audit_tours', ['tourid' => $existingtour->id]);
             } catch (\Exception $e) {
                 // Log the error but continue, as we are creating a new tour anyway
-                mtrace("Error deleting existing tour ID: {$existingtour->id}. Error: " . $e->getMessage());
+                error_log("Error deleting existing tour ID: {$existingtour->id}. Error: " . $e->getMessage());
             }
         }
 
@@ -222,21 +203,16 @@ class create_tour extends external_api
             $tourconfig
         );
 
-        // Record the main audit run in our table FIRST
         $auditrunrecord = new \stdClass();
         $auditrunrecord->tourid = $tour->get_id();
         $auditrunrecord->courseid = $courseid;
         $auditrunrecord->timecreated = time();
         $auditrunrecord->timemodified = time();
-        $auditrunid = $DB->insert_record('block_course_audit_tours', $auditrunrecord); // Get the ID of this audit run
+        $auditrunid = $DB->insert_record('block_course_audit_tours', $auditrunrecord);
 
-        // Now, try to create steps and store individual results
         try {
-            // Create tour steps
             foreach ($tour_steps_data as $step_data) {
-                // Ensure target selector is valid
                 $targetselector = '#' . $step_data['type'] . '-' . $step_data['number'];
-                // Potentially add checks here if target might not exist
 
                 $manager->add_step(
                     $step_data['title'],
@@ -269,23 +245,23 @@ class create_tour extends external_api
             // Reset tour for users only after steps and results are successfully created
             $manager->reset_tour_for_all_users($tour->get_id());
 
-            $tourdata = self::init_tour($tour);
+            $tourdata = self::init_tour_data($tour);
             $resp = [
                 'status' => true,
-                'message' => get_string('createtoursuccess', 'block_course_audit'), // Add this string
+                'message' => get_string('toursuccess', 'block_course_audit'), // Add this string
                 'tourdata' => $tourdata
             ];
             return $resp;
         } catch (\Exception $e) {
             // If any step or result saving fails, delete the tour and the audit run record
-            mtrace("Error during step creation or result saving for tour ID: {$tour->get_id()}. Error: " . $e->getMessage());
+            error_log("Error during step creation or result saving for tour ID: {$tour->get_id()}. Error: " . $e->getMessage());
             try {
                 \block_course_audit\tour_manager::delete_tour($tour->get_id());
                 // Also delete the main audit run record if steps failed
                 $DB->delete_records('block_course_audit_tours', ['id' => $auditrunid]);
             } catch (\Exception $delEx) {
                 // Log deletion error but prioritize original exception
-                mtrace("Failed to clean up tour ID: {$tour->get_id()} after error. Deletion Error: " . $delEx->getMessage());
+                error_log("Failed to clean up tour ID: {$tour->get_id()} after error. Deletion Error: " . $delEx->getMessage());
             }
             // Re-throw the original exception
             throw $e;

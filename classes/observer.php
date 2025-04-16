@@ -6,6 +6,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\invalid_parameter_exception;
 use core\dml\exception as dmlexception;
+use block_course_audit\tour\manager as tour_manager;
 
 class observer
 {
@@ -27,13 +28,12 @@ class observer
         }
 
         try {
-            $deleted = tour_manager::delete_tour($tourid);
+            $manager = new tour_manager();
+            //TODO throws error after deletion, when tour is supposed to be marked as complete
+            $deleted = $manager->delete_tour($tourid);
         } catch (invalid_parameter_exception $ipe) {
-            mtrace("Observer: Invalid parameter exception while trying to delete tour ID: {$tourid}. Error: " . $ipe->getMessage());
         } catch (dmlexception $dml) {
-            mtrace("Observer: Database exception while trying to delete tour ID: {$tourid}. Error: " . $dml->getMessage());
         } catch (\Exception $e) {
-            mtrace("Observer: Unexpected error while deleting tour ID: {$tourid}. Error: " . $e->getMessage());
         }
     }
 }
