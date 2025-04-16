@@ -40,13 +40,21 @@ $functions = array(
         'type'          => 'write',
         'ajax'          => true,
         'capabilities'  => 'block/course_audit:view'
+    ),
+    'block_course_audit_get_summary' => array(
+        'classname'     => 'block_course_audit\external\get_summary',
+        'methodname'    => 'execute',
+        'description'   => 'Get all audit results for a specified tour',
+        'type'          => 'read',
+        'ajax'          => true,
+        'capabilities'  => 'block/course_audit:view'
     )
 );
 
 // We define the services to install as pre-build services. A pre-build service is not editable by administrators.
 $services = array(
     'Course Audit Services' => array(
-        'functions' => ['block_course_audit_get_section_analysis', 'block_course_audit_create_tour'],
+        'functions' => ['block_course_audit_get_section_analysis', 'block_course_audit_create_tour', 'block_course_audit_get_summary'],
         'restrictedusers' => 0,
         'enabled' => 1
     )

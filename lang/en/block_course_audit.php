@@ -35,7 +35,7 @@ $string['section'] = 'Section';
 $string['section_title'] = 'Section evaluation';
 $string['structure_title'] = 'Structural evaluation';
 $string['summary_title'] = 'Summary';
-$string['disclaimer_title'] = 'Disclaimer';
+$string['disclaimer_title'] = 'Course Audit Information & Guidelines';
 $string['disclaimer_button'] = 'Start audit';
 
 // Navigation and UI elements - used in templates/main.mustache
@@ -152,6 +152,21 @@ $string['startaudit'] = 'Start audit tour';
 $string['startaudit_help'] = 'Start an interactive tour of the course audit features';
 $string['tourstart_button'] = 'Start Tour';
 $string['tourfinished'] = 'Tour finished';
+$string['tour_introduction'] = 'Welcome to the Course Audit Tour! This guided experience will help you improve your course by:
+<ul>
+<li>Analyzing each section for content variety and student engagement</li>
+<li>Identifying missing connections between activities that might disrupt learning flow</li>
+<li>Suggesting improvements to enhance the learning experience</li>
+<li>Providing actionable feedback on activity types, learning paths, and resource organization</li>
+</ul>
+Use the navigation buttons to move through each section. The tour will highlight areas that need attention with specific recommendations. By the end, you\'ll have a clear roadmap to optimize your course structure.';
+
+// API and results strings
+$string['noauditresults'] = 'No audit results found for this course.';
+$string['noauditresultsfound'] = 'No audit results found for tour ID {$a}.';
+$string['auditresultsfetched'] = 'Audit results fetched successfully.';
+$string['loadingsummary'] = 'Loading audit summary...';
+$string['summaryerror'] = 'Error loading summary';
 
 // Capability strings
 $string['course_audit:addinstance'] = 'Add a new course audit block';

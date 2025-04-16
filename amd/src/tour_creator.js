@@ -26,7 +26,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events'],
         let speechBubble = null;
         let miauContainer = null;
         let bubbleContainer = null;
-        let speechBubbleInner = null;
         let miauWrapper = null;
 
         const getElements = function () {
@@ -34,9 +33,8 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events'],
             speechBubble = document.getElementById('miau-speech-bubble');
             miauContainer = document.getElementById('miau-gif');
             bubbleContainer = document.getElementById('bubble-container');
-            speechBubbleInner = document.getElementById('miau-speech-bubble-inner');
 
-            if (!miauWrapper || !speechBubble || !miauContainer || !bubbleContainer || !speechBubbleInner) {
+            if (!miauWrapper || !speechBubble || !miauContainer || !bubbleContainer) {
                 console.error('Course Audit: Could not find one or more required elements. Ensure templates are loaded.');
             }
         };
@@ -76,6 +74,8 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events'],
                     }])[0];
                 }).then(function (response) {
                     var tourData = response.tourdata;
+                    listenForTourStart();
+                    listenForTourEnd(tourData.tourDetails[0].tourId);
                     if (!tourData || !response.status) {
                         let errorMessage = response.message || 'Unknown error creating tour data.';
                         throw new Error(errorMessage);
@@ -96,35 +96,40 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events'],
                     $button.prop('disabled', false);
                 });
             });
-
-            listenForTourEnd();
         };
 
-        // Function to set up the event listener
-        const listenForTourEnd = function () {
+        const listenForTourEnd = function (tourId) {
             const userTourEvents = userTourEventsModule.eventTypes;
-            document.addEventListener(userTourEvents.tourEnded, startTourSummary);
+            document.addEventListener(userTourEvents.tourEnded, function () {
+                // $(miauWrapper).show(); // TODO doesnt show when tour is cancelled
+                startTourSummary(tourId);
+            });
         };
 
-        const startTourSummary = function () {
-            console.log("tour ended, start summary");
+        const listenForTourStart = function () {
+            const userTourEvents = userTourEventsModule.eventTypes;
+            document.addEventListener(userTourEvents.tourStarted, function () {
+                // $(miauWrapper).hide();
+            });
+        };
+
+        const startTourSummary = function (tourId) {
+            console.log("startTourSummary");
+            const promise = Ajax.call([{
+                methodname: 'block_course_audit_get_summary',
+                args: {
+                    tourid: tourId
+                }
+            }])[0];
+            return promise.then(function (response) {
+                console.log(response);
+            }).catch(function (errors) {
+                console.error(errors);
+            });
             // TODO: start summary
             // TODO: get audit results from table
         };
 
-        const moveBlockToSprite = function () {
-            // TODO rework
-            // if (!speechBubble) {
-            //     getElements();
-            // }
-            // if (speechBubble) {
-            //     var $block = $('#block-course-audit');
-            //     $(speechBubble).append($block);
-            //     $block.show();
-            // } else {
-            //     console.error('Course Audit: Cannot move block, speechBubble element not found.');
-            // }
-        };
         const hideBubble = function () {
             if (bubbleContainer && $(bubbleContainer).is(":visible")) {
                 $(miauContainer).removeClass('miau-talk');
@@ -138,7 +143,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events'],
                     $(miauWrapper).removeClass('slide-in');
                 }
             }, 2000);
-            moveBlockToSprite();
             if (miauWrapper) {
                 $(miauWrapper).click(function () {
                     triggerTalkAnimation();

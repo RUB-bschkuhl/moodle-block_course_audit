@@ -135,44 +135,34 @@ class create_tour extends external_api
     {
         global $DB;
 
-        // Parameter validation
         $params = self::validate_parameters(self::execute_parameters(), ['courseid' => $courseid]);
         $courseid = $params['courseid'];
 
-        // Get the course context
         $coursecontext = context_course::instance($courseid);
 
-        // Validate the context exists and is the correct type
         self::validate_context($coursecontext);
 
-        // Check if the user has permission to manage activities in this course context.
-        // This throws an exception if the user lacks the capability.
         require_capability('moodle/course:manageactivities', $coursecontext);
         $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 
-        // Create the tour manager
         $manager = new tour_manager();
-
-        // Check if a tour already exists for this course and delete it
         $existingtours = $DB->get_records_sql(
-            "SELECT t.* FROM {tool_usertours_tours} t JOIN {block_course_audit_tours} ca ON t.id = ca.tourid WHERE ca.courseid = ? AND t.name LIKE ?",
+            "SELECT t.*, ca.id AS auditid FROM {tool_usertours_tours} t JOIN {block_course_audit_tours} ca ON t.id = ca.tourid WHERE ca.courseid = ? AND t.name LIKE ?",
             [$courseid, "Course Audit: Course #$courseid%"]
         );
 
         // If a tour already exists, delete it using the tour manager
         foreach ($existingtours as $existingtour) {
             try {
-                // Call the instance method delete_tour on the existing $manager object
                 $manager->delete_tour($existingtour->id);
                 // Also delete the corresponding entry in block_course_audit_tours
                 $DB->delete_records('block_course_audit_tours', ['tourid' => $existingtour->id]);
+                $DB->delete_records('block_course_audit_results', ['auditid' => $existingtour->auditid]);
             } catch (\Exception $e) {
-                // Log the error but continue, as we are creating a new tour anyway
                 error_log("Error deleting existing tour ID: {$existingtour->id}. Error: " . $e->getMessage());
             }
         }
 
-        // Execute audit
         $auditor = new auditor();
         $audit_data = $auditor->get_audit_results($course);
         $tour_steps_data = $audit_data['tour_steps']; // Data for creating tour steps

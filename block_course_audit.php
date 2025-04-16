@@ -81,14 +81,6 @@ class block_course_audit extends block_base
         // $auditData = $auditor->get_audit_results($course); // Assume returns ['tour_steps' => [], 'raw_results' => []]
         // $data['tour_data'] = $auditData['tour_steps'];
 
-        $data['wrap_data'][] = [
-            'type' => 'summary',
-            'title' => get_string('summary_title', 'block_course_audit'),
-            'content' => $OUTPUT->render_from_template('block_course_audit/block/summary', ['wiki-url' => new moodle_url('/blocks/course_audit/wiki.php')]),
-            'button_done' => get_string('summary_button', 'block_course_audit'),
-            'button_id' => 'audit-end'
-        ];
-
         $this->content->text = $OUTPUT->render_from_template('block_course_audit/main', $data);
 
         // Return empty content if user cannot update the course, although button might be hidden by JS/template

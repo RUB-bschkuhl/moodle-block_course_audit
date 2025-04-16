@@ -122,11 +122,11 @@ class pdf_only extends rule_base {
                     ['name' => $resource['name'], 'type' => $resource['type']]);
             }
             
-            return $this->create_result(false, $messages, $section->id);
+            return $this->create_result(true, $messages, $section->id);
         }
         
         // If we made it here, all resources are PDFs
-        return $this->create_result(true, [
+        return $this->create_result(false, [
             get_string('rule_pdf_only_success', 'block_course_audit', 
                 ['count' => count($pdfs)])
         ], $section->id);
