@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_course_audit\rules\activity_flow;
+namespace block_course_audit\rules\action;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -53,7 +53,7 @@ class has_connections extends rule_base {
             self::target_type,
             get_string('rule_has_connections_name', 'block_course_audit'),
             get_string('rule_has_connections_description', 'block_course_audit'),
-            'activity_flow'
+            'action'
         );
     }
     

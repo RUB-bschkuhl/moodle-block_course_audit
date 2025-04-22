@@ -58,7 +58,7 @@ abstract class rule_base implements rule_interface
      * @param string $target_type The rule target
      * @param string $name The rule name
      * @param string $description The rule description
-     * @param string $category The rule category ('activity_type' or 'activity_flow')
+     * @param string $category The rule category ('hint' or 'action')
      */
     public function __construct($key, $target_type, $name, $description, $category)
     {
@@ -112,7 +112,7 @@ abstract class rule_base implements rule_interface
     /**
      * Get the rule category
      *
-     * @return string One of 'activity_type', 'activity_flow'
+     * @return string One of 'hint', 'action'
      */
     public function get_category()
     {

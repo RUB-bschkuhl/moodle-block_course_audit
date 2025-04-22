@@ -20,8 +20,8 @@
 * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 
-define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events'],
-    function ($, Ajax, Str, userTourEventsModule) {
+define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templates'],
+    function ($, Ajax, Str, userTourEventsModule, Templates) {
 
         let speechBubble = null;
         let miauContainer = null;
@@ -114,20 +114,52 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events'],
         };
 
         const startTourSummary = function (tourId) {
-            console.log("startTourSummary");
             const promise = Ajax.call([{
                 methodname: 'block_course_audit_get_summary',
                 args: {
                     tourid: tourId
                 }
             }])[0];
+
             return promise.then(function (response) {
-                console.log(response);
+                if (response && response.status && response.data) {
+                    let summaryContainer = $(speechBubble);
+
+                    const processedResults = response.data.map(function (result) {
+                        return {
+                            ...result,
+                            isPassed: result.status === 'pass',
+                            isFailed: result.status === 'fail'
+                        };
+                    });
+
+                    // Organize the data for the template
+                    const templateContext = {
+                        results: processedResults,
+                        tourId: tourId,
+                        hasResults: processedResults.length > 0,
+                        message: response.message,
+                        status: response.status
+                    };
+
+                    // Render the template and update the container
+                    return Templates.render('block_course_audit/block/summary', templateContext)
+                        .then(function (html, js) {
+                            Templates.appendNodeContents(summaryContainer, html, js);
+                            summaryContainer.show();
+                            console.log(response);
+                            return response;
+                        })
+                        .catch(function (error) {
+                            console.error('Error rendering template:', error);
+                            return response;
+                        });
+                }
+
+                return response;
             }).catch(function (errors) {
                 console.error(errors);
             });
-            // TODO: start summary
-            // TODO: get audit results from table
         };
 
         const hideBubble = function () {
@@ -144,7 +176,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events'],
                 }
             }, 2000);
             if (miauWrapper) {
-                $(miauWrapper).click(function () {
+                $('#start-course-audit').add(miauWrapper).click(function () {
                     triggerTalkAnimation();
                     if (bubbleContainer && !$(bubbleContainer).is(":visible")) {
                         $(bubbleContainer).show();

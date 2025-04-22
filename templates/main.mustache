@@ -39,6 +39,11 @@
 }}
 
 <div class="block-course-audit card" id="block-course-audit">
+{{#pre}}
+<button type="button" class="btn btn-secondary page-nav" id="start-course-audit" >
+{{start_hint}}
+</button>
+{{/pre}}
     <div id="miau-wrapper" class="slide-in">
         <div id="miau-gif" aria-hidden="true" role="presentation" tabindex="0">
             <div id="bubble-container" role="presentation" style="display: none;">
@@ -50,7 +55,7 @@
                                 <button type="button" class="btn btn-secondary btn-minimize">
                             </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body" id="card-container">
                             {{{content}}}
                         </div>
                         <div class="card-footer d-flex justify-content-end">

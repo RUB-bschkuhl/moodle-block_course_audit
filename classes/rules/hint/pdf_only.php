@@ -15,43 +15,50 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Template for activity type rules.
- * This is not an actual rule but a template to create new activity type rules.
+ * Rule that checks if a section contains only PDF resources.
  *
  * @package   block_course_audit
  * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_course_audit\rules\activity_type;
+        namespace block_course_audit\rules\hint;
 
 defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
 
 require_once($CFG->dirroot . '/blocks/course_audit/classes/rules/rule_base.php');
 
 use block_course_audit\rules\rule_base;
 
 /**
- * Template class for creating activity type rules
+ * Rule that checks if a section contains only PDF resources.
  *
  * @package   block_course_audit
  * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class activity_type_template extends rule_base {
+class pdf_only extends rule_base {
+
+    const rule_key = 'pdf_only';
+    const target_type = 'section';
+
     /**
      * Constructor
      */
     public function __construct() {
         parent::__construct(
-            'Rule name', // Replace with get_string() call
-            'Rule description', // Replace with get_string() call
-            'activity_type'
+            self::rule_key,
+            self::target_type,
+            get_string('rule_pdf_only_name', 'block_course_audit'),
+            get_string('rule_pdf_only_description', 'block_course_audit'),
+            'hint'
         );
     }
     
     /**
-     * Check if a section meets the activity type requirements
+     * Check if a section contains only PDF resources
      *
      * @param object $section The section to check
      * @param object $course The course the section belongs to
@@ -60,40 +67,25 @@ class activity_type_template extends rule_base {
     public function check_section($section, $course) {
         global $DB;
         
-        // If no modules in section, handle empty section case
+        // If no modules in section, return false
         if (empty($section->modules)) {
-            return $this->create_result(false, ['No activities found in this section'], $section->id);
+            return $this->create_result(false, [
+                get_string('rule_pdf_only_empty_section', 'block_course_audit')
+            ], $section->id);
         }
         
-        // Arrays to track activities meeting or not meeting the rule criteria
-        $compliantactivities = [];
-        $noncompliantactivities = [];
+        $nonpdfresources = [];
+        $pdfs = [];
         
         foreach ($section->modules as $module) {
-            // Implement your rule-specific logic here to check each module
-            // For example:
-            
-            // 1. Check module type (modname)
-            if ($module->modname === 'desired_type') {
-                // Add to compliant activities
-                $compliantactivities[] = $module->name;
-            } else {
-                // Add to non-compliant activities
-                $noncompliantactivities[] = [
-                    'name' => $module->name,
-                    'type' => $module->modname
-                ];
-            }
-            
-            // 2. For resource-type modules, you might need to check file types:
+            // Check if it's a resource
             if ($module->modname === 'resource') {
-                // Get the course module
+                // Get the resource file
                 $cm = get_coursemodule_from_id('resource', $module->id, $course->id);
                 if (!$cm) {
                     continue;
                 }
                 
-                // Get the file
                 $context = \context_module::instance($cm->id);
                 $fs = get_file_storage();
                 $files = $fs->get_area_files($context->id, 'mod_resource', 'content', 0, 'sortorder DESC, id ASC', false);
@@ -103,32 +95,40 @@ class activity_type_template extends rule_base {
                     continue;
                 }
                 
-                // Check file properties (mimetype, extension, etc.)
-                if ($file->get_mimetype() === 'desired_mimetype') {
-                    $compliantactivities[] = $module->name;
+                // Check if it's a PDF
+                if ($file->get_mimetype() === 'application/pdf') {
+                    $pdfs[] = $module->name;
                 } else {
-                    $noncompliantactivities[] = [
+                    $nonpdfresources[] = [
                         'name' => $module->name,
                         'type' => $file->get_mimetype()
                     ];
                 }
+            } else {
+                // Not a resource at all
+                $nonpdfresources[] = [
+                    'name' => $module->name,
+                    'type' => $module->modname
+                ];
             }
         }
         
-        // Determine result based on compliant and non-compliant activities
-        if (!empty($noncompliantactivities)) {
-            $messages = ['Some activities do not meet the requirements:'];
+        // If there are non-PDF resources
+        if (!empty($nonpdfresources)) {
+            $messages = [get_string('rule_pdf_only_non_pdf_resources', 'block_course_audit')];
             
-            foreach ($noncompliantactivities as $activity) {
-                $messages[] = "Activity '{$activity['name']}' is of type '{$activity['type']}'";
+            foreach ($nonpdfresources as $resource) {
+                $messages[] = get_string('rule_pdf_only_non_pdf_resource_item', 'block_course_audit', 
+                    ['name' => $resource['name'], 'type' => $resource['type']]);
             }
             
-            return $this->create_result(false, $messages, $section->id);
+            return $this->create_result(true, $messages, $section->id);
         }
         
-        // If all activities are compliant
-        return $this->create_result(true, [
-            'All ' . count($compliantactivities) . ' activities meet the requirements.'
+        // If we made it here, all resources are PDFs
+        return $this->create_result(false, [
+            get_string('rule_pdf_only_success', 'block_course_audit', 
+                ['count' => count($pdfs)])
         ], $section->id);
     }
 } 

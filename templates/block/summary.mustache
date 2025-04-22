@@ -15,29 +15,111 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template block_course_audit/block/summary
+    @template block_course_audit/summary_results
 
-    Displays the admin tree as a list of grouped links.
+    Template for displaying course audit summary results
 
-    TODO
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * results - array of audit results
+    * tourId - ID of the tour
+    * hasResults - boolean indicating if there are results to show
+    * message - message from the server
+    * status - status of the request (true/false)
+
     Example context (json):
     {
-        "node": {
-            "headline": "Headline"
-            "disclaimertext": "Root of menu",
-            "buttonText": "test0",
-        }
+        "results": [
+            {
+                "id": 1,
+                "auditid": 2,
+                "rulekey": "pdf_only",
+                "rulecategory": "hint",
+                "status": "pass",
+                "messages": "All resources are PDFs",
+                "targettype": "section",
+                "targetid": 3,
+                "timecreated": 1626960000
+            }
+        ],
+        "tourId": 5,
+        "hasResults": true,
+        "message": "Audit results fetched successfully.",
+        "status": true
     }
 }}
-<div class="conversion-summary">
-    <h4>{{#str}} summary_heading, block_course_audit {{/str}}</h4>
-    
-    <ul class="list-group">
-        {{#actions}}
-        <li class="list-group-item">
-            {{#str}} action_{{type}}, block_course_audit {{/str}}
-            <span class="badge bg-primary">{{count}}</span>
-        </li>
-        {{/actions}}
-    </ul>
+
+<div class="block_course_audit-summary-container">
+    <div class="card">
+        <div class="card-header">
+            <h3>{{#str}}summary_heading, block_course_audit{{/str}}</h3>
+        </div>
+        <div class="card-body">
+            {{#status}}
+                <div class="alert alert-info">
+                    {{message}}
+                </div>
+                
+                {{#hasResults}}
+                    <div class="summary-results">
+                        <h4>{{#str}}rules_total, block_course_audit{{/str}}: {{results.length}}</h4>
+                        
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>{{#str}}rules_hint_category, block_course_audit{{/str}}</th>
+                                    <th>{{#str}}status, core{{/str}}</th>
+                                    <th>{{#str}}details, core{{/str}}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#results}}
+                                    <tr {{#isPassed}}class="table-success"{{/isPassed}}{{#isFailed}}class="table-danger"{{/isFailed}}>
+                                        <td>{{rulekey}}</td>
+                                        <td>
+                                            {{#isPassed}}
+                                                <span class="badge badge-success">{{#str}}passed, block_course_audit{{/str}}</span>
+                                            {{/isPassed}}
+                                            {{#isFailed}}
+                                                <span class="badge badge-danger">{{#str}}failed, block_course_audit{{/str}}</span>
+                                            {{/isFailed}}
+                                        </td>
+                                        <td>{{messages}}</td>
+                                    </tr>
+                                {{/results}}
+                            </tbody>
+                        </table>
+                    </div>
+                {{/hasResults}}
+                {{^hasResults}}
+                    <div class="alert alert-warning">
+                        {{#str}}noauditresults, block_course_audit{{/str}}
+                    </div>
+                {{/hasResults}}
+            {{/status}}
+            {{^status}}
+                <div class="alert alert-danger">
+                    {{message}}
+                </div>
+            {{/status}}
+        </div>
+        <div class="card-footer text-center">
+            <button type="button" id="close-summary" class="btn btn-primary">
+                {{#str}}summary_button, block_course_audit{{/str}}
+            </button>
+        </div>
+    </div>
 </div>
+
+{{#js}}
+require(['jquery'], function($) {
+    $('#close-summary').on('click', function() {
+        $('#audit-summary-container').hide();
+    });
+});
+{{/js}} 

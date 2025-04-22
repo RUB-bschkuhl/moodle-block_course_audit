@@ -31,40 +31,20 @@
     * section_number - Number of the section being checked
     * course_id - ID of the course
     * course_shortname - Short name of the course
-    * overall_stats - Object with overall statistics (passed, failed, total, success_rate)
-    * activity_type_rules - Activity type rules results and stats
-    * activity_flow_rules - Activity flow rules results and stats
+    * rules - Rule results and stats
 }}
 
 <div class="block_course_audit_rule_results">
     <div class="card mb-3">
         <div class="card-header">
-            <h4>{{#str}}structure_title, block_course_audit{{/str}} - {{section_name}}</h4>
             <p class="text-muted">
+                {{#str}}rule_category, block_course_audit{{/str}}
                 {{course_shortname}} - {{#str}}section{{/str}} {{section_number}}
             </p>
         </div>
         <div class="card-body">
             <div class="overall-stats text-center mb-4">
-                <h5>{{#str}}summary_title, block_course_audit{{/str}}</h5>
-               <div class="progress mb-2">
-                    <div class="progress-bar bg-success" role="progressbar"
-                        style="width: {{overall_stats.success_rate}}%; 
-                                min-width: 3rem; 
-                                white-space: nowrap; 
-                                overflow: visible;"
-                        aria-valuenow="{{overall_stats.success_rate}}" 
-                        aria-valuemin="0" 
-                        aria-valuemax="100">
-                        {{overall_stats.success_rate}}%
-                    </div>
-                </div>
-                <div class="row text-center">
-                    <div class="col">
-                        <span class="badge badge-success">{{overall_stats.passed}} / {{overall_stats.total}}</span>
-                        <p>{{#str}}rules_passed, block_course_audit{{/str}}</p>
-                    </div>
-                </div>
+
             </div>
             
             <div class="accordion" id="ruleAccordion">
@@ -75,18 +55,18 @@
                             <button class="btn btn-link" type="button" data-toggle="collapse" 
                                     data-target="#activityTypeRules" aria-expanded="true" 
                                     aria-controls="activityTypeRules">
-                                {{activity_type_rules.title}}
+                                {{rules.title}}
                             </button>
                         </h5>
                         <div>
-                            <span class="badge badge-danger">{{activity_type_rules.stats.failed}} {{#str}}rules_failed, block_course_audit{{/str}}</span>
+                            <span class="badge badge-danger">{{rules.stats.failed}} {{#str}}rules_failed, block_course_audit{{/str}}</span>
                         </div>
                     </div>
 
                     <div id="activityTypeRules" class="collapse show" 
                          aria-labelledby="activityTypeHeading" data-parent="#ruleAccordion">
                         <div class="card-body">
-                            {{#activity_type_rules.results}}
+                            {{#rules.results}}
                                 <div class="rule-result mb-3 pb-2 border-bottom">
                                     <h6 class="d-flex justify-content-between">
                                         <span>{{rule_name}}</span>
@@ -103,47 +83,7 @@
                                         {{/messages}}
                                     </div>
                                 </div>
-                            {{/activity_type_rules.results}}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Activity Flow Rules -->
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center" id="activityFlowHeading">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link" type="button" data-toggle="collapse" 
-                                    data-target="#activityFlowRules" aria-expanded="true" 
-                                    aria-controls="activityFlowRules">
-                                {{activity_flow_rules.title}}
-                            </button>
-                        </h5>
-                        <div>
-                            <span class="badge badge-danger">{{activity_flow_rules.stats.failed}} {{#str}}rules_failed, block_course_audit{{/str}}</span>
-                        </div>
-                    </div>
-
-                    <div id="activityFlowRules" class="collapse" 
-                         aria-labelledby="activityFlowHeading" data-parent="#ruleAccordion">
-                        <div class="card-body">
-                            {{#activity_flow_rules.results}}
-                                <div class="rule-result mb-3 pb-2 border-bottom">
-                                    <h6 class="d-flex justify-content-between">
-                                        <span>{{rule_name}}</span>
-                                        {{#status}}
-                                            <span class="badge badge-success">{{#str}}passed, block_course_audit{{/str}}</span>
-                                        {{/status}}
-                                        {{^status}}
-                                            <span class="badge badge-danger">{{#str}}failed, block_course_audit{{/str}}</span>
-                                        {{/status}}
-                                    </h6>
-                                    <div class="messages">
-                                        {{#messages}}
-                                            <p class="mb-1">{{.}}</p>
-                                        {{/messages}}
-                                    </div>
-                                </div>
-                            {{/activity_flow_rules.results}}
+                            {{/rules.results}}
                         </div>
                     </div>
                 </div>

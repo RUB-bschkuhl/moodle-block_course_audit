@@ -56,17 +56,10 @@ class auditor
                 'section_number' => $sectionobj->section,
                 'course_id' => $course->id,
                 'course_shortname' => $course->shortname,
-                'activity_type_rules' => [
-                    'results' => array_filter($section_results, function($res) { return $res->rule_category === 'activity_type'; }), 
-                    'stats' => $rulemanager->get_summary(array_filter($section_results, function($res) { return $res->rule_category === 'activity_type'; })),
-                    'title' => get_string('rules_activity_type_category', 'block_course_audit')
-                ],
-                'activity_flow_rules' => [
-                    'results' => array_filter($section_results, function($res) { return $res->rule_category === 'activity_flow'; }), 
-                    'stats' => $rulemanager->get_summary(array_filter($section_results, function($res) { return $res->rule_category === 'activity_flow'; })),
-                    'title' => get_string('rules_activity_flow_category', 'block_course_audit')
-                ],
-                'overall_stats' => $rulemanager->get_summary($section_results)
+                'rules' => [
+                    'results' => $section_results, 
+                    'stats' => $rulemanager->get_summary($section_results),
+                ]
             ];
 
             $tour_steps[] = [
@@ -115,10 +108,10 @@ class auditor
         }
 
         $rulemanager = new \block_course_audit\rules\rule_manager();
-        $activityTypeResults = $rulemanager->run_rules($section, $course, 'activity_type');
-        $activityFlowResults = $rulemanager->run_rules($section, $course, 'activity_flow');
+        $hintResults = $rulemanager->run_rules($section, $course, 'hint');
+        $actionResults = $rulemanager->run_rules($section, $course, 'action');
 
-        $allResults = array_merge($activityTypeResults, $activityFlowResults);
+        $allResults = array_merge($hintResults, $actionResults);
 
         return $allResults;
     }

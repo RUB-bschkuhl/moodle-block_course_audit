@@ -87,6 +87,7 @@
 
 [data-flexitour="step-background"] {
   z-index: 1042 !important; /* NOTE: Moodle-Bug: position and size of step-background is not calculated correctly, using z-index to fix */
+  margin-top: -16px !important;
 }
 
 .drawer-right.show #block-course-audit #miau-wrapper,
@@ -271,4 +272,46 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Summary results container styles */
+#audit-summary-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 800px;
+  max-height: 80vh;
+  z-index: 1050;
+  background-color: white;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  overflow: auto;
+}
+
+.block_course_audit-summary-container .card {
+  margin-bottom: 0;
+}
+
+.block_course_audit-summary-container .summary-results {
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.block_course_audit-summary-container .badge {
+  font-size: 0.9rem;
+  padding: 0.4rem 0.6rem;
+}
+
+/* Add a semi-transparent background overlay when the summary is shown */
+#audit-summary-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: -1;
 }

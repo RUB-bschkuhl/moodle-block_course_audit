@@ -60,7 +60,7 @@ interface rule_interface {
     /**
      * Get the rule category
      *
-     * @return string One of 'activity_type', 'activity_flow'
+     * @return string One of 'hint', 'action'
      */
     public function get_category();
 } 

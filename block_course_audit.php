@@ -63,6 +63,7 @@ class block_course_audit extends block_base
 
         // Structure for the template
         $data = [
+            'pre' => ['start_hint' => get_string('start_hint', 'block_course_audit')],
             'tour_data' => [],
             'wrap_data' => [
                 [

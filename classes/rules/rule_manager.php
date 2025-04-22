@@ -36,8 +36,8 @@ defined('MOODLE_INTERNAL') || die();
 class rule_manager {
     /** @var array List of registered rules, indexed by category */
     private $rules = [
-        'activity_type' => [],
-        'activity_flow' => []
+        'hint' => [],
+        'action' => []
     ];
     
     /**
@@ -53,13 +53,13 @@ class rule_manager {
     private function register_default_rules() {
         global $CFG;
         
-        // Auto-discover and register rules in the activity_type directory
-        $basedir = $CFG->dirroot . '/blocks/course_audit/classes/rules/activity_type';
-        $this->register_rules_from_directory($basedir, 'activity_type');
+        // Auto-discover and register rules in the hint directory
+        $basedir = $CFG->dirroot . '/blocks/course_audit/classes/rules/hint';
+        $this->register_rules_from_directory($basedir, 'hint');
         
-        // Auto-discover and register rules in the activity_flow directory  
-        $basedir = $CFG->dirroot . '/blocks/course_audit/classes/rules/activity_flow';
-        $this->register_rules_from_directory($basedir, 'activity_flow');
+        // Auto-discover and register rules in the action directory  
+        $basedir = $CFG->dirroot . '/blocks/course_audit/classes/rules/action';
+        $this->register_rules_from_directory($basedir, 'action');
     }
     
     /**

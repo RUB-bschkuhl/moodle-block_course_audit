@@ -27,4 +27,3 @@ Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
 
 ## Support
 For support and bug reports, please use the GitHub issue tracker or contact the author directly.
-
