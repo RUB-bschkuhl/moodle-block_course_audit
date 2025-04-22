@@ -53,6 +53,10 @@ $string['wiki_link'] = 'Open Documentation Wiki';
 $string['wiki_title'] = 'Course audit Documentation';
 $string['wiki_heading'] = 'Conversion Guidelines & Best Practices';
 
+// Rules
+$string['rule_category_hint'] = 'Hint';
+$string['rule_category_action'] = 'Action';
+
 // Rules - PDF Only - used in rule implementations
 $string['rule_pdf_only_name'] = 'PDF Only Resources';
 $string['rule_pdf_only_description'] = 'Checks if a section contains only PDF resources';

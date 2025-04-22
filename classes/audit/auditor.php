@@ -20,7 +20,9 @@
  * @copyright 2024 Your Name <your.email@example.com>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace block_course_audit\audit;
+
 defined('MOODLE_INTERNAL') || die();
 class auditor
 {
@@ -42,33 +44,29 @@ class auditor
         $raw_results = [];
         $courseformat = course_get_format($course);
         $sections = $courseformat->get_sections();
-        $index = 0;
-
-        $rulemanager = new \block_course_audit\rules\rule_manager();
 
         foreach ($sections as $sectionnum => $sectionobj) {
             $section_results = $this->audit_section($sectionobj->id);
-            $raw_results = array_merge($raw_results, $section_results);
+            foreach ($section_results as $result) {
+                //Only show failed checks here
+                if (!$result->status) {
+                    $section_template_data = [
+                        'section_id' => $sectionobj->id,
+                        'section_name' => get_section_name($course, $sectionobj),
+                        'section_number' => $sectionobj->section,
+                        'course_id' => $course->id,
+                        'course_shortname' => $course->shortname,
+                        'rule_result' =>  $result,
+                    ];
 
-            $section_template_data = [
-                'section_id' => $sectionobj->id,
-                'section_name' => get_section_name($course, $sectionobj),
-                'section_number' => $sectionobj->section,
-                'course_id' => $course->id,
-                'course_shortname' => $course->shortname,
-                'rules' => [
-                    'results' => $section_results, 
-                    'stats' => $rulemanager->get_summary($section_results),
-                ]
-            ];
-
-            $tour_steps[] = [
-                'type' => 'section',
-                'title' => get_string('structure_title', 'block_course_audit') . " - " . $section_template_data['section_name'],
-                'number' => $sectionobj->section,
-                'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_results', $section_template_data)
-            ];
-            $index++;
+                    $tour_steps[] = [
+                        'type' => 'section',
+                        'title' => $result->rule_name . ': ' . $result->rule_category,
+                        'number' => $sectionobj->section,
+                        'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
+                    ];
+                }
+            }
         }
 
         return [

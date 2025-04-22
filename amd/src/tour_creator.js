@@ -75,6 +75,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                 }).then(function (response) {
                     var tourData = response.tourdata;
                     listenForTourStart();
+                    //TODO tourData.tourDetails[0] might not exist when all checks ok
                     listenForTourEnd(tourData.tourDetails[0].tourId);
                     if (!tourData || !response.status) {
                         let errorMessage = response.message || 'Unknown error creating tour data.';

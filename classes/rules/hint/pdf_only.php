@@ -54,6 +54,7 @@ class pdf_only extends rule_base {
             get_string('rule_pdf_only_name', 'block_course_audit'),
             get_string('rule_pdf_only_description', 'block_course_audit'),
             'hint'
+            //get_string('rule_category_hint', 'block_course_audit')
         );
     }
     
@@ -65,8 +66,6 @@ class pdf_only extends rule_base {
      * @return object Result object with 'status' (boolean) and 'messages' (array of string)
      */
     public function check_section($section, $course) {
-        global $DB;
-        
         // If no modules in section, return false
         if (empty($section->modules)) {
             return $this->create_result(false, [

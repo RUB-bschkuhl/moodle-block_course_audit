@@ -54,6 +54,7 @@ class has_connections extends rule_base {
             get_string('rule_has_connections_name', 'block_course_audit'),
             get_string('rule_has_connections_description', 'block_course_audit'),
             'action'
+            //get_string('rule_category_action', 'block_course_audit')
         );
     }
     

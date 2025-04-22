@@ -172,8 +172,11 @@ class create_tour extends external_api
         if (empty($tour_steps_data)) {
             return [
                 'status' => false,
-                'message' => get_string('noauditresults', 'block_course_audit'), // Add this string
-                'tourdata' => null
+                'message' => get_string('noauditresults', 'block_course_audit'),
+                'tourdata' => [
+                    'tourDetails' => [],
+                    'filterNames' => []
+                ]
             ];
         }
 
