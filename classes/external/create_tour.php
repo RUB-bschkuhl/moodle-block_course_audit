@@ -252,6 +252,7 @@ class create_tour extends external_api
                 \block_course_audit\tour_manager::delete_tour($tour->get_id());
                 // Also delete the main audit run record if steps failed
                 $DB->delete_records('block_course_audit_tours', ['id' => $auditrunid]);
+                $DB->delete_records('block_course_audit_results', ['auditid' => $auditrunid]);
             } catch (\Exception $delEx) {
                 // Log deletion error but prioritize original exception
                 error_log("Failed to clean up tour ID: {$tour->get_id()} after error. Deletion Error: " . $delEx->getMessage());

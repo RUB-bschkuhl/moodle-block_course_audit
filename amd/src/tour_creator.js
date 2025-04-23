@@ -146,9 +146,12 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                     // Render the template and update the container
                     return Templates.render('block_course_audit/block/summary', templateContext)
                         .then(function (html, js) {
+                            summaryContainer.empty();
                             Templates.appendNodeContents(summaryContainer, html, js);
-                            summaryContainer.show();
-                            console.log(response);
+                            if (bubbleContainer && !$(bubbleContainer).is(":visible")) {
+                                triggerTalkAnimation();
+                                $(bubbleContainer).show();
+                            }
                             return response;
                         })
                         .catch(function (error) {
@@ -178,8 +181,8 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
             }, 2000);
             if (miauWrapper) {
                 $('#start-course-audit').add(miauWrapper).click(function () {
-                    triggerTalkAnimation();
                     if (bubbleContainer && !$(bubbleContainer).is(":visible")) {
+                        triggerTalkAnimation();
                         $(bubbleContainer).show();
                     }
                 });
