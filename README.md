@@ -27,3 +27,8 @@ Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
 
 ## Support
 For support and bug reports, please use the GitHub issue tracker or contact the author directly.
+
+## Quick copy paste for deletion of non core tour data
+delete from mdl_tool_usertours_tours where id > 5;
+delete from mdl_block_course_audit_tours;
+delete from mdl_block_course_audit_results;

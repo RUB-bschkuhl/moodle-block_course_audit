@@ -98,9 +98,7 @@ class create_tour extends external_api
 
     private static function init_tour_data($tour)
     {
-        global $PAGE;
         $filters = helper::get_all_clientside_filters();
-
         $tourdetails = array_map(function ($t) use ($filters) {
             $filtervalues = $t->get_client_filter_values($filters);
 
@@ -145,23 +143,8 @@ class create_tour extends external_api
         require_capability('moodle/course:manageactivities', $coursecontext);
         $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
 
-        $manager = new tour_manager();
-        $existingtours = $DB->get_records_sql(
-            "SELECT t.*, ca.id AS auditid FROM {tool_usertours_tours} t JOIN {block_course_audit_tours} ca ON t.id = ca.tourid WHERE ca.courseid = ? AND t.name LIKE ?",
-            [$courseid, "Course Audit: Course #$courseid%"]
-        );
-
-        // If a tour already exists, delete it using the tour manager
-        foreach ($existingtours as $existingtour) {
-            try {
-                $manager->delete_tour($existingtour->id);
-                // Also delete the corresponding entry in block_course_audit_tours
-                $DB->delete_records('block_course_audit_tours', ['tourid' => $existingtour->id]);
-                $DB->delete_records('block_course_audit_results', ['auditid' => $existingtour->auditid]);
-            } catch (\Exception $e) {
-                error_log("Error deleting existing tour ID: {$existingtour->id}. Error: " . $e->getMessage());
-            }
-        }
+        //TODO: Delete the audit tour in tour_manager instead
+        self::delete_existing_tours($courseid);
 
         $auditor = new auditor();
         $audit_data = $auditor->get_audit_results($course);
@@ -189,6 +172,8 @@ class create_tour extends external_api
             'reflex' => false
         ];
 
+        $manager = new tour_manager();
+
         $tour = $manager->create_tour(
             "Course Audit: Course #$courseid",
             "This tour will guide the user through the course audit for $course->fullname",
@@ -196,14 +181,12 @@ class create_tour extends external_api
             $tourconfig
         );
 
-        $auditrunrecord = new \stdClass();
-        $auditrunrecord->tourid = $tour->get_id();
-        $auditrunrecord->courseid = $courseid;
-        $auditrunrecord->timecreated = time();
-        $auditrunrecord->timemodified = time();
-        $auditrunid = $DB->insert_record('block_course_audit_tours', $auditrunrecord);
+        //TODO: Store the audit tour in tour_manager instead
+        $auditrunid = self::store_audit_tour($tour, $courseid);
 
         try {
+
+            //TODO: Add steps in tour_manager instead
             foreach ($tour_steps_data as $step_data) {
                 $targetselector = '#' . $step_data['type'] . '-' . $step_data['number'];
 
@@ -216,24 +199,8 @@ class create_tour extends external_api
                 );
             }
 
-            // Store individual audit results
-            $now = time();
-            foreach ($raw_audit_results as $result) {
-                $resultrecord = new \stdClass();
-                $resultrecord->auditid = $auditrunid;
-                $resultrecord->rulekey = $result->rule_key;
-                $resultrecord->status = $result->status;
-                if (isset($result->messages) && is_array($result->messages)) {
-                    $resultrecord->messages = json_encode($result->messages);
-                } else {
-                    $resultrecord->messages = null;
-                }
-                $resultrecord->rulecategory = $result->rule_category;
-                $resultrecord->targettype = $result->rule_target ?? null;
-                $resultrecord->targetid = $result->rule_target_id ?? null;
-                $resultrecord->timecreated = $now;
-                $DB->insert_record('block_course_audit_results', $resultrecord);
-            }
+            //TODO: Store individual audit results in auditor instead
+            self::store_audit_results($auditrunid, $raw_audit_results);
 
             // Reset tour for users only after steps and results are successfully created
             $manager->reset_tour_for_all_users($tour->get_id());
@@ -260,5 +227,61 @@ class create_tour extends external_api
             // Re-throw the original exception
             throw $e;
         }
+    }
+
+    private static function delete_existing_tours($courseid)
+    {
+        global $DB;
+        $manager = new tour_manager();
+        $existingtours = $DB->get_records_sql(
+            "SELECT t.*, ca.id AS auditid FROM {tool_usertours_tours} t JOIN {block_course_audit_tours} ca ON t.id = ca.tourid WHERE ca.courseid = ? AND t.name LIKE ?",
+            [$courseid, "Course Audit: Course #$courseid%"]
+        );
+
+        // If a tour already exists, delete it using the tour manager
+        foreach ($existingtours as $existingtour) {
+            try {
+                $manager->delete_tour($existingtour->id);
+                // Also delete the corresponding entry in block_course_audit_tours
+                $DB->delete_records('block_course_audit_tours', ['tourid' => $existingtour->id]);
+                $DB->delete_records('block_course_audit_results', ['auditid' => $existingtour->auditid]);
+            } catch (\Exception $e) {
+                error_log("Error deleting existing tour ID: {$existingtour->id}. Error: " . $e->getMessage());
+            }
+        }
+    }
+
+    private static function store_audit_results($auditrunid, $raw_audit_results)
+    {
+        global $DB;
+        $now = time();
+        foreach ($raw_audit_results as $result) {
+            $resultrecord = new \stdClass();
+            $resultrecord->auditid = $auditrunid;
+            $resultrecord->rulekey = $result->rule_key;
+            $resultrecord->status = $result->status;
+            if (isset($result->messages) && is_array($result->messages)) {
+                $resultrecord->messages = json_encode($result->messages);
+            } else {
+                $resultrecord->messages = null;
+            }
+            $resultrecord->rulecategory = $result->rule_category;
+            $resultrecord->targettype = $result->rule_target ?? null;
+            $resultrecord->targetid = $result->rule_target_id ?? null;
+            $resultrecord->timecreated = $now;
+            $DB->insert_record('block_course_audit_results', $resultrecord);
+        }
+    }
+
+    private static function store_audit_tour($tour, $courseid)
+    {
+        global $DB;
+        $auditrunrecord = new \stdClass();
+        $auditrunrecord->tourid = $tour->get_id();
+        $auditrunrecord->courseid = $courseid;
+        $auditrunrecord->timecreated = time();
+        $auditrunrecord->timemodified = time();
+        $auditrunid = $DB->insert_record('block_course_audit_tours', $auditrunrecord);
+        return $auditrunid;
     }
 }

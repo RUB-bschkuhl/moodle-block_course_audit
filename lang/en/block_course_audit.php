@@ -82,7 +82,7 @@ $string['rule_has_label_description'] = 'Checks if a section contains a label';
 $string['rule_has_label_empty_section'] = 'The section is empty. Please add some resources.';
 $string['rule_has_label_success'] = 'The section contains a label.';
 $string['rule_has_label_failure'] = 'The section does not contain a label.';
-
+$string['button_add_label'] = 'Add Label';
 
 // Summary related - used in summary display
 $string['summary_heading'] = 'Course Conversion Summary';
@@ -122,4 +122,4 @@ $string['course_audit:myaddinstance'] = 'Add a new course audit block to the My 
 $string['course_audit:view'] = 'View course audit information';
 
 // Scheduled task string
-$string['audittask'] = 'Course audit scheduled task';
+$string['cleanup_audit_tours'] = 'Cleanup audit tours task';

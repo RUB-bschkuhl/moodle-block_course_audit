@@ -4,10 +4,10 @@ defined('MOODLE_INTERNAL') || die();
 
 $tasks = [
     [
-        'classname' => 'block_course_audit\task\audit_task',
+        'classname' => 'block_course_audit\task\cleanup_audit_tours',
         'blocking' => 0,
         'minute' => '0',
-        'hour' => '0', // Runs daily at midnight
+        'hour' => '1', // Runs daily at 1:00 AM
         'day' => '*',
         'month' => '*',
         'dayofweek' => '*',

@@ -59,6 +59,8 @@ class auditor
                         'rule_result' =>  $result,
                     ];
 
+                    $raw_results[] = $section_template_data['rule_result'];
+
                     $tour_steps[] = [
                         'type' => 'section',
                         'title' => $result->rule_name . ': ' . $result->rule_category,

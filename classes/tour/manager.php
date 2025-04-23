@@ -77,31 +77,31 @@ class manager
 
         /*
         Display Options
-        displaystepnumbers (boolean)
+            displaystepnumbers (boolean)
         Determines whether to display step numbers in the tour
         Example: 'displaystepnumbers' => true
-        showtourwhen (integer)
+            showtourwhen (integer)
         Controls when to show the tour:
         tour::SHOW_TOUR_UNTIL_COMPLETE (value: 1) - Show the tour until the user completes it
         tour::SHOW_TOUR_ON_EACH_PAGE_VISIT (value: 2) - Show the tour every time the page is visited
         Example: 'showtourwhen' => tour::SHOW_TOUR_UNTIL_COMPLETE
-        filtervalues.cssselector (string)
+            filtervalues.cssselector (string)
         Only show the tour when the specified CSS selector is found on the page.
         Example: '#block_course_audit'
-        endtourlabel (string)
+            endtourlabel (string)
         Custom label for the button that ends the tour
         Example: 'endtourlabel' => 'Finish tour'
         Visual and Behavior Options
-        4. backdrop (boolean)
+            backdrop (boolean)
         Whether to show a backdrop behind the tour step (highlighting the target element)
         Example: 'backdrop' => true
-        orphan (boolean)
+            orphan (boolean)
         Whether the step should be displayed even if the target element is not found
         Example: 'orphan' => true
-        reflex (boolean)
+            reflex (boolean)
         Whether clicking on the element will automatically advance to the next step
         Example: 'reflex' => true
-        placement (string)
+            placement (string)
         Default placement for all steps (can be overridden in individual steps)
         Options: 'top', 'bottom', 'left', 'right'
         Example: 'placement' => 'top'

@@ -82,7 +82,7 @@ $string['rule_has_label_description'] = 'Prüft, ob ein Abschnitt ein Label enth
 $string['rule_has_label_empty_section'] = 'Der Abschnitt ist leer. Bitte fügen Sie Ressourcen hinzu.';
 $string['rule_has_label_success'] = 'Der Abschnitt enthält ein Label.';
 $string['rule_has_label_failure'] = 'Der Abschnitt enthält kein Label.';
-
+$string['button_add_label'] = 'Label hinzufügen';
 // Summary related
 $string['summary_heading'] = 'Zusammenfassung der Kurskonvertierung';
 $string['summary_button'] = 'Prüfen beenden';
@@ -114,4 +114,4 @@ $string['course_audit:myaddinstance'] = 'Neuen Kurs-Prüfer-Block zur \'Mein Moo
 $string['course_audit:view'] = 'Kurs-Prüfer-Informationen anzeigen';
 
 // Scheduled task string
-$string['audittask'] = 'Kurs-Prüfer geplante Aufgabe';
+$string['cleanup_audit_tours'] = 'Aufräumen der Audit-Touren Aufgabe';

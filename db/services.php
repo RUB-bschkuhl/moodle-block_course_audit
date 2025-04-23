@@ -60,7 +60,6 @@ $functions = array(
     ),
 );
 
-// We define the services to install as pre-build services. A pre-build service is not editable by administrators.
 $services = array(
     'Course Audit Services' => array(
         'functions' => ['block_course_audit_get_section_analysis', 'block_course_audit_create_tour', 'block_course_audit_get_summary', 'block_course_audit_add_label_to_section'],
