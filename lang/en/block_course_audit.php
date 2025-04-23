@@ -76,6 +76,13 @@ $string['rule_has_connections_module_with_condition'] = '- "{$a->name}" has comp
 $string['rule_has_connections_some_without_conditions'] = '{$a->count} activities do not have any completion conditions:';
 $string['rule_has_connections_module_without_condition'] = '- "{$a->name}" has no completion conditions';
 
+// Rules - Has Label - used in rule implementations
+$string['rule_has_label_name'] = 'Label Presence';
+$string['rule_has_label_description'] = 'Checks if a section contains a label';
+$string['rule_has_label_empty_section'] = 'The section is empty. Please add some resources.';
+$string['rule_has_label_success'] = 'The section contains a label.';
+$string['rule_has_label_failure'] = 'The section does not contain a label.';
+
 
 // Summary related - used in summary display
 $string['summary_heading'] = 'Course Conversion Summary';
@@ -113,3 +120,6 @@ $string['summaryerror'] = 'Error loading summary';
 $string['course_audit:addinstance'] = 'Add a new course audit block';
 $string['course_audit:myaddinstance'] = 'Add a new course audit block to the My Moodle page';
 $string['course_audit:view'] = 'View course audit information';
+
+// Scheduled task string
+$string['audittask'] = 'Course audit scheduled task';

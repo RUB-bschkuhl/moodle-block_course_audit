@@ -120,6 +120,28 @@ abstract class rule_base implements rule_interface
     }
 
     /**
+     * Get details for rendering an action button in the frontend, if applicable.
+     *
+     * If this rule has an associated action button, this method should return an array
+     * containing the necessary details for the frontend. Otherwise, it should return null.
+     *
+     * Expected structure:
+     * [
+     *   'label' => (string) get_string(...) for the button text,
+     *   'type' => (string) 'ajax' or 'js' indicating the action type,
+     *   'endpoint' => (string) The AJAX method name (if type is 'ajax'),
+     *   'function_name' => (string) The JS function name (if type is 'js'),
+     *   'params' => (array) Key-value pairs of parameters needed for the action
+     * ]
+     *
+     * @param int $target_id Target ID of the rule result if needed for the action.
+     * @return array|null Action button details or null if no button.
+     */
+    public function get_action_button_details($target_id = null) {
+        return null;
+    }
+
+    /**
      * Create a result object
      *
      * @param bool $status Whether the rule passed (true) or failed (false)
@@ -135,7 +157,8 @@ abstract class rule_base implements rule_interface
             'rule_category' => $this->category,
             'rule_key' => $this->key,
             'rule_target' => $this->target,
-            'rule_target_id' => $target_id
+            'rule_target_id' => $target_id,
+            'action_button_details' => $this->get_action_button_details($target_id)
         ];
     }
 }

@@ -75,6 +75,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                 }).then(function (response) {
                     var tourData = response.tourdata;
                     listenForTourStart();
+                    listenForStepChange();
                     //TODO tourData.tourDetails[0] might not exist when all checks ok
                     listenForTourEnd(tourData.tourDetails[0].tourId);
                     if (!tourData || !response.status) {
@@ -102,6 +103,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
         const listenForTourEnd = function (tourId) {
             const userTourEvents = userTourEventsModule.eventTypes;
             document.addEventListener(userTourEvents.tourEnded, function () {
+                console.log("tourEnded");
                 // $(miauWrapper).show(); // TODO doesnt show when tour is cancelled
                 startTourSummary(tourId);
             });
@@ -111,6 +113,24 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
             const userTourEvents = userTourEventsModule.eventTypes;
             document.addEventListener(userTourEvents.tourStarted, function () {
                 // $(miauWrapper).hide();
+            });
+        };
+
+        const listenForStepChange = function () {
+            const userTourEvents = userTourEventsModule.eventTypes;
+            document.addEventListener(userTourEvents.stepRendered, function () {
+                const stepElement = document.querySelector('[id^="tour-step-tool_usertours"]');
+                if (stepElement) {
+                    stepElement.scrollIntoView({behavior: 'smooth', block: 'center'});
+                } else {
+                    console.warn('Course Audit: Could not find tour step element to scroll:', stepElement);
+                }
+            });
+            document.addEventListener(userTourEvents.stepHide, function () {
+                //TODO klick neben Tour Element cancelled Tour. 
+                // Dieses Event hier wird gefeuert, danach wird der nächste Step nicht gerendered.
+                // Die Tour muss dann neu gestartet werde. Fix überlegen?
+                console.log("stepHide");
             });
         };
 

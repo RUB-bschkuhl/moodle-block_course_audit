@@ -48,13 +48,22 @@ $functions = array(
         'type'          => 'read',
         'ajax'          => true,
         'capabilities'  => 'block/course_audit:view'
-    )
+    ),
+    'block_course_audit_add_label_to_section' => array(
+        'classname' => 'block_course_audit\\external\\manage_labels',
+        'methodname' => 'add_label_to_section',
+        'classpath' => 'blocks/course_audit/classes/external/manage_labels.php',
+        'description' => 'Adds a new label module to a specific course section.',
+        'type' => 'write',
+        'capabilities' => 'moodle/course:manageactivities',
+        'ajax' => true,
+    ),
 );
 
 // We define the services to install as pre-build services. A pre-build service is not editable by administrators.
 $services = array(
     'Course Audit Services' => array(
-        'functions' => ['block_course_audit_get_section_analysis', 'block_course_audit_create_tour', 'block_course_audit_get_summary'],
+        'functions' => ['block_course_audit_get_section_analysis', 'block_course_audit_create_tour', 'block_course_audit_get_summary', 'block_course_audit_add_label_to_section'],
         'restrictedusers' => 0,
         'enabled' => 1
     )

@@ -143,4 +143,25 @@ class has_connections extends rule_base {
         
         return $this->create_result(true, $messages, $section->id);
     }
+
+    /**
+     * @param object $context Context containing rule result details like target_id.
+     * @return array|null Action button details.
+     */
+    public function get_action_button_details($context = null) {
+        return null;
+        //TODO: Implement
+        if (!$context || $context->status === true || empty($context->rule_target_id)) {
+             return null;
+        }
+
+        return [
+            'label' => get_string('button_auto_connect', 'block_course_audit'),
+            'type' => 'ajax',
+            'endpoint' => 'block_course_audit_auto_connect_section',
+            'params' => [
+                'sectionid' => $context->rule_target_id,
+            ]
+        ];
+    }
 } 

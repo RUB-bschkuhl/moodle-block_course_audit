@@ -39,5 +39,8 @@
         {{#rule_result.messages}}
             <p class="mb-1">{{.}}</p>
         {{/rule_result.messages}}
+        {{#rule_result.action_button_details}}
+            <button class="btn btn-primary" data-action="{{action_button_details.type}}" data-endpoint="{{action_button_details.endpoint}}" data-params="{{action_button_details.params}}">{{action_button_details.label}}</button>
+        {{/rule_result.action_button_details}}
     </div>
 </div> 
