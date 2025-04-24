@@ -30,5 +30,6 @@ For support and bug reports, please use the GitHub issue tracker or contact the 
 
 ## Quick copy paste for deletion of non core tour data
 delete from mdl_tool_usertours_tours where id > 5;
+delete from mdl_tool_usertours_steps where tourid > 5;
 delete from mdl_block_course_audit_tours;
 delete from mdl_block_course_audit_results;

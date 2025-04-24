@@ -137,7 +137,7 @@ abstract class rule_base implements rule_interface
      * @param int $target_id Target ID of the rule result if needed for the action.
      * @return array|null Action button details or null if no button.
      */
-    public function get_action_button_details($target_id = null) {
+    public function get_action_button_details($target_id = null, $courseid = null) {
         return null;
     }
 
@@ -148,7 +148,7 @@ abstract class rule_base implements rule_interface
      * @param array $messages Messages to display, typically explaining the result
      * @return object Result object
      */
-    protected function create_result($status, $messages = [], $target_id)
+    protected function create_result($status, $messages = [], $target_id = null, $courseid = null)
     {
         return (object) [
             'status' => $status,
@@ -158,7 +158,7 @@ abstract class rule_base implements rule_interface
             'rule_key' => $this->key,
             'rule_target' => $this->target,
             'rule_target_id' => $target_id,
-            'action_button_details' => $this->get_action_button_details($target_id)
+            'action_button_details' => $this->get_action_button_details($target_id, $courseid)
         ];
     }
 }

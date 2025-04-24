@@ -147,18 +147,18 @@ class manager
 
         /*
         Placement Options
-        placement (string)
+            placement (string)
         Position of the step popup relative to the target element
         Options: 'top', 'bottom', 'left', 'right'
         Example: 'placement' => 'top'
         Behavior Options
-        orphan (boolean)
+            orphan (boolean)
         Whether the step should be displayed even if the target element is not found
         Example: 'orphan' => true
-        backdrop (boolean)
+            backdrop (boolean)
         Whether to show a backdrop behind the tour step (highlighting the target element)
         Example: 'backdrop' => true
-        reflex (boolean)
+            reflex (boolean)
         Whether clicking on the element will automatically advance to the next step
         Example: 'reflex' => true
         */

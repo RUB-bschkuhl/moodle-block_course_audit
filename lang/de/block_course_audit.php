@@ -77,12 +77,17 @@ $string['rule_has_connections_some_without_conditions'] = '{$a->count} Aktivitä
 $string['rule_has_connections_module_without_condition'] = '- "{$a->name}" hat keine Abschlussbedingungen';
 
 // Rules - Has Label - used in rule implementations
-$string['rule_has_label_name'] = 'Label vorhanden';
-$string['rule_has_label_description'] = 'Prüft, ob ein Abschnitt ein Label enthält';
+$string['rule_has_label_name'] = 'Textfeld vorhanden';
+$string['rule_has_label_description'] = 'Prüft, ob ein Abschnitt ein Textfeld enthält';
 $string['rule_has_label_empty_section'] = 'Der Abschnitt ist leer. Bitte fügen Sie Ressourcen hinzu.';
-$string['rule_has_label_success'] = 'Der Abschnitt enthält ein Label.';
-$string['rule_has_label_failure'] = 'Der Abschnitt enthält kein Label.';
-$string['button_add_label'] = 'Label hinzufügen';
+$string['rule_has_label_success'] = 'Der Abschnitt enthält ein Textfeld.';
+$string['rule_has_label_failure'] = 'Der Abschnitt enthält kein Textfeld.';
+$string['button_add_label'] = 'Textfeld hinzufügen';
+$string['label_added_success'] = 'Textfeld erfolgreich hinzugefügt';
+$string['label_added_failure'] = 'Textfeld konnte nicht hinzugefügt werden';
+$string['label_intro'] = 'Nutzen Sie Textfelder, um erklärende Texte, Anweisungen oder Überschriften direkt in einem Kursabschnitt hinzuzufügen. Dies hilft dabei, Inhalte zu strukturieren und Lernende zu leiten.';
+$string['label_name'] = 'Neues Textfeld';
+
 // Summary related
 $string['summary_heading'] = 'Zusammenfassung der Kurskonvertierung';
 $string['summary_button'] = 'Prüfen beenden';

@@ -1,10 +1,32 @@
 <?php
-// moodle-405/blocks/course_audit/classes/external/manage_labels.php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle. If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * External API for managing labels.
+ *
+ * @package block_course_audit
+ * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 namespace block_course_audit\external;
 
 defined('MOODLE_INTERNAL') || die();
 
+global $CFG;
 require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . '/course/lib.php'); // For course/module functions
 require_once($CFG->dirroot . '/course/modlib.php'); // For add_moduleinfo
@@ -16,7 +38,6 @@ use external_single_structure;
 use context_course;
 use stdClass;
 use moodle_exception;
-use \core_external\external_api_method_helper; // Include the trait for validation methods
 
 /**
  * External API for managing labels within the course audit block.
@@ -26,27 +47,24 @@ use \core_external\external_api_method_helper; // Include the trait for validati
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class manage_labels extends external_api {
-
-    use external_api_method_helper; // Include the trait for validation methods
-
     /**
-     * Parameters for the add_label_to_section function.
+     * Parameters for the execute function.
      *
      * @return external_function_parameters
      */
-    public static function add_label_to_section_parameters() {
+    public static function execute_parameters() {
         return new external_function_parameters([
-            'courseid' => new external_value(PARAM_INT, 'The course ID where the section belongs'),
-            'sectionid' => new external_value(PARAM_INT, 'The section ID to add the label to')
+            'sectionid' => new external_value(PARAM_INT, 'The section ID to add the label to'),
+            'courseid' => new external_value(PARAM_INT, 'The course ID where the section belongs')
         ]);
     }
 
     /**
-     * Value returned by the add_label_to_section function.
+     * Value returned by the execute function.
      *
      * @return external_single_structure
      */
-    public static function add_label_to_section_returns() {
+    public static function execute_returns() {
         return new external_single_structure([
             'status' => new external_value(PARAM_BOOL, 'True if the label was added successfully, false otherwise.'),
             'message' => new external_value(PARAM_TEXT, 'Success or error message.'),
@@ -57,18 +75,18 @@ class manage_labels extends external_api {
     /**
      * Adds a new label module to a specific course section.
      *
-     * @param int $courseid Course ID.
      * @param int $sectionid Section ID.
+     * @param int $courseid Course ID.
      * @return array Status array.
      * @throws moodle_exception
      */
-    public static function add_label_to_section(int $courseid, int $sectionid) {
-        global $DB, $USER;
+    public static function execute(int $sectionid, int $courseid) {
+        global $DB;
 
         // Validate parameters.
-        $params = self::validate_parameters(self::add_label_to_section_parameters(), [
-            'courseid' => $courseid,
-            'sectionid' => $sectionid
+        $params = self::validate_parameters(self::execute_parameters(), [
+            'sectionid' => $sectionid,
+            'courseid' => $courseid
         ]);
 
         // Get course context and validate it.
@@ -86,23 +104,30 @@ class manage_labels extends external_api {
         $labelmodule = $DB->get_record('modules', ['name' => 'label'], '*', MUST_EXIST);
 
         $label = new stdClass();
+        $label->sortorder = 0; //TODO doesnt work
+        
         $label->course = $course->id;
-        $label->name = get_string('newlabel', 'block_course_audit');
-        $label->intro = get_string('newlabelintro', 'block_course_audit');
+        $label->modulename = 'label';
+        $label->name = get_string('label_name', 'block_course_audit');
+        $label->intro = get_string('label_intro', 'block_course_audit');
         $label->introformat = FORMAT_HTML;
+        $label->visible = 1;
         $label->timemodified = time();
         $label->section = $section->section;
 
-        $cm = add_moduleinfo($label, $course, $labelmodule, $section->section);
+        list($module, $context, $cw) = can_add_moduleinfo($course, $label->modulename, $label->section);
 
-        if (!$cm || !$cm->id) {
+        $label->module = $module->id;
+
+        $cm = add_moduleinfo($label, $course);
+
+        if (!$cm) {
             throw new moodle_exception('erroraddlabel', 'block_course_audit'); 
         }
 
         return [
             'status' => true,
-            'message' => get_string('labeladdedsuccess', 'block_course_audit'),
-            'cmid' => $cm->id
+            'message' => get_string('labeladdedsuccess', 'block_course_audit')
         ];
     }
 } 

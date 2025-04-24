@@ -70,7 +70,7 @@ class has_connections extends rule_base {
         if (empty($section->modules)) {
             return $this->create_result(false, [
                 get_string('rule_has_connections_empty_section', 'block_course_audit')
-            ], $section->id);
+            ], $section->id, $course->id);
         }
         
         // If only one module, return false (can't have connections with only one module)
@@ -78,7 +78,7 @@ class has_connections extends rule_base {
             return $this->create_result(false, [
                 get_string('rule_has_connections_single_module', 'block_course_audit', 
                     ['name' => $section->modules[0]->name])
-            ], $section->id);
+            ], $section->id, $course->id);
         }
         
         $modulesWithConditions = [];
@@ -116,7 +116,7 @@ class has_connections extends rule_base {
         if (empty($modulesWithConditions)) {
             return $this->create_result(false, [
                 get_string('rule_has_connections_no_conditions', 'block_course_audit')
-            ], $section->id);
+            ], $section->id, $course->id);
         }
         
         // Prepare messages about which modules have conditions
@@ -141,14 +141,14 @@ class has_connections extends rule_base {
             }
         }
         
-        return $this->create_result(true, $messages, $section->id);
+        return $this->create_result(true, $messages, $section->id, $course->id);
     }
 
     /**
      * @param object $context Context containing rule result details like target_id.
      * @return array|null Action button details.
      */
-    public function get_action_button_details($context = null) {
+    public function get_action_button_details($target_id = null, $courseid = null) {
         return null;
         //TODO: Implement
         if (!$context || $context->status === true || empty($context->rule_target_id)) {
@@ -156,12 +156,10 @@ class has_connections extends rule_base {
         }
 
         return [
+            'mapkey' => 'section_' . $context->rule_target_id . '_' . self::rule_key,
             'label' => get_string('button_auto_connect', 'block_course_audit'),
-            'type' => 'ajax',
             'endpoint' => 'block_course_audit_auto_connect_section',
-            'params' => [
-                'sectionid' => $context->rule_target_id,
-            ]
+            'params' => 'sectionid=' . $context->rule_target_id . '&courseid=' . $courseid
         ];
     }
 } 

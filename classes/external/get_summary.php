@@ -18,7 +18,7 @@
  * External API for retrieving audit results.
  *
  * @package block_course_audit
- * @copyright 2024 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
+ * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -41,7 +41,7 @@ use moodle_exception;
  * External API for retrieving audit results for a specified tour
  *
  * @package block_course_audit
- * @copyright 2024 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
+ * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class get_summary extends external_api

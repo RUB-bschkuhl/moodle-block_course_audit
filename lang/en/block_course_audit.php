@@ -83,6 +83,10 @@ $string['rule_has_label_empty_section'] = 'The section is empty. Please add some
 $string['rule_has_label_success'] = 'The section contains a label.';
 $string['rule_has_label_failure'] = 'The section does not contain a label.';
 $string['button_add_label'] = 'Add Label';
+$string['label_added_success'] = 'Label added successfully';
+$string['label_added_failure'] = 'Failed to add label';
+$string['label_intro'] = 'Use labels to add explanatory text, instructions, or headings directly within a course section, helping to structure content and guide learners.';
+$string['label_name'] = 'New Label';
 
 // Summary related - used in summary display
 $string['summary_heading'] = 'Course Conversion Summary';
@@ -123,3 +127,5 @@ $string['course_audit:view'] = 'View course audit information';
 
 // Scheduled task string
 $string['cleanup_audit_tours'] = 'Cleanup audit tours task';
+
+$string['labeladdedsuccess'] = 'Label added successfully.';

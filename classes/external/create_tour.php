@@ -92,7 +92,19 @@ class create_tour extends external_api
                     'List of filter names',
                     VALUE_OPTIONAL
                 )
-            ])
+            ], 'Tour data required by the frontend tour library', VALUE_REQUIRED),
+            'actionDetailsMap' => new external_multiple_structure(
+                new external_single_structure(
+                    [
+                        'mapkey' => new external_value(PARAM_TEXT, 'Map key'),
+                        'label' => new external_value(PARAM_TEXT, 'Label'),
+                        'endpoint' => new external_value(PARAM_TEXT, 'Endpoint'),
+                        'params' => new external_value(PARAM_TEXT, 'Params'),
+                    ],
+                    'Action details map',
+                    VALUE_OPTIONAL
+                )
+            )
         ]);
     }
 
@@ -127,7 +139,7 @@ class create_tour extends external_api
      * Create a course audit tour
      *
      * @param int $courseid The course ID
-     * @return array Operation status and response message
+     * @return array Operation status, message, tour data, and action details map
      */
     public static function execute($courseid)
     {
@@ -148,18 +160,19 @@ class create_tour extends external_api
 
         $auditor = new auditor();
         $audit_data = $auditor->get_audit_results($course);
-        $tour_steps_data = $audit_data['tour_steps']; // Data for creating tour steps
-        $raw_audit_results = $audit_data['raw_results']; // Raw results for DB storage
+        $tour_steps_data = $audit_data['tour_steps'];
+        $raw_audit_results = $audit_data['raw_results'];
+        $action_details_map = $audit_data['action_details_map'];
 
-        // Check if we actually got any steps/results
-        if (empty($tour_steps_data)) {
+        if (empty($tour_steps_data) && empty($raw_audit_results)) {
             return [
                 'status' => false,
                 'message' => get_string('noauditresults', 'block_course_audit'),
                 'tourdata' => [
                     'tourDetails' => [],
                     'filterNames' => []
-                ]
+                ],
+                'actionDetailsMap' => []
             ];
         }
 
@@ -208,8 +221,9 @@ class create_tour extends external_api
             $tourdata = self::init_tour_data($tour);
             $resp = [
                 'status' => true,
-                'message' => get_string('toursuccess', 'block_course_audit'), // Add this string
-                'tourdata' => $tourdata
+                'message' => get_string('toursuccess', 'block_course_audit'),
+                'tourdata' => $tourdata,
+                'actionDetailsMap' => $action_details_map
             ];
             return $resp;
         } catch (\Exception $e) {

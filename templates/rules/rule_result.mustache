@@ -40,7 +40,7 @@
             <p class="mb-1">{{.}}</p>
         {{/rule_result.messages}}
         {{#rule_result.action_button_details}}
-            <a href="#" class="btn btn-primary btn-course-audit-action" role="button" data-action="{{type}}" data-endpoint="{{endpoint}}" data-params="{{#json}}params{{/json}}">{{label}}</a>
+            <a href="#" class="btn btn-primary course-audit-action-button audit-action-{{section_id}}-{{rule_result.rule_key}}" role="button">{{label}}</a>
         {{/rule_result.action_button_details}}
     </div>
 </div> 

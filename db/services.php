@@ -25,14 +25,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 $functions = array(
-    'block_course_audit_get_section_analysis' => array(
-        'classname'     => 'block_course_audit\external\get_section_analysis',
-        'methodname'    => 'execute',
-        'description'   => 'Get analysis data for a course section',
-        'type'          => 'read',
-        'capabilities'  => 'block/course_audit:view',
-        'ajax'          => true,
-    ),
     'block_course_audit_create_tour' => array(
         'classname'     => 'block_course_audit\external\create_tour',
         'methodname'    => 'execute',
@@ -49,20 +41,19 @@ $functions = array(
         'ajax'          => true,
         'capabilities'  => 'block/course_audit:view'
     ),
-    'block_course_audit_add_label_to_section' => array(
-        'classname' => 'block_course_audit\\external\\manage_labels',
-        'methodname' => 'add_label_to_section',
-        'classpath' => 'blocks/course_audit/classes/external/manage_labels.php',
-        'description' => 'Adds a new label module to a specific course section.',
-        'type' => 'write',
-        'capabilities' => 'moodle/course:manageactivities',
-        'ajax' => true,
+    'block_course_audit_manage_labels' => array(
+        'classname'     => 'block_course_audit\external\manage_labels',
+        'methodname'    => 'execute',
+        'description'   => 'Adds a new label module to a specific course section.',
+        'type'          => 'write',
+        'ajax'          => true,
+        'capabilities'  => 'block/course_audit:view'
     ),
 );
 
 $services = array(
     'Course Audit Services' => array(
-        'functions' => ['block_course_audit_get_section_analysis', 'block_course_audit_create_tour', 'block_course_audit_get_summary', 'block_course_audit_add_label_to_section'],
+        'functions' => ['block_course_audit_create_tour', 'block_course_audit_get_summary', 'block_course_audit_manage_labels'],
         'restrictedusers' => 0,
         'enabled' => 1
     )

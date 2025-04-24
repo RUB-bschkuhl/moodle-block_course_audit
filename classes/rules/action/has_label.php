@@ -75,12 +75,12 @@ class has_label extends rule_base
             // Section contains at least one label
             return $this->create_result(true, [
                 get_string('rule_has_label_success', 'block_course_audit')
-            ], $section->id);
+            ], $section->id, $course->id);
         } else {
             // No labels found in the section
             return $this->create_result(false, [
                 get_string('rule_has_label_failure', 'block_course_audit')
-            ], $section->id);
+            ], $section->id, $course->id);
         }
     }
 
@@ -90,7 +90,7 @@ class has_label extends rule_base
      * @param int $target_id Target ID of the rule result if needed for the action.
      * @return array|null Action button details.
      */
-    public function get_action_button_details($target_id = null)
+    public function get_action_button_details($target_id = null, $courseid = null)
     {
         // Only show button if the check failed (no label found) and we have a section ID.
         if (!$target_id) {
@@ -99,12 +99,10 @@ class has_label extends rule_base
 
         // Button details for an AJAX action to add a label
         return [
+            'mapkey' => 'section_' . $target_id . '_' . self::rule_key,
             'label' => get_string('button_add_label', 'block_course_audit'),
-            'type' => 'ajax',
-            'endpoint' => 'block_course_audit_add_label_to_section',
-            'params' => [
-                'sectionid' => $target_id,
-            ]
+            'endpoint' => 'block_course_audit_manage_labels',
+            'params' => 'sectionid=' . $target_id . '&courseid=' . $courseid
         ];
     }
 }
