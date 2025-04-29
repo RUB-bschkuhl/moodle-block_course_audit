@@ -49,11 +49,19 @@ $functions = array(
         'ajax'          => true,
         'capabilities'  => 'block/course_audit:view'
     ),
+    'block_course_audit_manage_quiz' => array(
+        'classname'     => 'block_course_audit\external\manage_quiz',
+        'methodname'    => 'execute',
+        'description'   => 'Manage a quiz in a course',
+        'type'          => 'write',
+        'ajax'          => true,
+        'capabilities'  => 'block/course_audit:view'
+    ),
 );
 
 $services = array(
     'Course Audit Services' => array(
-        'functions' => ['block_course_audit_create_tour', 'block_course_audit_get_summary', 'block_course_audit_manage_labels'],
+        'functions' => ['block_course_audit_create_tour', 'block_course_audit_get_summary', 'block_course_audit_manage_labels', 'block_course_audit_manage_quiz'],
         'restrictedusers' => 0,
         'enabled' => 1
     )

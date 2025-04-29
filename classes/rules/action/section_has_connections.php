@@ -39,60 +39,67 @@ use block_course_audit\rules\rule_base;
  * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class has_connections extends rule_base {
+class has_connections extends rule_base
+{
 
-    const rule_key = 'has_connections';
+    const rule_key = 'section_has_connections';
     const target_type = 'section';
+    const prerequisite_rules = ['course_has_section'];
 
     /**
      * Constructor
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct(
             self::rule_key,
             self::target_type,
             get_string('rule_has_connections_name', 'block_course_audit'),
             get_string('rule_has_connections_description', 'block_course_audit'),
-            'action'
-            //get_string('rule_category_action', 'block_course_audit')
+            'action',
+            self::prerequisite_rules
         );
     }
-    
+
     /**
      * Check if activities in a section have any connections (completion conditions)
      *
-     * @param object $section The section to check
-     * @param object $course The course the section belongs to
+     * @param object $target The target to check
+     * @param object $course The course the target belongs to
      * @return object Result object with 'status' (boolean) and 'messages' (array of string)
      */
-    public function check_section($section, $course) {
+    public function check_target($target, $course = null)
+    {
         // If no modules in section, return false
-        if (empty($section->modules)) {
+        if (empty($target->modules)) {
             return $this->create_result(false, [
                 get_string('rule_has_connections_empty_section', 'block_course_audit')
-            ], $section->id, $course->id);
+            ], $target->id, $course->id);
         }
-        
+
         // If only one module, return false (can't have connections with only one module)
-        if (count($section->modules) < 2) {
+        if (count($target->modules) < 2) {
             return $this->create_result(false, [
-                get_string('rule_has_connections_single_module', 'block_course_audit', 
-                    ['name' => $section->modules[0]->name])
-            ], $section->id, $course->id);
+                get_string(
+                    'rule_has_connections_single_module',
+                    'block_course_audit',
+                    ['name' => $target->modules[0]->name]
+                )
+            ], $target->id, $course->id);
         }
-        
+
         $modulesWithConditions = [];
         $modulesWithoutConditions = [];
-        
-        foreach ($section->modules as $module) {
+
+        foreach ($target->modules as $module) {
             // Skip if no availability data
             if (empty($module->availability)) {
                 $modulesWithoutConditions[] = $module->name;
                 continue;
             }
-            
+
             $hasCompletionCondition = false;
-            
+
             // Parse the availability conditions
             $availability = json_decode($module->availability);
             if (isset($availability->c) && is_array($availability->c)) {
@@ -104,55 +111,68 @@ class has_connections extends rule_base {
                     }
                 }
             }
-            
+
             if ($hasCompletionCondition) {
                 $modulesWithConditions[] = $module->name;
             } else {
                 $modulesWithoutConditions[] = $module->name;
             }
         }
-        
+
         // If no modules have completion conditions
         if (empty($modulesWithConditions)) {
             return $this->create_result(false, [
                 get_string('rule_has_connections_no_conditions', 'block_course_audit')
-            ], $section->id, $course->id);
+            ], $target->id, $course->id);
         }
-        
+
         // Prepare messages about which modules have conditions
         $messages = [
-            get_string('rule_has_connections_success', 'block_course_audit',
-                ['count' => count($modulesWithConditions)])
+            get_string(
+                'rule_has_connections_success',
+                'block_course_audit',
+                ['count' => count($modulesWithConditions)]
+            )
         ];
-        
+
         // Add details about modules with and without conditions
         foreach ($modulesWithConditions as $moduleName) {
-            $messages[] = get_string('rule_has_connections_module_with_condition', 'block_course_audit',
-                ['name' => $moduleName]);
+            $messages[] = get_string(
+                'rule_has_connections_module_with_condition',
+                'block_course_audit',
+                ['name' => $moduleName]
+            );
         }
-        
+
         if (!empty($modulesWithoutConditions)) {
-            $messages[] = get_string('rule_has_connections_some_without_conditions', 'block_course_audit',
-                ['count' => count($modulesWithoutConditions)]);
-                
+            $messages[] = get_string(
+                'rule_has_connections_some_without_conditions',
+                'block_course_audit',
+                ['count' => count($modulesWithoutConditions)]
+            );
+
             foreach ($modulesWithoutConditions as $moduleName) {
-                $messages[] = get_string('rule_has_connections_module_without_condition', 'block_course_audit',
-                    ['name' => $moduleName]);
+                $messages[] = get_string(
+                    'rule_has_connections_module_without_condition',
+                    'block_course_audit',
+                    ['name' => $moduleName]
+                );
             }
         }
-        
-        return $this->create_result(true, $messages, $section->id, $course->id);
+
+        return $this->create_result(true, $messages, $target->id, $course->id);
     }
 
     /**
      * @param object $context Context containing rule result details like target_id.
      * @return array|null Action button details.
      */
-    public function get_action_button_details($target_id = null, $courseid = null) {
+    public function get_action_button_details($target_id = null, $courseid = null)
+    {
         return null;
         //TODO: Implement
         if (!$context || $context->status === true || empty($context->rule_target_id)) {
-             return null;
+            return null;
         }
 
         return [
@@ -162,4 +182,4 @@ class has_connections extends rule_base {
             'params' => 'sectionid=' . $context->rule_target_id . '&courseid=' . $courseid
         ];
     }
-} 
+}

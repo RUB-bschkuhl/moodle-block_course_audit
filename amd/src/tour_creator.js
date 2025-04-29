@@ -46,6 +46,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
         * @param {int} courseId The course ID
         */
         const init = function (courseId) {
+            //TODO Prüfen ob Tour bereits existiert, wenn ja zeige nur Summary und Möglichkeit des neustarts
             getElements();
             if (!miauWrapper) {
                 return;
@@ -89,7 +90,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                         let errorMessage = response.message || 'Unknown error creating tour data.';
                         throw new Error(errorMessage);
                     }
-                    
+                                       
                     if (response.actionDetailsMap) {
                         storedActionDetails = response.actionDetailsMap;
                     }
@@ -197,29 +198,52 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                 }
             }])[0];
 
-            return promise.then(function (response) {
+            return promise.then(async function (response) {
                 if (response && response.status && response.data) {
+                    console.log('response', response);
                     let summaryContainer = $(speechBubble);
 
-                    const processedResults = response.data.map(function (result) {
+                    const processedResultsPromises = response.data.map(async function (result) {
+                        const ruleNameKey = 'rule_' + result.rulekey + '_name';
+                        let ruleNameDisplay = '';
+                        let parsedMessages = [];
+
+                        try {
+                            ruleNameDisplay = await Str.get_string(ruleNameKey, 'block_course_audit');
+                        } catch (e) {
+                            console.error('Error fetching string:', ruleNameKey, e);
+                            ruleNameDisplay = result.rulekey;
+                        }
+
+                        try {
+                            parsedMessages = JSON.parse(result.messages);
+                            if (!Array.isArray(parsedMessages)) {
+                                console.warn('Parsed messages is not an array for rule:', result.rulekey, parsedMessages);
+                                parsedMessages = [String(parsedMessages)];
+                            }
+                        } catch (e) {
+                            console.error('Error parsing messages JSON for rule:', result.rulekey, result.messages, e);
+                            parsedMessages = [result.messages || 'Error displaying message.'];
+                        }
+
                         return {
                             ...result,
-                            isPassed: result.status === 'pass',
-                            isFailed: result.status === 'fail'
+                            ruleNameDisplay: ruleNameDisplay,
+                            messages: parsedMessages,
+                            isTodo: result.status === '0',
+                            isDone: result.status === '1'
                         };
                     });
 
-                    // Organize the data for the template
+                    console.log('processedResultsPromises', processedResultsPromises);
+
+                    const processedResults = await Promise.all(processedResultsPromises);
+
                     const templateContext = {
                         results: processedResults,
-                        tourId: tourId,
                         hasResults: processedResults.length > 0,
-                        message: response.message,
-                        status: response.status
                     };
-                    console.log("templateContext", templateContext);
-                    console.log("response.data", response.data);
-                    // Render the template and update the container
+
                     return Templates.render('block_course_audit/block/summary', templateContext)
                         .then(function (html, js) {
                             summaryContainer.empty();

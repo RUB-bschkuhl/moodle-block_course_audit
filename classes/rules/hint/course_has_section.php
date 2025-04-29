@@ -41,8 +41,8 @@ use block_course_audit\rules\rule_base;
  */
 class pdf_only extends rule_base {
 
-    const rule_key = 'pdf_only';
-    const target_type = 'section';
+    const rule_key = 'course_has_section';
+    const target_type = 'course';
 
     /**
      * Constructor

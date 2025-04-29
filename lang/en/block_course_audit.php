@@ -61,9 +61,9 @@ $string['rule_category_action'] = 'Action';
 $string['rule_pdf_only_name'] = 'PDF Only Resources';
 $string['rule_pdf_only_description'] = 'Checks if a section contains only PDF resources';
 $string['rule_pdf_only_empty_section'] = 'The section is empty. Please add some resources.';
-$string['rule_pdf_only_non_pdf_resources'] = 'The section contains non-PDF resources:';
-$string['rule_pdf_only_non_pdf_resource_item'] = '- "{$a->name}" ({$a->type})';
-$string['rule_pdf_only_success'] = 'All {$a->count} resources in the section are PDFs.';
+$string['rule_pdf_only_non_pdf_resources'] = 'Section contains non-PDF resources or activities:';
+$string['rule_pdf_only_non_pdf_resource_item'] = ' - {$a->name} (Type: {$a->type})';
+$string['rule_pdf_only_success'] = 'Section contains {$a->count} PDF resource(s).';
 
 // Rules - Has Connections - used in rule implementations
 $string['rule_has_connections_name'] = 'Activity Connections';
@@ -87,6 +87,13 @@ $string['label_added_success'] = 'Label added successfully';
 $string['label_added_failure'] = 'Failed to add label';
 $string['label_intro'] = 'Use labels to add explanatory text, instructions, or headings directly within a course section, helping to structure content and guide learners.';
 $string['label_name'] = 'New Label';
+
+// Strings for adding Quiz via AJAX
+$string['button_add_quiz'] = 'Add Quiz';
+$string['quiz_name_default'] = 'New Quiz';
+$string['quiz_intro_default'] = 'Quiz introduction - please configure this quiz further.';
+$string['quiz_added_success'] = 'Basic quiz added successfully. Please configure its settings and add questions.';
+$string['quiz_added_failure'] = 'Failed to add quiz';
 
 // Summary related - used in summary display
 $string['summary_heading'] = 'Course Conversion Summary';
@@ -128,4 +135,17 @@ $string['course_audit:view'] = 'View course audit information';
 // Scheduled task string
 $string['cleanup_audit_tours'] = 'Cleanup audit tours task';
 
-$string['labeladdedsuccess'] = 'Label added successfully.';
+$string['showdetails'] = 'Show details';
+$string['close'] = 'Close';
+$string['status_done'] = 'Completed';
+$string['status_todo'] = 'Pending';
+
+// Rule: section_has_quiz
+$string['rule_section_has_quiz_name'] = 'Section Has Quiz';
+$string['rule_section_has_quiz_description'] = 'Checks if the section contains at least one quiz activity.';
+$string['rule_section_has_quiz_success'] = 'Section contains a quiz: {$a->quizname}';
+$string['rule_section_has_quiz_failure'] = 'Section does not contain any quiz activities.';
+$string['rule_section_has_quiz_empty_section'] = 'Section is empty, cannot contain a quiz.';
+
+// Rule: course_has_section
+$string['rule_course_has_section_name'] = 'Course Has Section';

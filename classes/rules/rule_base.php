@@ -51,6 +51,9 @@ abstract class rule_base implements rule_interface
     /** @var string The rule category */
     protected $category;
 
+    /** @var array The rulekeys that needs to be fulfilled before this rule is checked*/
+    protected $prerequisite_rules;
+
     /**
      * Constructor.
      *
@@ -59,14 +62,16 @@ abstract class rule_base implements rule_interface
      * @param string $name The rule name
      * @param string $description The rule description
      * @param string $category The rule category ('hint' or 'action')
+     * @param array $prerequisite_rules An array of rulekeys that needs to be fulfilled before this rule is checked e.g. ['has_connections']
      */
-    public function __construct($key, $target_type, $name, $description, $category)
+    public function __construct($key, $target_type, $name, $description, $category, $prerequisite_rules)
     {
         $this->key = $key;
         $this->target = $target_type;
         $this->name = $name;
         $this->description = $description;
         $this->category = $category;
+        $this->prerequisite_rules = $prerequisite_rules;
     }
 
     /**
@@ -160,5 +165,27 @@ abstract class rule_base implements rule_interface
             'rule_target_id' => $target_id,
             'action_button_details' => $this->get_action_button_details($target_id, $courseid)
         ];
+    }
+
+    /**
+     * Check if all prerequisite rules for this rule have passed.
+     *
+     * @param array $all_results An associative array of results from previously run rules, keyed by rule key.
+     * @return bool True if all prerequisites are met or if no prerequisites are defined, false otherwise.
+     */
+    public function check_prerequisites(array $all_results) {
+        if (empty($this->prerequisite_rules)) {
+            // No prerequisites defined for this rule.
+            return true;
+        }
+
+        foreach ($this->prerequisite_rules as $prereq_key) {
+            // Check if the prerequisite rule result exists and if its status is true.
+            if (!isset($all_results[$prereq_key]) || $all_results[$prereq_key]->status !== true) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

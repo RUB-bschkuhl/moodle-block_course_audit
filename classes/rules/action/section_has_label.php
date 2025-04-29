@@ -31,9 +31,9 @@ use core_course_list_element; // Needed for type hinting if using modinfo
 class has_label extends rule_base
 {
 
-    const rule_key = 'has_label';
+    const rule_key = 'section_has_label';
     const target_type = 'section';
-
+    const prerequisite_rules = ['section_has_mods'];
     /**
      * Constructor
      */
@@ -44,25 +44,26 @@ class has_label extends rule_base
             self::target_type,
             get_string('rule_has_label_name', 'block_course_audit'),
             get_string('rule_has_label_description', 'block_course_audit'),
-            'action' // Category
+            'action', // Category
+            self::prerequisite_rules
         );
     }
 
     /**
      * Check if the section contains a label.
      *
-     * @param object $section The course_section object (or equivalent structure with modules)
+     * @param object $target The course_section object (or equivalent structure with modules)
      * @param object $course The course object
      * @return object Result object
      */
-    public function check_section($section, $course)
+    public function check_target($target, $course = null)
     {
         $haslabel = false;
 
         // Assume $section->modules contains course_list_element objects or similar
         // based on how the auditor fetches section data.
-        if (!empty($section->modules)) {
-            foreach ($section->modules as $module) {
+        if (!empty($target->modules)) {
+            foreach ($target->modules as $module) {
                 // Check if the module type is 'label'
                 if (isset($module->modname) && $module->modname === 'label') {
                     $haslabel = true;
@@ -75,12 +76,12 @@ class has_label extends rule_base
             // Section contains at least one label
             return $this->create_result(true, [
                 get_string('rule_has_label_success', 'block_course_audit')
-            ], $section->id, $course->id);
+            ], $target->id, $course->id);
         } else {
             // No labels found in the section
             return $this->create_result(false, [
                 get_string('rule_has_label_failure', 'block_course_audit')
-            ], $section->id, $course->id);
+            ], $target->id, $course->id);
         }
     }
 

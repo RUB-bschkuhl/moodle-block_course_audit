@@ -15,52 +15,56 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Rule interface for the course_audit block.
+ * Rule that checks if a section contains only PDF resources.
  *
  * @package   block_course_audit
  * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_course_audit\rules;
+        namespace block_course_audit\rules\hint;
 
 defined('MOODLE_INTERNAL') || die();
 
+global $CFG;
+
+require_once($CFG->dirroot . '/blocks/course_audit/classes/rules/rule_base.php');
+
+use block_course_audit\rules\rule_base;
+
 /**
- * Interface for rules in course_audit
+ * Rule that checks if a course is empty.
  *
  * @package   block_course_audit
  * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-interface rule_interface {
+class course_is_empty extends rule_base {
+
+    const rule_key = 'course_is_empty';
+    const target_type = 'course';
+
     /**
-     * Check a section against this rule
+     * Constructor
+     */
+    public function __construct() {
+        parent::__construct(
+            self::rule_key,
+            self::target_type,
+            get_string('rule_course_is_empty_name', 'block_course_audit'),
+            get_string('rule_course_is_empty_description', 'block_course_audit'),
+            'hint'
+            //get_string('rule_category_hint', 'block_course_audit')
+        );
+    }
+    
+    /**
+     * Check if a course is empty
      *
-     * @param object $section The section to check
-     * @param object $course The course the section belongs to
+     * @param object $course The course to check
      * @return object Result object with 'status' (boolean) and 'messages' (array of string)
      */
-    public function check_target($target, $course = null);
-
-    /**
-     * Get the rule name (for display)
-     *
-     * @return string
-     */
-    public function get_name();
-
-    /**
-     * Get the rule description
-     *
-     * @return string
-     */
-    public function get_description();
-
-    /**
-     * Get the rule category
-     *
-     * @return string One of 'hint', 'action'
-     */
-    public function get_category();
+    public function check_target($target, $course = null) {
+        return $this->create_result(true, []);
+    }
 } 

@@ -135,19 +135,19 @@ class rule_manager {
     }
     
     /**
-     * Run all rules or rules of a specific category on a section
+     * Run all rules or rules of a specific category on a target
      *
-     * @param object $section Section to check
-     * @param object $course Course the section belongs to
+     * @param object $target Target to check
+     * @param object $course Course the target belongs to
      * @param string $category Optional category to filter rules
      * @return array Results from all rules
      */
-    public function run_rules($section, $course, $category = null) {
+    public function run_rules($target, $course, $category = null) {
         $results = [];
         $rules = $this->get_rules($category);
         
         foreach ($rules as $rule) {
-            $results[] = $rule->check_section($section, $course);
+            $results[] = $rule->check_target($target, $course);
         }
         
         return $results;

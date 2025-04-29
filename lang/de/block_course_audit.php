@@ -120,3 +120,6 @@ $string['course_audit:view'] = 'Kurs-Prüfer-Informationen anzeigen';
 
 // Scheduled task string
 $string['cleanup_audit_tours'] = 'Aufräumen der Audit-Touren Aufgabe';
+
+$string['showdetails'] = 'Details anzeigen';
+$string['close'] = 'Schließen';
