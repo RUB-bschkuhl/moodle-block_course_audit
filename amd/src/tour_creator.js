@@ -181,7 +181,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                       console.warn('Course Audit: Could not find tour step element to scroll:', stepElement);
                   } */
             });
-            document.addEventListener(userTourEvents.stepHide, function (event) {
+            document.addEventListener(userTourEvents.stepHide, function () {
                 // TODO klick neben Tour Element cancelled Tour.
                 // Dieses Event hier wird gefeuert, danach wird der nächste Step nicht gerendered.
                 // event genauer betrachten wodurch es ausgelöst wird.
@@ -199,7 +199,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
 
             return promise.then(async function (response) {
                 if (response && response.status && response.data) {
-                    console.log('response', response);
                     let summaryContainer = $(speechBubble);
 
                     const processedResultsPromises = response.data.map(async function (result) {
@@ -210,16 +209,32 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                         try {
                             ruleNameDisplay = await Str.get_string(ruleNameKey, 'block_course_audit');
                         } catch (e) {
-                            console.error('Error fetching string:', ruleNameKey, e);
                             ruleNameDisplay = result.rulekey;
                         }
-                        console.log(ruleNameDisplay);
+
                         try {
                             parsedMessages = JSON.parse(result.messages);
                             if (!Array.isArray(parsedMessages)) {
-                                console.warn('Parsed messages is not an array for rule:', result.rulekey, parsedMessages);
                                 parsedMessages = [String(parsedMessages)];
                             }
+
+                            // Process messages to handle language strings
+                            const messagePromises = parsedMessages.map(async msg => {
+                                // Check if message is a language key pattern like [[key]]
+                                const langKeyMatch = msg.match(/^\[\[(.*?)\]\]$/);
+                                if (langKeyMatch) {
+                                    const langKey = langKeyMatch[1];
+                                    try {
+                                        let str = await Str.get_string(langKey, 'block_course_audit');
+                                        return str;
+                                    } catch (e) {
+                                        console.error('Error fetching string for key:', langKey, e);
+                                        return 'Error: ' + langKey;
+                                    }
+                                }
+                                return msg;
+                            });
+                            parsedMessages = await Promise.all(messagePromises);
                         } catch (e) {
                             console.error('Error parsing messages JSON for rule:', result.rulekey, result.messages, e);
                             parsedMessages = [result.messages || 'Error displaying message.'];
@@ -233,9 +248,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                             isDone: result.status === '1'
                         };
                     });
-
-                    console.log('processedResultsPromises', processedResultsPromises);
-
                     const processedResults = await Promise.all(processedResultsPromises);
 
                     const templateContext = {

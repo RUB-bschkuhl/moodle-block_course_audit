@@ -28,7 +28,7 @@
         * messages - ARRAY of string messages for details (JSON string from server MUST be parsed before passing to template)
         * targettype - type of target (e.g., section)
         * targetid - ID of the target
-    * hasResults - boolean indicating if there are results to show
+        * ruleNameDisplay - Display name of the rule
 
     Example context (json - NOTE: messages MUST be an array here):
     {
@@ -44,7 +44,8 @@
                 ],
                 "targettype": "section",
                 "targetid": 51,
-                "timecreated": 1745492001
+                "timecreated": 1745492001,
+                "ruleNameDisplay": "Activity Connections"
             },
             {
                 "id": 809,
@@ -57,7 +58,8 @@
                 ],
                 "targettype": "section",
                 "targetid": 52,
-                "timecreated": 1745492002
+                "timecreated": 1745492002,
+                "ruleNameDisplay": "PDF Only Resources"
             }
         ],
         "hasResults": true
@@ -74,29 +76,31 @@
             {{#hasResults}}
                 <ul class="list-group list-group-flush">
                     {{#results}}
-                        <li class="list-group-item">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="flex-grow-1 me-3">
+                        <li class="list-group-item py-3">
+                            <div class="d-flex justify-content-between align-items-start gap-2">
+                                <div class="d-flex align-items-center mb-2 mb-md-0 flex-grow-1">
                                     {{#status}}
                                         <i class="fa fa-check-square-o text-success me-2" aria-hidden="true" title="{{#str}}status_done, block_course_audit{{/str}}"></i>
-                                        <span class="text-muted"><del>ruleNameDisplay</del></span>
+                                        <span class="text-muted">{{ruleNameDisplay}}</span>
                                     {{/status}}
                                     {{^status}}
                                         <i class="fa fa-square-o text-warning me-2" aria-hidden="true" title="{{#str}}status_todo, block_course_audit{{/str}}"></i>
-                                        <strong>not ruleNameDisplay</strong>
+                                        <strong>{{ruleNameDisplay}}</strong>
                                     {{/status}}
                                 </div>
-                                <button class="btn btn-sm btn-outline-secondary rounded-circle p-0 d-flex align-items-center justify-content-center" type="button" data-bs-toggle="collapse" data-bs-target="#details-{{id}}" aria-expanded="false" aria-controls="details-{{id}}" style="width: 24px; height: 24px;">
-                                    <i class="fa fa-plus" aria-hidden="true"></i>
-                                    <span class="visually-hidden">{{#str}}showdetails, block_course_audit{{/str}}</span>
-                                </button>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-secondary details-button" type="button" data-bs-toggle="collapse" data-bs-target="#details-{{id}}" aria-expanded="false" aria-controls="details-{{id}}">
+                                        <i class="fa fa-info-circle me-1" aria-hidden="true"></i>
+                                        {{#str}}showdetails, block_course_audit{{/str}}
+                                    </button>
+                                </div>
                             </div>
-                            <div class="collapse mt-2" id="details-{{id}}">
-                                <div class="card card-body bg-light small border p-2">
+                            <div class="collapse mt-3" id="details-{{id}}">
+                                <div class="card card-body bg-light small border p-3">
                                     {{#messages}}
-                                        <p class="mb-1">{{.}}</p>
+                                        <p class="mb-2">{{.}}</p>
                                     {{/messages}}
-                                    <em class="text-muted small mt-1">({{rulekey}} - {{targettype}} {{targetid}})</em>
+                                    <em class="text-muted small mt-2">({{rulekey}} - {{targettype}} {{targetid}})</em>
                                 </div>
                             </div>
                         </li>
@@ -109,6 +113,5 @@
                 </div>
             {{/hasResults}}
         </div>
-         {{! Optional: Footer can be removed if close is handled in header }}
     </div>
 </div>

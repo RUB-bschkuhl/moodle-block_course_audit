@@ -65,6 +65,14 @@ $string['rule_pdf_only_non_pdf_resources'] = 'Der Abschnitt enthält Nicht-PDF-R
 $string['rule_pdf_only_non_pdf_resource_item'] = '- "{$a->name}" ({$a->type})';
 $string['rule_pdf_only_success'] = 'Alle {$a->count} Ressourcen im Abschnitt sind PDFs.';
 
+// Standardisierte Schlüsselnamen mit section_ Präfix für PDFs
+$string['rule_section_has_pdfs_name'] = 'Nur PDF-Ressourcen';
+$string['rule_section_has_pdfs_description'] = 'Prüft, ob ein Abschnitt nur PDF-Ressourcen enthält';
+$string['rule_section_has_pdfs_empty_section'] = 'Der Abschnitt ist leer. Bitte fügen Sie Ressourcen hinzu.';
+$string['rule_section_has_pdfs_non_pdf_resources'] = 'Der Abschnitt enthält Nicht-PDF-Ressourcen:';
+$string['rule_section_has_pdfs_non_pdf_resource_item'] = '- "{$a->name}" ({$a->type})';
+$string['rule_section_has_pdfs_success'] = 'Der Abschnitt enthält {$a->count} PDF-Ressource(n).';
+
 // Rules - Has Connections
 $string['rule_has_connections_name'] = 'Aktivitätsverbindungen';
 $string['rule_has_connections_description'] = 'Prüft, ob Aktivitäten in einem Abschnitt durch Abschlussbedingungen verbunden sind';
@@ -75,6 +83,17 @@ $string['rule_has_connections_success'] = '{$a->count} Aktivitäten haben Abschl
 $string['rule_has_connections_module_with_condition'] = '- "{$a->name}" hat Abschlussbedingungen';
 $string['rule_has_connections_some_without_conditions'] = '{$a->count} Aktivitäten haben keine Abschlussbedingungen:';
 $string['rule_has_connections_module_without_condition'] = '- "{$a->name}" hat keine Abschlussbedingungen';
+
+// Standardisierte Schlüsselnamen mit section_ Präfix
+$string['rule_section_has_connections_name'] = 'Aktivitätsverbindungen';
+$string['rule_section_has_connections_description'] = 'Prüft, ob Aktivitäten in einem Abschnitt durch Abschlussbedingungen verbunden sind';
+$string['rule_section_has_connections_empty_section'] = 'Der Abschnitt ist leer. Bitte fügen Sie Aktivitäten hinzu.';
+$string['rule_section_has_connections_single_module'] = 'Der Abschnitt enthält nur eine Aktivität ("{$a->name}"). Mindestens zwei Aktivitäten sind erforderlich, um Verbindungen zu erstellen.';
+$string['rule_section_has_connections_no_conditions'] = 'Keine Aktivitäten in diesem Abschnitt haben Abschlussbedingungen eingerichtet. Bitte fügen Sie Bedingungen hinzu, um einen Lernpfad zu erstellen.';
+$string['rule_section_has_connections_success'] = '{$a->count} Aktivitäten haben Abschlussbedingungen eingerichtet.';
+$string['rule_section_has_connections_module_with_condition'] = '- "{$a->name}" hat Abschlussbedingungen';
+$string['rule_section_has_connections_some_without_conditions'] = '{$a->count} Aktivitäten haben keine Abschlussbedingungen:';
+$string['rule_section_has_connections_module_without_condition'] = '- "{$a->name}" hat keine Abschlussbedingungen';
 
 // Rules - Has Label - used in rule implementations
 $string['rule_has_label_name'] = 'Textfeld vorhanden';
@@ -123,3 +142,30 @@ $string['cleanup_audit_tours'] = 'Aufräumen der Audit-Touren Aufgabe';
 
 $string['showdetails'] = 'Details anzeigen';
 $string['close'] = 'Schließen';
+
+// Hinzufügen der fehlenden Strings
+$string['status_done'] = 'Abgeschlossen';
+$string['status_todo'] = 'Ausstehend';
+
+// Rule: section_has_quiz
+$string['rule_section_has_quiz_name'] = 'Abschnitt hat Quiz';
+$string['rule_section_has_quiz_description'] = 'Prüft, ob der Abschnitt mindestens ein Quiz enthält.';
+$string['rule_section_has_quiz_success'] = 'Abschnitt enthält ein Quiz: {$a->quizname}';
+$string['rule_section_has_quiz_failure'] = 'Abschnitt enthält keine Quiz-Aktivitäten.';
+$string['rule_section_has_quiz_empty_section'] = 'Abschnitt ist leer, kann kein Quiz enthalten.';
+
+// Rule: course_has_section
+$string['rule_course_has_section_name'] = 'Kurs hat Abschnitt';
+
+// Settings page strings
+$string['settings_heading'] = 'Kurs-Prüfer Einstellungen';
+$string['example_setting_name'] = 'Beispiel Texteinstellung';
+$string['example_setting_desc'] = 'Dies ist eine Beispiel-Texteinstellung für den Kurs-Prüfer-Block.';
+$string['settings_link_description'] = 'Um die Einstellungen für den Kurs-Prüfer-Block zu konfigurieren, gehen Sie bitte zu <a href="{$a}">Block-Einstellungen</a>.';
+
+// Standardisierte Schlüsselnamen mit section_ Präfix für Labels
+$string['rule_section_has_label_name'] = 'Textfeld vorhanden';
+$string['rule_section_has_label_description'] = 'Prüft, ob ein Abschnitt ein Textfeld enthält';
+$string['rule_section_has_label_empty_section'] = 'Der Abschnitt ist leer. Bitte fügen Sie Ressourcen hinzu.';
+$string['rule_section_has_label_success'] = 'Der Abschnitt enthält ein Textfeld.';
+$string['rule_section_has_label_failure'] = 'Der Abschnitt enthält kein Textfeld.';
