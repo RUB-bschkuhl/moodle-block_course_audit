@@ -39,12 +39,11 @@ use block_course_audit\rules\rule_base;
  * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class has_connections extends rule_base
+class section_has_connections extends rule_base
 {
 
     const rule_key = 'section_has_connections';
     const target_type = 'section';
-    const prerequisite_rules = ['course_has_section'];
 
     /**
      * Constructor
@@ -56,8 +55,7 @@ class has_connections extends rule_base
             self::target_type,
             get_string('rule_has_connections_name', 'block_course_audit'),
             get_string('rule_has_connections_description', 'block_course_audit'),
-            'action',
-            self::prerequisite_rules
+            'action'
         );
     }
 

@@ -28,12 +28,11 @@ use core_course_list_element; // Needed for type hinting if using modinfo
  * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class has_label extends rule_base
+class section_has_label extends rule_base
 {
 
     const rule_key = 'section_has_label';
     const target_type = 'section';
-    const prerequisite_rules = ['section_has_mods'];
     /**
      * Constructor
      */
@@ -45,7 +44,6 @@ class has_label extends rule_base
             get_string('rule_has_label_name', 'block_course_audit'),
             get_string('rule_has_label_description', 'block_course_audit'),
             'action', // Category
-            self::prerequisite_rules
         );
     }
 

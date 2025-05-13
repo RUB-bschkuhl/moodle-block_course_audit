@@ -119,4 +119,13 @@ class block_course_audit extends block_base
             'course-view' => true,
         ];
     }
+
+    /**
+     * Returns true if this block has a settings page.
+     *
+     * @return bool
+     */
+    public function has_config() {
+        return true;
+    }
 }

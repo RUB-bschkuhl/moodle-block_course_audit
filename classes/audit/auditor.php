@@ -46,7 +46,7 @@ class auditor
      */
     public function get_audit_results(stdClass $course): array
     {
-        global $CFG, $DB, $OUTPUT;
+        global $OUTPUT;
 
         $tour_steps = [];
         $raw_results = [];
@@ -54,7 +54,37 @@ class auditor
 
         $courseformat = course_get_format($course);
         $sections = $courseformat->get_sections();
-        $rulemanager = new rule_manager(); // Assuming rule manager loads rules in constructor
+
+        //TODO run audit_course first, audit course should only run rule with target_type course
+        $course_results = $this->audit_course($course->id);
+        foreach ($course_results as $result) {
+            //TODO 
+            $raw_results[] = $result; // Store raw result regardless of status
+
+            if ($result->rule_category == "action" && $result->action_button_details && $result->status == false) {
+                $map_key = 'section_' . $sectionobj->id . '_' . $result->rule_key;
+                $action_details_map[$map_key] = $result->action_button_details;
+            }
+
+            // Only create tour steps for failed checks, as before
+            if (!$result->status) {
+                $section_template_data = [
+                    'section_id' => $sectionobj->id,
+                    'section_name' => get_section_name($course, $sectionobj),
+                    'section_number' => $sectionobj->section,
+                    'course_id' => $course->id,
+                    'course_shortname' => $course->shortname,
+                    'rule_result' => $result,
+                ];
+
+                $tour_steps[] = [
+                    'type' => 'course',
+                    'title' => $result->rule_name . ': ' . $result->rule_category,
+                    'number' => $sectionobj->section,
+                    'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
+                ];
+            }
+        }
 
         foreach ($sections as $sectionnum => $sectionobj) {
             // Get all raw results first
@@ -63,7 +93,7 @@ class auditor
             foreach ($section_results as $result) {
                 $raw_results[] = $result; // Store raw result regardless of status
 
-                if ($result->rule_category == "action" && $result->action_button_details && $result->status == false){
+                if ($result->rule_category == "action" && $result->action_button_details && $result->status == false) {
                     $map_key = 'section_' . $sectionobj->id . '_' . $result->rule_key;
                     $action_details_map[$map_key] = $result->action_button_details;
                 }
@@ -89,11 +119,41 @@ class auditor
             }
         }
 
+        //TODO run audit_mod finally, audit course should only run rule with target_type mod
+
         return [
             'tour_steps' => $tour_steps,
             'raw_results' => $raw_results,
             'action_details_map' => $action_details_map // Return the map
         ];
+    }
+
+    /**
+     * Analyse the current course and return raw rule results.
+     * 
+     */
+    public function audit_course(int $courseid): array
+    {
+        global $CFG, $DB;
+
+        $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
+
+        return [];
+    }
+
+    /**
+     * Analyse the current course and return raw rule results.
+     * 
+     */
+    public function audit_mod(int $modid, int $sectionid): array
+    {
+        global $CFG, $DB;
+
+        $mod = $DB->get_record('course_modules', ['id' => $modid], '*', MUST_EXIST);
+        $section = $DB->get_record('course_sections', ['id' => $sectionid], '*', MUST_EXIST);
+        $course = $DB->get_record('course', ['id' => $section->course], '*', MUST_EXIST);
+
+        return [];
     }
 
     /**
@@ -129,8 +189,8 @@ class auditor
 
 
         $rulemanager = new rule_manager();
-        $hintResults = $rulemanager->run_rules($section, $course, 'hint');
-        $actionResults = $rulemanager->run_rules($section, $course, 'action');
+        $hintResults = $rulemanager->run_rules($section, $course, 'hint', 'section');
+        $actionResults = $rulemanager->run_rules($section, $course, 'action', 'section');
 
         $allResults = array_merge($hintResults, $actionResults);
 

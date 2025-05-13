@@ -120,7 +120,8 @@ class rule_manager {
      * @param string $category Optional category filter
      * @return array Array of rule objects
      */
-    public function get_rules($category = null) {
+    public function get_rules($category, $target_type) {
+        //TODO
         if ($category !== null) {
             return isset($this->rules[$category]) ? $this->rules[$category] : [];
         }
@@ -142,9 +143,9 @@ class rule_manager {
      * @param string $category Optional category to filter rules
      * @return array Results from all rules
      */
-    public function run_rules($target, $course, $category = null) {
+    public function run_rules($target, $course, $category, $target_type) {
         $results = [];
-        $rules = $this->get_rules($category);
+        $rules = $this->get_rules($category, $target_type);
         
         foreach ($rules as $rule) {
             $results[] = $rule->check_target($target, $course);

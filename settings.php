@@ -14,22 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle. If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Version information for Course audit
- *
- * @package block_course_audit
- * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'block_course_audit';
-$plugin->release = '0.1.11';
-$plugin->version = 2025050602;
-$plugin->requires = 2024042200;
-$plugin->supported = [404, 405];
-$plugin->maturity = MATURITY_STABLE;
-$plugin->dependencies = [
-    'tool_usertours' => ANY_VERSION,
-];
+if ($ADMIN->fulltree) {
+    $settings->add(new admin_setting_heading(
+        'block_course_audit_settings_heading',
+        get_string('settings_heading', 'block_course_audit'),
+        ''
+    ));
+
+    $settings->add(new admin_setting_configtext(
+        'block_course_audit/example_setting',
+        get_string('example_setting_name', 'block_course_audit'),
+        get_string('example_setting_desc', 'block_course_audit'),
+        '',
+        PARAM_TEXT
+    ));
+} 

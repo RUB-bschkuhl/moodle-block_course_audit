@@ -58,30 +58,31 @@ $string['rule_category_hint'] = 'Hint';
 $string['rule_category_action'] = 'Action';
 
 // Rules - PDF Only - used in rule implementations
-$string['rule_pdf_only_name'] = 'PDF Only Resources';
-$string['rule_pdf_only_description'] = 'Checks if a section contains only PDF resources';
-$string['rule_pdf_only_empty_section'] = 'The section is empty. Please add some resources.';
-$string['rule_pdf_only_non_pdf_resources'] = 'Section contains non-PDF resources or activities:';
-$string['rule_pdf_only_non_pdf_resource_item'] = ' - {$a->name} (Type: {$a->type})';
-$string['rule_pdf_only_success'] = 'Section contains {$a->count} PDF resource(s).';
+$string['rule_section_has_pdfs_name'] = 'PDF Only Resources';
+$string['rule_section_has_pdfs_description'] = 'Checks if a section contains only PDF resources';
+$string['rule_section_has_pdfs_empty_section'] = 'The section is empty. Please add some resources.';
+$string['rule_section_has_pdfs_non_pdf_resources'] = 'Section contains non-PDF resources or activities:';
+$string['rule_section_has_pdfs_non_pdf_resource_item'] = ' - {$a->name} (Type: {$a->type})';
+$string['rule_section_has_pdfs_success'] = 'Section contains {$a->count} PDF resource(s).';
 
 // Rules - Has Connections - used in rule implementations
-$string['rule_has_connections_name'] = 'Activity Connections';
-$string['rule_has_connections_description'] = 'Checks if activities in a section have connections through completion conditions';
-$string['rule_has_connections_empty_section'] = 'The section is empty. Please add some activities.';
-$string['rule_has_connections_single_module'] = 'The section has only one activity ("{$a->name}"). At least two activities are needed to create connections.';
-$string['rule_has_connections_no_conditions'] = 'No activities in this section have completion conditions set up. Please add conditions to create a learning path.';
-$string['rule_has_connections_success'] = '{$a->count} activities have completion conditions set up.';
-$string['rule_has_connections_module_with_condition'] = '- "{$a->name}" has completion conditions';
-$string['rule_has_connections_some_without_conditions'] = '{$a->count} activities do not have any completion conditions:';
-$string['rule_has_connections_module_without_condition'] = '- "{$a->name}" has no completion conditions';
+$string['rule_section_has_connections_name'] = 'Activity Connections';
+$string['rule_section_has_connections_description'] = 'Checks if activities in a section have connections through completion conditions';
+$string['rule_section_has_connections_empty_section'] = 'The section is empty. Please add some activities.';
+$string['rule_section_has_connections_single_module'] = 'The section has only one activity ("{$a->name}"). At least two activities are needed to create connections.';
+$string['rule_section_has_connections_no_conditions'] = 'No activities in this section have completion conditions set up. Please add conditions to create a learning path.';
+$string['rule_section_has_connections_success'] = '{$a->count} activities have completion conditions set up.';
+$string['rule_section_has_connections_module_with_condition'] = '- "{$a->name}" has completion conditions';
+$string['rule_section_has_connections_some_without_conditions'] = '{$a->count} activities do not have any completion conditions:';
+$string['rule_section_has_connections_module_without_condition'] = '- "{$a->name}" has no completion conditions';
 
 // Rules - Has Label - used in rule implementations
-$string['rule_has_label_name'] = 'Label Presence';
-$string['rule_has_label_description'] = 'Checks if a section contains a label';
-$string['rule_has_label_empty_section'] = 'The section is empty. Please add some resources.';
-$string['rule_has_label_success'] = 'The section contains a label.';
-$string['rule_has_label_failure'] = 'The section does not contain a label.';
+$string['rule_section_has_label_name'] = 'Label Presence';
+$string['rule_section_has_label_description'] = 'Checks if a section contains a label';
+$string['rule_section_has_label_empty_section'] = 'The section is empty. Please add some resources.';
+$string['rule_section_has_label_success'] = 'The section contains a label.';
+$string['rule_section_has_label_failure'] = 'The section does not contain a label.';
+
 $string['button_add_label'] = 'Add Label';
 $string['label_added_success'] = 'Label added successfully';
 $string['label_added_failure'] = 'Failed to add label';
@@ -149,3 +150,9 @@ $string['rule_section_has_quiz_empty_section'] = 'Section is empty, cannot conta
 
 // Rule: course_has_section
 $string['rule_course_has_section_name'] = 'Course Has Section';
+
+// Settings page strings
+$string['settings_heading'] = 'Course Audit Settings';
+$string['example_setting_name'] = 'Example Text Setting';
+$string['example_setting_desc'] = 'This is an example text setting for the Course Audit block.';
+$string['settings_link_description'] = 'To configure the settings for the Course Audit block, please go to <a href="{$a}">Block settings</a>.';

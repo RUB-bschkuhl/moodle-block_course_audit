@@ -90,7 +90,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                         let errorMessage = response.message || 'Unknown error creating tour data.';
                         throw new Error(errorMessage);
                     }
-                                       
+
                     if (response.actionDetailsMap) {
                         storedActionDetails = response.actionDetailsMap;
                     }
@@ -153,7 +153,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
         const listenForTourEnd = function (tourId) {
             const userTourEvents = userTourEventsModule.eventTypes;
             document.addEventListener(userTourEvents.tourEnded, function () {
-                console.log("tourEnded");
                 // $(miauWrapper).show(); // TODO doesnt show when tour is cancelled
                 startTourSummary(tourId);
             });
@@ -162,6 +161,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
         const listenForTourStart = function () {
             const userTourEvents = userTourEventsModule.eventTypes;
             document.addEventListener(userTourEvents.tourStarted, function () {
+                // TODO open all sections to display all tour steps correctly
                 // $(miauWrapper).hide();
             });
         };
@@ -186,7 +186,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                 // Dieses Event hier wird gefeuert, danach wird der nächste Step nicht gerendered.
                 // event genauer betrachten wodurch es ausgelöst wird.
                 // Die Tour muss dann neu gestartet werde. Fix überlegen?
-                console.log("stepHide", event);
             });
         };
 
@@ -214,7 +213,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                             console.error('Error fetching string:', ruleNameKey, e);
                             ruleNameDisplay = result.rulekey;
                         }
-
+                        console.log(ruleNameDisplay);
                         try {
                             parsedMessages = JSON.parse(result.messages);
                             if (!Array.isArray(parsedMessages)) {

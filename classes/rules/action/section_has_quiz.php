@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-        namespace block_course_audit\rules\hint;
+namespace block_course_audit\rules\action;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -39,26 +39,25 @@ use block_course_audit\rules\rule_base;
  * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class course_has_section extends rule_base {
-
+class section_has_quiz extends rule_base
+{
     const rule_key = 'section_has_quiz';
     const target_type = 'section';
-    const prerequisite_rules = ['section_has_mods'];
 
     /**
      * Constructor
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct(
             self::rule_key,
             self::target_type,
             get_string('rule_section_has_quiz_name', 'block_course_audit'),
             get_string('rule_section_has_quiz_description', 'block_course_audit'),
-            'hint',
-            self::prerequisite_rules
+            'action',
         );
     }
-    
+
     /**
      * Check if a course has a section
      *
@@ -66,22 +65,21 @@ class course_has_section extends rule_base {
      * @param object $course The course the target belongs to
      * @return object Result object with 'status' (boolean) and 'messages' (array of string)
      */
-    public function check_target($target, $course = null) {
-        global $DB;
-
+    public function check_target($target, $course = null)
+    {
         if (!isset($target->id) || !isset($target->modules)) {
-             if (isset($target->id)) {
-                 return $this->create_result(false, [
-                     get_string('rule_section_has_quiz_empty_section', 'block_course_audit')
-                 ], $target->id, $course->id ?? null);
-             } else {
-                 return $this->create_result(false, [
-                     get_string('error_invalid_target_object', 'block_course_audit')
-                 ], null, $course->id ?? null);
-             }
+            if (isset($target->id)) {
+                return $this->create_result(false, [
+                    get_string('rule_section_has_quiz_empty_section', 'block_course_audit')
+                ], $target->id, $course->id ?? null);
+            } else {
+                return $this->create_result(false, [
+                    get_string('error_invalid_target_object', 'block_course_audit')
+                ], null, $course->id ?? null);
+            }
         }
 
-        $section = $target; 
+        $section = $target;
 
         // If no modules in section, return false
         if (empty($section->modules)) {
@@ -124,4 +122,4 @@ class course_has_section extends rule_base {
             'params' => 'sectionid=' . $target_id . '&courseid=' . $courseid
         ];
     }
-} 
+}

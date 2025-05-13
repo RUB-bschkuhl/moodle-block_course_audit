@@ -39,11 +39,10 @@ use block_course_audit\rules\rule_base;
  * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class pdf_only extends rule_base {
+class section_has_pdfs extends rule_base {
 
     const rule_key = 'section_has_pdfs';
     const target_type = 'section';
-    const prerequisite_rules = [''];
     /**
      * Constructor
      */
@@ -54,7 +53,6 @@ class pdf_only extends rule_base {
             get_string('rule_pdf_only_name', 'block_course_audit'),
             get_string('rule_pdf_only_description', 'block_course_audit'),
             'hint'
-            //get_string('rule_category_hint', 'block_course_audit')
         );
     }
     
