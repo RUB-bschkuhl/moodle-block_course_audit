@@ -57,11 +57,19 @@ $functions = array(
         'ajax'          => true,
         'capabilities'  => 'block/course_audit:view'
     ),
+    'block_course_audit_enable_repeatable' => array(
+        'classname'     => 'block_course_audit\external\enable_repeatable',
+        'methodname'    => 'execute',
+        'description'   => 'Sets the attempts for a quiz to 0 (unlimited).',
+        'type'          => 'write',
+        'ajax'          => true,
+        'capabilities'  => 'moodle/course:manageactivities' // Or a more specific capability like 'block/course_audit:managequizsettings'
+    )
 );
 
 $services = array(
     'Course Audit Services' => array(
-        'functions' => ['block_course_audit_create_tour', 'block_course_audit_get_summary', 'block_course_audit_manage_labels', 'block_course_audit_manage_quiz'],
+        'functions' => ['block_course_audit_create_tour', 'block_course_audit_get_summary', 'block_course_audit_manage_labels', 'block_course_audit_manage_quiz', 'block_course_audit_enable_repeatable'],
         'restrictedusers' => 0,
         'enabled' => 1
     )

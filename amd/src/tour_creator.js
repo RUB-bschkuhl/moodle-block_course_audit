@@ -54,11 +54,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
 
             addMiauSprite();
 
-            $(bubbleContainer).find('.btn-minimize').on('click', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                hideBubble();
-            });
+            initMinimizeButton();
 
             $('#audit-start').on('click', function (e) {
                 e.preventDefault();
@@ -111,7 +107,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                 }).then(function (text) {
                     $button.text(text);
                 }).catch(function (errors) {
-                    console.error(errors);
+                    console.error('Error creating tour:', errors);
                     $button.text(originalText);
                     $button.prop('disabled', false);
                 });
@@ -124,6 +120,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
             if (auditActionClass) {
                 const idParts = auditActionClass.split('-');
                 if (idParts.length === 4) {
+                    //TODO update for mod / course / section
                     const sectionId = idParts[2];
                     const ruleKey = idParts[3];
                     const mapKey = `section_${sectionId}_${ruleKey}`;
@@ -161,6 +158,8 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
         const listenForTourStart = function () {
             const userTourEvents = userTourEventsModule.eventTypes;
             document.addEventListener(userTourEvents.tourStarted, function () {
+                console.log("tourStarted");
+                expandAllSections();
                 // TODO open all sections to display all tour steps correctly
                 // $(miauWrapper).hide();
             });
@@ -245,14 +244,21 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                             ruleNameDisplay: ruleNameDisplay,
                             messages: parsedMessages,
                             isTodo: result.status === '0',
-                            isDone: result.status === '1'
+                            isDone: result.status === '1',
                         };
                     });
                     const processedResults = await Promise.all(processedResultsPromises);
-
                     const templateContext = {
                         results: processedResults,
                         hasResults: processedResults.length > 0,
+                        timecreated: new Date(response.timecreated * 1000).toLocaleDateString('de-DE', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit'
+                        }),
+                        rulecount: processedResults.length,
+                        passedcount: processedResults.filter(result => result.status === '1').length,
+                        failedcount: processedResults.filter(result => result.status === '0').length,
                     };
 
                     return Templates.render('block_course_audit/block/summary', templateContext)
@@ -263,6 +269,8 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                                 triggerTalkAnimation();
                                 $(bubbleContainer).show();
                             }
+                            initMinimizeButton();
+                            initToggleDetails();
                             return response;
                         })
                         .catch(function (error) {
@@ -276,7 +284,29 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                 console.error(errors);
             });
         };
-
+        const expandAllSections = function () {
+            const collapseSections = document.querySelectorAll('[id^="collapsesections"]');
+            collapseSections.forEach(section => {
+                if (section.getAttribute('aria-expanded') === 'false') {
+                    console.log('expandAllSections', section);
+                    section.click();
+                }
+            });
+        };
+        const initMinimizeButton = function () {
+            $(bubbleContainer).find('.btn-minimize').on('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                hideBubble();
+            });
+        };
+        const initToggleDetails = function () {
+            $(bubbleContainer).find('.check-header').on('click', function (e) {
+                e.preventDefault();
+                toggleDetails(this);
+            });
+            //TODO if detail is toggled, scroll to the item in the course
+        };
         const hideBubble = function () {
             if (bubbleContainer && $(bubbleContainer).is(":visible")) {
                 $(miauContainer).removeClass('miau-talk');
@@ -307,6 +337,18 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                     $(miauContainer).removeClass('miau-talk');
                 }, 8000);
             }
+        };
+        const toggleDetails = function (element) {
+            const details = element.nextElementSibling;
+            details.classList.toggle('active');
+
+            // Close other open details
+            const allDetails = document.querySelectorAll('.check-details.active');
+            allDetails.forEach(item => {
+                if (item !== details && item.classList.contains('active')) {
+                    item.classList.remove('active');
+                }
+            });
         };
         return {
             init: init

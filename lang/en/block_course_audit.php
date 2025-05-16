@@ -182,3 +182,14 @@ $string['rule_section_has_connections_success'] = '{$a->count} activities have c
 $string['rule_section_has_connections_module_with_condition'] = '- "{$a->name}" has completion conditions';
 $string['rule_section_has_connections_some_without_conditions'] = '{$a->count} activities do not have any completion conditions:';
 $string['rule_section_has_connections_module_without_condition'] = '- "{$a->name}" has no completion conditions';
+
+// Strings for enable_repeatable external function
+$string['quiznotfound'] = 'Quiz with ID {$a->id} not found.';
+$string['repeatalreadyenabled'] = 'Quiz is already set to unlimited attempts.';
+$string['errorupdatequiz'] = 'Error updating quiz settings.';
+$string['repeatenabledsuccess'] = 'Quiz attempts successfully set to unlimited.';
+
+// Rule: quiz_is_repeatable
+$string['rule_quiz_is_repeatable_name'] = 'Quiz is Repeatable';
+$string['rule_quiz_is_repeatable_description'] = 'Checks if a quiz is set to allow unlimited attempts.';
+$string['button_enable_repeatable'] = 'Enable Unlimited Attempts';

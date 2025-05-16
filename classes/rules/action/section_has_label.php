@@ -95,13 +95,14 @@ class section_has_label extends rule_base
         if (!$target_id) {
             return null;
         }
-
-        // Button details for an AJAX action to add a label
-        return [
+        $action_button_details = [];
+        $action_button_details[] = [
             'mapkey' => 'section_' . $target_id . '_' . self::rule_key,
             'label' => get_string('button_add_label', 'block_course_audit'),
             'endpoint' => 'block_course_audit_manage_labels',
             'params' => 'sectionid=' . $target_id . '&courseid=' . $courseid
         ];
+
+        return $action_button_details;
     }
 }

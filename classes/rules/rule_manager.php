@@ -33,108 +33,112 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class rule_manager {
+class rule_manager
+{
     /** @var array List of registered rules, indexed by category */
     private $rules = [
         'hint' => [],
         'action' => []
     ];
-    
+
     /**
      * Constructor - automatically registers all available rules
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->register_default_rules();
     }
-    
+
     /**
      * Register all default rules from the rules directory
      */
-    private function register_default_rules() {
+    private function register_default_rules()
+    {
         global $CFG;
-        
+
         // Auto-discover and register rules in the hint directory
         $basedir = $CFG->dirroot . '/blocks/course_audit/classes/rules/hint';
         $this->register_rules_from_directory($basedir, 'hint');
-        
+
         // Auto-discover and register rules in the action directory  
         $basedir = $CFG->dirroot . '/blocks/course_audit/classes/rules/action';
         $this->register_rules_from_directory($basedir, 'action');
     }
-    
+
     /**
      * Scan a directory for rule classes and register them
      * 
      * @param string $directory Directory to scan
      * @param string $category Rule category
      */
-    private function register_rules_from_directory($directory, $category) {
+    private function register_rules_from_directory($directory, $category)
+    {
         $files = scandir($directory);
-        
+
         foreach ($files as $file) {
             // Skip directories and non-PHP files
             if (is_dir($directory . '/' . $file) || pathinfo($file, PATHINFO_EXTENSION) !== 'php') {
                 continue;
             }
-            
+
             // Skip template files
             if (strpos($file, 'template') !== false) {
                 continue;
             }
-            
+
             // Include the file and instantiate the rule
             require_once($directory . '/' . $file);
-            
+
             // Determine the class name
             $classname = '\\block_course_audit\\rules\\' . $category . '\\' . pathinfo($file, PATHINFO_FILENAME);
-            
+
             if (class_exists($classname)) {
                 $rule = new $classname();
                 $this->register_rule($rule);
             }
         }
     }
-    
+
     /**
      * Register a rule
      *
      * @param rule_interface $rule Rule to register
      * @return bool Whether registration was successful
      */
-    public function register_rule(rule_interface $rule) {
+    public function register_rule(rule_interface $rule)
+    {
         $category = $rule->get_category();
-        
+
         // Validate category
         if (!isset($this->rules[$category])) {
             return false;
         }
-        
+
         // Add rule to the appropriate category
         $this->rules[$category][] = $rule;
         return true;
     }
-    
+
     /**
      * Get all registered rules
      *
      * @param string $category Optional category filter
      * @return array Array of rule objects
      */
-    public function get_rules($category, $target_type) {
-        //TODO
-        if ($category !== null) {
-            return isset($this->rules[$category]) ? $this->rules[$category] : [];
+    public function get_rules($category, $target_type)
+    {
+        //get rules for a specific category and target type
+        if ($category !== null && $target_type !== null) {
+            return isset($this->rules[$category])
+                ? array_filter($this->rules[$category], function ($rule) use ($target_type) {
+                    return $rule->get_target() === $target_type;
+                })
+                : [];
         }
-        
-        // Return all rules in a flat array
-        $allrules = [];
-        foreach ($this->rules as $categoryrules) {
-            $allrules = array_merge($allrules, $categoryrules);
-        }
-        
-        return $allrules;
+
+        return $this->rules;
     }
-    
+
     /**
      * Run all rules or rules of a specific category on a target
      *
@@ -143,27 +147,33 @@ class rule_manager {
      * @param string $category Optional category to filter rules
      * @return array Results from all rules
      */
-    public function run_rules($target, $course, $category, $target_type) {
+    public function run_rules($target, $course, $category, $target_type)
+    {
         $results = [];
         $rules = $this->get_rules($category, $target_type);
-        
+
         foreach ($rules as $rule) {
-            $results[] = $rule->check_target($target, $course);
+            //TODO need to be able to return null here, so need to check if the rule returns null
+            $result = $rule->check_target($target, $course);
+            if ($result !== null) {
+                $results[] = $result;
+            }
         }
-        
+
         return $results;
     }
-    
+
     /**
      * Get summary of rule results
      *
      * @param array $results Rule results
      * @return object Summary with counts of passed and failed rules
      */
-    public function get_summary($results) {
+    public function get_summary($results)
+    {
         $passed = 0;
         $failed = 0;
-        
+
         foreach ($results as $result) {
             if ($result->status) {
                 $passed++;
@@ -171,7 +181,7 @@ class rule_manager {
                 $failed++;
             }
         }
-        
+
         return (object) [
             'passed' => $passed,
             'failed' => $failed,
@@ -179,4 +189,4 @@ class rule_manager {
             'success_rate' => count($results) > 0 ? ($passed / count($results) * 100) : 0
         ];
     }
-} 
+}

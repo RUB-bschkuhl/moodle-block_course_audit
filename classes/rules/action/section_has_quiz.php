@@ -115,11 +115,13 @@ class section_has_quiz extends rule_base
         }
 
         // Button details for an AJAX action to add a label
-        return [
+        $action_button_details = [];
+        $action_button_details[] = [
             'mapkey' => 'section_' . $target_id . '_' . self::rule_key,
             'label' => get_string('button_add_quiz', 'block_course_audit'),
             'endpoint' => 'block_course_audit_manage_quiz',
             'params' => 'sectionid=' . $target_id . '&courseid=' . $courseid
         ];
+        return $action_button_details;
     }
 }

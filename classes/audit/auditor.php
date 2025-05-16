@@ -58,7 +58,7 @@ class auditor
         //TODO run audit_course first, audit course should only run rule with target_type course
         $course_results = $this->audit_course($course->id);
         foreach ($course_results as $result) {
-            //TODO 
+            //TODO switch for section mod course
             $raw_results[] = $result; // Store raw result regardless of status
 
             if ($result->rule_category == "action" && $result->action_button_details && $result->status == false) {
@@ -93,33 +93,74 @@ class auditor
             foreach ($section_results as $result) {
                 $raw_results[] = $result; // Store raw result regardless of status
 
-                if ($result->rule_category == "action" && $result->action_button_details && $result->status == false) {
-                    $map_key = 'section_' . $sectionobj->id . '_' . $result->rule_key;
-                    $action_details_map[$map_key] = $result->action_button_details;
+                if ($result->rule_category == "action" && $result->action_button_details && !$result->status) {
+                    foreach ($result->action_button_details as $detail) {
+                        $action_details_map[$detail->mapkey] = $detail;
+                    }
                 }
 
                 // Only create tour steps for failed checks, as before
                 if (!$result->status) {
-                    $section_template_data = [
-                        'section_id' => $sectionobj->id,
-                        'section_name' => get_section_name($course, $sectionobj),
-                        'section_number' => $sectionobj->section,
-                        'course_id' => $course->id,
-                        'course_shortname' => $course->shortname,
-                        'rule_result' => $result,
-                    ];
+                    switch ($result->rule_target) {
+                        case "section":
+                            $section_template_data = [
+                                'section_id' => $sectionobj->id,
+                                'section_name' => get_section_name($course, $sectionobj),
+                                'section_number' => $sectionobj->section,
+                                'course_id' => $course->id,
+                                'course_shortname' => $course->shortname,
+                                'rule_result' => $result,
+                            ];
 
-                    $tour_steps[] = [
-                        'type' => 'section',
-                        'title' => $result->rule_name . ': ' . $result->rule_category,
-                        'number' => $sectionobj->section,
-                        'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
-                    ];
+                            $tour_steps[] = [
+                                'type' => 'section',
+                                'title' => $result->rule_name . ': ' . $result->rule_category,
+                                'number' => $sectionobj->section,
+                                'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
+                            ];
+                            break;
+                        case "mod":
+                            //TODO
+                            $section_template_data = [
+                                'section_id' => $sectionobj->id,
+                                'section_name' => get_section_name($course, $sectionobj),
+                                'section_number' => $sectionobj->section,
+                                'course_id' => $course->id,
+                                'course_shortname' => $course->shortname,
+                                'rule_result' => $result,
+                            ];
+
+                            $tour_steps[] = [
+                                'type' => 'section',
+                                'title' => $result->rule_name . ': ' . $result->rule_category,
+                                'number' => $sectionobj->section,
+                                'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
+                            ];
+                            break;
+                            break;
+                        case "course":
+                            //TODO
+                            $section_template_data = [
+                                'section_id' => $sectionobj->id,
+                                'section_name' => get_section_name($course, $sectionobj),
+                                'section_number' => $sectionobj->section,
+                                'course_id' => $course->id,
+                                'course_shortname' => $course->shortname,
+                                'rule_result' => $result,
+                            ];
+
+                            $tour_steps[] = [
+                                'type' => 'section',
+                                'title' => $result->rule_name . ': ' . $result->rule_category,
+                                'number' => $sectionobj->section,
+                                'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
+                            ];
+                            break;
+                            break;
+                    }
                 }
             }
         }
-
-        //TODO run audit_mod finally, audit course should only run rule with target_type mod
 
         return [
             'tour_steps' => $tour_steps,
@@ -137,21 +178,6 @@ class auditor
         global $CFG, $DB;
 
         $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
-
-        return [];
-    }
-
-    /**
-     * Analyse the current course and return raw rule results.
-     * 
-     */
-    public function audit_mod(int $modid, int $sectionid): array
-    {
-        global $CFG, $DB;
-
-        $mod = $DB->get_record('course_modules', ['id' => $modid], '*', MUST_EXIST);
-        $section = $DB->get_record('course_sections', ['id' => $sectionid], '*', MUST_EXIST);
-        $course = $DB->get_record('course', ['id' => $section->course], '*', MUST_EXIST);
 
         return [];
     }
@@ -175,24 +201,25 @@ class auditor
         if (isset($modinfo->sections[$section->section])) {
             foreach ($modinfo->sections[$section->section] as $cmid) {
                 $cm = $modinfo->cms[$cmid];
-                if (!$cm->uservisible) continue;
-                $module = new stdClass();
-                $module->id = $cm->id;
-                $module->name = $cm->get_formatted_name();
-                $module->modname = $cm->modname;
-                $module->availability = $cm->availability;
-                $section_modules[] = $module; // Add to local array
+                //  if (!$cm->uservisible) continue;
+                $section_modules[] = $cm;
             }
         }
         // Attach modules to the section object for the rules
         $section->modules = $section_modules;
 
-
         $rulemanager = new rule_manager();
-        $hintResults = $rulemanager->run_rules($section, $course, 'hint', 'section');
-        $actionResults = $rulemanager->run_rules($section, $course, 'action', 'section');
+        $hintResults_section = $rulemanager->run_rules($section, $course, 'hint', 'section');
+        $actionResults_section = $rulemanager->run_rules($section, $course, 'action', 'section');
+        $hintResults_mod = [];
+        $actionResults_mod = [];
 
-        $allResults = array_merge($hintResults, $actionResults);
+        foreach ($section->modules as $module) {
+            $hintResults_mod = array_merge($hintResults_mod, $rulemanager->run_rules($module, $course, 'hint', 'mod'));
+            $actionResults_mod = array_merge($actionResults_mod, $rulemanager->run_rules($module, $course, 'action', 'mod'));
+        }
+
+        $allResults = array_merge($hintResults_section, $actionResults_section, $hintResults_mod, $actionResults_mod);
 
         return $allResults;
     }

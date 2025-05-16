@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-        namespace block_course_audit\rules\hint;
+namespace block_course_audit\rules\action;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -39,33 +39,69 @@ use block_course_audit\rules\rule_base;
  * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class course_has_section extends rule_base {
+class quiz_has_completion extends rule_base
+{
 
-    const rule_key = 'course_has_section';
-    const target_type = 'course';
+    const rule_key = 'quiz_has_completion';
+    const target_type = 'mod';
 
     /**
      * Constructor
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct(
             self::rule_key,
             self::target_type,
-            get_string('rule_course_has_section_name', 'block_course_audit'),
-            get_string('rule_course_has_section_description', 'block_course_audit'),
-            'hint'
+            get_string('rule_quiz_has_completion_name', 'block_course_audit'),
+            get_string('rule_quiz_has_completion_description', 'block_course_audit'),
+            'action'
             //get_string('rule_category_hint', 'block_course_audit')
         );
     }
-    
+
     /**
-     * Check if a course has a section
+     * Check if a quiz has completion enabled
      *
      * @param object $target The target to check
      * @param object $course The course the target belongs to
      * @return object Result object with 'status' (boolean) and 'messages' (array of string)
      */
-    public function check_target($target, $course = null) {
-        return $this->create_result(true, []);
+    public function check_target($target, $course = null)
+    {
+        global $DB;
+
+        $quiz = $DB->get_record('quiz', ['id' => $target->id], 'id, attempts');
+
+        if (!$quiz) {
+            return null;
+        }
+
+        // TODO check if completion is enabled
+        if ((int)$quiz->attempts === 0) {
+            return $this->create_result(true, []);
+        } else {
+            return $this->create_result(false, ['Quiz allows ' . $quiz->attempts . ' attempt(s).']);
+        }
     }
-} 
+
+    /**
+     * @param object $context Context containing rule result details like target_id.
+     * @return array|null Action button details.
+     */
+    public function get_action_button_details($target_id = null, $courseid = null)
+    {
+        return null;
+        //TODO: Implement
+        if (!$context || $context->status === true || empty($context->rule_target_id)) {
+            return null;
+        }
+
+        return [
+            'mapkey' => 'section_' . $context->rule_target_id . '_' . self::rule_key,
+            'label' => get_string('button_enable_completion', 'block_course_audit'),
+            'endpoint' => 'block_course_audit_enable_completion',
+            'params' => 'modid=' . $context->rule_target_id . '&courseid=' . $courseid
+        ];
+    }
+}

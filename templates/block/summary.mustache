@@ -31,87 +31,79 @@
         * ruleNameDisplay - Display name of the rule
 
     Example context (json - NOTE: messages MUST be an array here):
-    {
-        "results": [
-            {
-                "id": 808,
-                "auditid": 135,
-                "rulekey": "has_connections",
-                "rulecategory": "action",
-                "status": "0",
-                "messages": [
-                    "No activities in this section have completion conditions set up. Please add conditions to create a learning path."
-                ],
-                "targettype": "section",
-                "targetid": 51,
-                "timecreated": 1745492001,
-                "ruleNameDisplay": "Activity Connections"
-            },
-            {
-                "id": 809,
-                "auditid": 135,
-                "rulekey": "pdf_only",
-                "rulecategory": "hint",
-                "status": "1",
-                "messages": [
-                    "All 5 resources in the section are PDFs."
-                ],
-                "targettype": "section",
-                "targetid": 52,
-                "timecreated": 1745492002,
-                "ruleNameDisplay": "PDF Only Resources"
-            }
-        ],
-        "hasResults": true
-    }
-}}
+    {{!
+        auditid: 12
+        id: 278
+        isDone: false
+        isTodo: true
+        messages: Array [ "Keine Aktivitäten in diesem Abschnitt haben Abschlussbedingungen eingerichtet. Bitte fügen Sie Bedingungen hinzu, um einen Lernpfad zu erstellen." ]
+        ruleNameDisplay: "Aktivitätsverbindungen"
+        rulecategory: "action"
+        rulekey: "section_has_connections"
+        status: "0"
+        targetid: 51
+        targettype: "section"
+    }}
 
 <div class="block_course_audit-summary-container">
-    <div class="card shadow-sm">
-        <div class="card-header bg-light d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">{{#str}}summary_heading, block_course_audit{{/str}}</h5>
-            <button class="btn btn-sm btn-close btn-minimize" aria-label="{{#str}}close, block_course_audit{{/str}}"></button>
-        </div>
-        <div class="card-body p-0">
-            {{#hasResults}}
-                <ul class="list-group list-group-flush">
-                    {{#results}}
-                        <li class="list-group-item py-3">
-                            <div class="d-flex justify-content-between align-items-start gap-2">
-                                <div class="d-flex align-items-center mb-2 mb-md-0 flex-grow-1">
-                                    {{#status}}
-                                        <i class="fa fa-check-square-o text-success me-2" aria-hidden="true" title="{{#str}}status_done, block_course_audit{{/str}}"></i>
-                                        <span class="text-muted">{{ruleNameDisplay}}</span>
-                                    {{/status}}
-                                    {{^status}}
-                                        <i class="fa fa-square-o text-warning me-2" aria-hidden="true" title="{{#str}}status_todo, block_course_audit{{/str}}"></i>
-                                        <strong>{{ruleNameDisplay}}</strong>
-                                    {{/status}}
-                                </div>
-                                <div>
-                                    <button class="btn btn-sm btn-outline-secondary details-button" type="button" data-bs-toggle="collapse" data-bs-target="#details-{{id}}" aria-expanded="false" aria-controls="details-{{id}}">
-                                        <i class="fa fa-info-circle me-1" aria-hidden="true"></i>
-                                        {{#str}}showdetails, block_course_audit{{/str}}
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="collapse mt-3" id="details-{{id}}">
-                                <div class="card card-body bg-light small border p-3">
-                                    {{#messages}}
-                                        <p class="mb-2">{{.}}</p>
-                                    {{/messages}}
-                                    <em class="text-muted small mt-2">({{rulekey}} - {{targettype}} {{targetid}})</em>
-                                </div>
-                            </div>
-                        </li>
-                    {{/results}}
-                </ul>
-            {{/hasResults}}
-            {{^hasResults}}
-                <div class="p-3 text-center text-muted">
-                    {{#str}}noauditresults, block_course_audit{{/str}}
-                </div>
-            {{/hasResults}}
-        </div>
+<div class="card shadow-sm">
+    <div class="card-header">
+      <div class="card-title">{{#str}}summary_heading, block_course_audit{{/str}}</div>
+      <div class="card-subtitle">Last updated: {{timecreated}}</div>
+        <button class="btn btn-sm btn-close btn-minimize" aria-label="{{#str}}close, block_course_audit{{/str}}"></button>
     </div>
+
+    <div class="card-body">
+    {{#hasResults}}
+      <ul class="check-list">
+        {{#results}}
+        <li class="check-item">
+          <div class="check-header">
+            <span class="check-name">{{ruleNameDisplay}}</span>
+            <span class="check-status">
+              {{#isTodo}}
+                <span class="status-icon status-failed">✗</span>
+              {{/isTodo}}
+              {{#isDone}}
+                <span class="status-icon status-passed">✓</span>
+              {{/isDone}}
+            </span>
+          </div>
+          <div class="check-details">
+            <div class="details-content">
+                    <div class="collapse mt-3" id="details-{{id}}">
+                        <div class="card card-body bg-light small border p-3">
+                            <em class="text-muted small mt-2">({{rulekey}} - {{targettype}} {{targetid}})</em>
+                        </div>
+                    </div>
+                    {{#messages}}
+                    <p>{{.}}</p>
+                    {{/messages}}
+              <div class="attribute">
+                <span class="attribute-label">rulekey:</span>
+                <span class="attribute-value">{{rulekey}}</span>
+              </div>
+              
+              <div class="attribute">
+                <span class="attribute-label">targettype:</span>
+                <span class="attribute-value">{{targettype}} {{targetid}}</span>
+              </div>
+            </div>
+          </div>
+        </li>
+        {{/results}}
+      </ul>
+    {{/hasResults}}
+    {{^hasResults}}
+        <div class="p-3 text-center text-muted">
+            {{#str}}noauditresults, block_course_audit{{/str}}
+        </div>
+    {{/hasResults}}
+    </div>
+    
+    <div class="card-footer">
+      <span>{{rulecount}} checks processed</span>
+      <span>{{passedcount}} passed • {{failedcount}} failed</span>
+    </div>
+  </div>
 </div>

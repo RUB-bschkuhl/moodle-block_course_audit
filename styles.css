@@ -47,6 +47,9 @@
   opacity: 0.7;
   transition: opacity 0.2s ease;
   padding: 0;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
 }
 
 #block-course-audit .btn-minimize:hover {
@@ -86,7 +89,8 @@
 }
 
 [data-flexitour="step-background"] {
-  z-index: 1042 !important; /* NOTE: Moodle-Bug: position and size of step-background is not calculated correctly, using z-index to fix */
+  z-index: 1042 !important;
+  /* NOTE: Moodle-Bug: position and size of step-background is not calculated correctly, using z-index to fix */
   margin-top: -16px !important;
 }
 
@@ -252,11 +256,6 @@
   overflow-y: auto;
 }
 
-#miau-speech-bubble span {
-  color: #333;
-  text-decoration: underline;
-}
-
 #bubble-container {
   position: relative;
 }
@@ -275,7 +274,7 @@
 }
 
 /* Summary results container styles */
-#audit-summary-container {
+/* #audit-summary-container {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -288,12 +287,166 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   overflow: auto;
+} */
+
+
+
+
+.block_course_audit-summary-container>.card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
 }
 
-.block_course_audit-summary-container .card {
+.block_course_audit-summary-container>.card>.card-header {
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.block_course_audit-summary-container>.card .card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.block_course_audit-summary-container>.card .card-subtitle {
+  font-size: 14px;
+  color: #666;
+}
+
+.block_course_audit-summary-container>.card .card-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.block_course_audit-summary-container>.card .check-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.block_course_audit-summary-container>.card .check-item {
+  margin-bottom: 16px;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+  overflow: hidden;
+}
+
+.block_course_audit-summary-container>.card .check-header {
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.block_course_audit-summary-container>.card .check-header:hover {
+  background-color: #f1f3f5;
+}
+
+.block_course_audit-summary-container>.card .check-name {
+  font-weight: 500;
+  color: #2c3e50;
+  font-size: 15px;
+  margin-right: 8px;
+}
+
+.block_course_audit-summary-container>.card .check-status {
+  display: flex;
+  align-items: center;
+}
+
+.block_course_audit-summary-container>.card .status-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.block_course_audit-summary-container>.card .status-passed {
+  color: #22c55e;
+}
+
+.block_course_audit-summary-container>.card .status-failed {
+  color: #ef4444;
+}
+
+.block_course_audit-summary-container>.card .check-details {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background-color: white;
+  border-top: 1px solid #eaeaea;
+}
+
+.block_course_audit-summary-container>.card .check-details.active {
+  max-height: 200px;
+}
+
+.block_course_audit-summary-container>.card .details-content {
+  padding: 16px;
+  font-size: 14px;
+  color: #4a5568;
+}
+
+.block_course_audit-summary-container>.card .attribute {
+  margin-top: 12px;
+  display: flex;
+  font-size: 12px;
+}
+
+.block_course_audit-summary-container>.card .attribute-label {
+  font-weight: 500;
+  color: #718096;
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.block_course_audit-summary-container>.card .attribute-value {
+  color: #2d3748;
+}
+
+.block_course_audit-summary-container>.card .card-footer {
+  padding: 12px 16px;
+  border-top: 1px solid #eaeaea;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #718096;
+}
+
+@media (max-width: 340px) {
+  .block_course_audit-summary-container>.card {
+    width: 100%;
+    height: auto;
+    min-height: 480px;
+  }
+
+  .block_course_audit-summary-container>.card .check-name {
+    font-size: 14px;
+  }
+
+  .block_course_audit-summary-container>.card .details-content {
+    font-size: 13px;
+  }
+}
+
+.block_course_audit-summary-container>.card {
+  max-height: 60vh;
+  height: 480px;
   margin-bottom: 0;
 }
-
+/* 
 .block_course_audit-summary-container .summary-results {
   max-height: 50vh;
   overflow-y: auto;
@@ -302,16 +455,4 @@
 .block_course_audit-summary-container .badge {
   font-size: 0.9rem;
   padding: 0.4rem 0.6rem;
-}
-
-/* Add a semi-transparent background overlay when the summary is shown */
-#audit-summary-container::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: -1;
-}
+} */

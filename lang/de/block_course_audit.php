@@ -50,8 +50,8 @@ $string['norestrictions'] = 'Keine Einschränkungen in diesem Abschnitt';
 
 // Disclaimer and wiki related
 $string['wiki_link'] = 'Dokumentations-Wiki öffnen';
-$string['wiki_title'] = 'Kurs-Prüfer Dokumentation';
-$string['wiki_heading'] = 'Konvertierungsrichtlinien & Best Practices';
+$string['wiki_title'] = 'Kurs-Prüfer Dokumentation (TODO)';
+$string['wiki_heading'] = 'Richtlinien & Best Practices (TODO)';
 
 // Rules
 $string['rule_category_hint'] = 'Hinweis';
@@ -108,7 +108,7 @@ $string['label_intro'] = 'Nutzen Sie Textfelder, um erklärende Texte, Anweisung
 $string['label_name'] = 'Neues Textfeld';
 
 // Summary related
-$string['summary_heading'] = 'Zusammenfassung der Kurskonvertierung';
+$string['summary_heading'] = 'Zusammenfassung der Kursüberprüfung';
 $string['summary_button'] = 'Prüfen beenden';
 
 // Error messages
@@ -169,3 +169,14 @@ $string['rule_section_has_label_description'] = 'Prüft, ob ein Abschnitt ein Te
 $string['rule_section_has_label_empty_section'] = 'Der Abschnitt ist leer. Bitte fügen Sie Ressourcen hinzu.';
 $string['rule_section_has_label_success'] = 'Der Abschnitt enthält ein Textfeld.';
 $string['rule_section_has_label_failure'] = 'Der Abschnitt enthält kein Textfeld.';
+
+// Strings for enable_repeatable external function
+$string['quiznotfound'] = 'Quiz mit ID {$a->id} nicht gefunden.';
+$string['repeatalreadyenabled'] = 'Quiz ist bereits auf unbegrenzte Versuche eingestellt.';
+$string['errorupdatequiz'] = 'Fehler beim Aktualisieren der Quiz-Einstellungen.';
+$string['repeatenabledsuccess'] = 'Quiz-Versuche erfolgreich auf unbegrenzt gesetzt.';
+
+// Rule: quiz_is_repeatable
+$string['rule_quiz_is_repeatable_name'] = 'Quiz ist wiederholbar';
+$string['rule_quiz_is_repeatable_description'] = 'Prüft, ob ein Quiz auf unbegrenzte Versuche eingestellt ist.';
+$string['button_enable_repeatable'] = 'Unbegrenzte Versuche aktivieren';
