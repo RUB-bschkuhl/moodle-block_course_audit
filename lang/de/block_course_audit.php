@@ -181,3 +181,4 @@ $string['rule_quiz_is_repeatable_failure'] = 'Quiz erlaubt {$a->attempts} Versuc
 $string['rule_quiz_is_repeatable_name'] = 'Wiederholbarkeit von Tests';
 $string['rule_quiz_is_repeatable_description'] = 'Prüft, ob ein Quiz auf unbegrenzte Versuche eingestellt ist.';
 $string['button_enable_repeatable'] = 'Unbegrenzte Versuche aktivieren';
+$string['startnewaudit'] = 'Neue Überprüfung starten';

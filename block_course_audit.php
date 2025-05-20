@@ -22,7 +22,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use block_course_audit\audit\auditor as auditor;
+use block_course_audit\audit\auditor; // Corrected namespace separator
 
 class block_course_audit extends block_base
 {
@@ -38,15 +38,119 @@ class block_course_audit extends block_base
     }
 
     /**
+     * Gets the ID of the latest audit run for the given course.
+     *
+     * @param int $courseid The ID of the course.
+     * @return int|false The auditrunid if an audit run is found, false otherwise.
+     */
+    private function get_latest_audit_run_id($courseid)
+    {
+        global $DB;
+
+        $sql = "SELECT ca.id AS auditrunid
+                  FROM {block_course_audit_tours} ca
+                 WHERE ca.courseid = :courseid
+              ORDER BY ca.timemodified DESC"; // Or timecreated DESC
+
+        $latest_audit_run = $DB->get_record_sql($sql, ['courseid' => $courseid], IGNORE_MULTIPLE); // Get only one record
+
+        if ($latest_audit_run) {
+            return (int)$latest_audit_run->auditrunid;
+        }
+        return false;
+    }
+
+    /**
+     * Prepares the summary data to be rendered in the block.
+     * This is similar to parts of classes/external/get_summary.php
+     *
+     * @param int $auditrunid The ID of the audit run from block_course_audit_tours.
+     * @param int $courseid The ID of the course (to get course name, etc.).
+     * @return string HTML content for the summary.
+     */
+    private function get_summary_block_content($auditrunid, $courseid)
+    {
+        global $DB, $OUTPUT;
+
+        $results = $DB->get_records('block_course_audit_results', ['auditid' => $auditrunid], 'id ASC'); // Ordered by ID or timecreated
+        $audit_run_details = $DB->get_record('block_course_audit_tours', ['id' => $auditrunid]);
+        $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
+
+        if (empty($results) || !$audit_run_details) {
+            // This case (audit run exists but no results) should ideally not happen if an audit was run.
+            return $OUTPUT->notification(get_string('noauditresults', 'block_course_audit'));
+        }
+
+        $processed_results = [];
+        $passed_count = 0;
+        $failed_count = 0;
+        $total_count = count($results);
+
+        foreach ($results as $result) {
+            $rulename_key = 'rule_' . $result->rulekey . '_name';
+            $rulename_display = get_string_manager()->string_exists($rulename_key, 'block_course_audit')
+                ? get_string($rulename_key, 'block_course_audit')
+                : $result->rulekey;
+
+            $messages = [];
+            if (!empty($result->messages)) {
+                $decoded_messages = json_decode($result->messages);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $messages = is_array($decoded_messages) ? $decoded_messages : [$decoded_messages];
+                } else {
+                    $messages = [$result->messages];
+                }
+            }
+
+            $processed_results[] = [
+                'rulekey' => $result->rulekey,
+                'ruleNameDisplay' => $rulename_display,
+                'status' => $result->status,
+                'isTodo' => ($result->status == '0'),
+                'isDone' => ($result->status == '1'),
+                'messages' => $messages,
+                'rule_category' => $result->rulecategory,
+                'targettype' => $result->targettype,
+                'targetid' => $result->targetid,
+                // Add action button details if needed for the summary template, similar to auditor.php
+                // This would require fetching/reconstructing them if they are not stored with results.
+                // For simplicity, this is omitted here but was part of the JS summary.
+                // 'action_button_details' => $this->get_action_details_for_rule_result($result) // Hypothetical method
+            ];
+
+            if ($result->status == '1') {
+                $passed_count++;
+            } else {
+                $failed_count++;
+            }
+        }
+
+        $template_data = [
+            'results' => $processed_results,
+            'hasResults' => $total_count > 0,
+            'timecreated' => userdate($audit_run_details->timecreated, get_string('strftimedate', 'langconfig')),
+            'rulecount' => $total_count,
+            'passedcount' => $passed_count,
+            'failedcount' => $failed_count,
+            'coursename' => $course->fullname,
+            'fromblock' => true, // Flag to indicate this is the block's direct summary view
+            'canmanagecourse' => has_capability('moodle/course:manageactivities', $this->page->context) // For conditional buttons
+        ];
+
+        // Use the same summary template as the miau speech bubble if it's suitable,
+        // otherwise, you might need a specific one like 'block_course_audit/block_summary_content'.
+        return $OUTPUT->render_from_template('block_course_audit/block/summary', $template_data);
+    }
+
+
+    /**
      * Gets the block contents.
      *
      * @return string The block HTML.
-     * @param string $visiblename localised
-     *
      */
     public function get_content()
     {
-        global $OUTPUT;
+        global $OUTPUT, $USER, $PAGE;
 
         if ($this->content !== null) {
             return $this->content;
@@ -59,34 +163,37 @@ class block_course_audit extends block_base
             return $this->content;
         }
 
-        $course = $this->page->course;
+        $courseid = $this->page->course->id;
 
-        // Structure for the template
-        $data = [
-            'pre' => ['start_hint' => get_string('start_hint', 'block_course_audit')],
-            'tour_data' => [],
-            'wrap_data' => [
-                [
-                    'type' => 'disclaimer',
-                    'title' => get_string('disclaimer_title', 'block_course_audit'),
-                    'content' => $OUTPUT->render_from_template('block_course_audit/block/disclaimer', [
-                        'wiki_url' => new moodle_url('/blocks/course_audit/wiki.php')
-                    ]),
-                    'button_done' => get_string('disclaimer_button', 'block_course_audit'),
-                    'button_id' => 'audit-start'
-                ],
-            ]
-        ];
+        // Check if an audit has been run for this course by looking for a stored audit run.
+        $latest_auditrunid = $this->get_latest_audit_run_id($courseid);
 
-        // $auditor = new auditor();
-        // $auditData = $auditor->get_audit_results($course); // Assume returns ['tour_steps' => [], 'raw_results' => []]
-        // $data['tour_data'] = $auditData['tour_steps'];
+        if ($latest_auditrunid == false) {
+            // An audit run exists, display its summary.
+            $this->content->text = $this->get_summary_block_content($latest_auditrunid, $courseid);
+        } else {
+            // No audit run found, display the default "Start Audit" content.
+            $data = [
+                'pre' => ['start_hint' => get_string('start_hint', 'block_course_audit')],
+                'wrap_data' => [
+                    [
+                        'type' => 'disclaimer',
+                        'title' => get_string('disclaimer_title', 'block_course_audit'),
+                        'content' => $OUTPUT->render_from_template('block_course_audit/block/disclaimer', [
+                            'wiki_url' => new moodle_url('/blocks/course_audit/wiki.php')
+                        ]),
+                        'button_done' => get_string('disclaimer_button', 'block_course_audit'),
+                        'button_id' => 'audit-start' // This ID is used by tour_creator.js
+                    ],
+                ]
+            ];
+            $this->content->text = $OUTPUT->render_from_template('block_course_audit/main', $data);
+        }
 
-        $this->content->text = $OUTPUT->render_from_template('block_course_audit/main', $data);
-
-        // Return empty content if user cannot update the course, although button might be hidden by JS/template
+        // Capability check: only show content if user can update the course.
+        // This applies whether showing summary or start button.
         if (!has_capability('moodle/course:update', $this->context)) {
-             $this->content->text = ''; 
+            $this->content->text = '';
         }
 
         return $this->content;
@@ -103,15 +210,34 @@ class block_course_audit extends block_base
 
         parent::get_required_javascript();
 
-        if ($this->page->course->id !== SITEID) {
-            $PAGE->requires->js_call_amd('block_course_audit/tour_creator', 'init', [$this->page->course->id]);
+        $courseid = $this->page->course->id;
+        if ($courseid != SITEID) { // SITEID check from original code
+            // Check if we are showing the summary or the start audit button.
+            // This mirrors the logic in get_content() to decide which JS to load.
+            $latest_auditrunid = $this->get_latest_audit_run_id($courseid);
+            $PAGE->requires->js_call_amd('block_course_audit/tour_creator', 'init', [$courseid]);
+
+            // if ($latest_auditrunid === false) {
+            //     // No audit run yet, so initialize tour_creator for the "Start Audit" button.
+            //     $PAGE->requires->js_call_amd('block_course_audit/tour_creator', 'init', [$courseid]);
+            // } else {
+            //     // An audit summary is being displayed directly in the block.
+            //     // If this summary view has interactive elements (e.g., toggle details),
+            //     // initialize a specific JS module for them.
+            //     // This JS would be different from tour_creator.js which handles tour *creation*.
+            //     // For example:
+            //     // $PAGE->requires->js_call_amd('block_course_audit/summary_block_handler', 'init');
+            //     // For now, assuming the summary template block/summary.mustache might use generic
+            //     // JS for toggles if any, or the miau one (initToggleDetails).
+            //     // If the block/summary template needs its own dedicated JS, it should be called here.
+            // }
         }
     }
 
     /**
      * Defines in which pages this block can be added.
      *
-     * @return array 
+     * @return array
      */
     public function applicable_formats()
     {
@@ -125,7 +251,8 @@ class block_course_audit extends block_base
      *
      * @return bool
      */
-    public function has_config() {
+    public function has_config()
+    {
         return true;
     }
 }

@@ -46,7 +46,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
         * @param {int} courseId The course ID
         */
         const init = function (courseId) {
-            //TODO Prüfen ob Tour bereits existiert, wenn ja zeige nur Summary und Möglichkeit des neustarts
             getElements();
             if (!miauWrapper) {
                 return;
@@ -56,6 +55,10 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
 
             initMinimizeButton();
 
+            startAudit(courseId);
+        };
+
+        const startAudit = function (courseId) {
             $('#audit-start').on('click', function (e) {
                 e.preventDefault();
 
@@ -93,7 +96,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
 
                     $(document).on('click', '.course-audit-action-button', function (event) {
                         event.preventDefault();
-                        //TODO after callToAction soll button disabled werden mit checkmark
                         callAction(event);
                     });
 
@@ -140,13 +142,14 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                         Ajax.call([{
                             methodname: details.endpoint,
                             args: args
-                        }])[0].then(function(response) {
-                            if (response && response.status) { 
+                        }])[0].then(function (response) {
+                            console.log(response);
+                            if (response && response.status) {
                                 currentButton.html('&#10004; Done');
-                                currentButton.removeClass('btn-primary'); 
+                                currentButton.removeClass('btn-primary');
                                 console.log('Action successful for key ' + mapKey + ':', response);
                             } else {
-                                currentButton.prop('disabled', false); 
+                                currentButton.prop('disabled', false);
                                 console.error('Action failed or returned non-success status for key ' + mapKey + ':', response);
                             }
                         });
@@ -168,7 +171,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
         const listenForTourStart = function () {
             const userTourEvents = userTourEventsModule.eventTypes;
             document.addEventListener(userTourEvents.tourStarted, function () {
-                console.log("tourStarted");
                 expandAllSections();
                 // TODO open all sections to display all tour steps correctly
                 // $(miauWrapper).hide();
@@ -284,11 +286,21 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
             });
         };
         const expandAllSections = function () {
-            const collapseSections = document.querySelectorAll('[id^="collapsesections"]');
-            collapseSections.forEach(section => {
+            const allSections = document.querySelectorAll('[id^="collapsesections"]');
+            //document.querySelectorAll('[id^="collapsesections"]')[0].getAttribute('aria-expanded') === 'false'
+            allSections.forEach(section => {
+                //check if all closed
                 if (section.getAttribute('aria-expanded') === 'false') {
-                    console.log('expandAllSections', section);
                     section.click();
+                } else {
+                    const individualSections = document.querySelectorAll('[id^="collapsesectionid"]');
+                    individualSections.forEach(i => {
+                        //check if some closed
+                        console.log(i);
+                        if (i.getAttribute('aria-expanded') === 'false') {
+                            i.click();
+                        }
+                    });
                 }
             });
         };
@@ -349,6 +361,8 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                 }
             });
         };
+
+        //TODO bind audit-start to startTour
         return {
             init: init
         };

@@ -246,6 +246,9 @@ class manager
     {
         global $DB;
 
+        if (!tour::instance($tourid)) {
+            return false;
+        }
         // Get the tour instance
         $tour = tour::instance($tourid);
 

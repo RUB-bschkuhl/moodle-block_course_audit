@@ -196,3 +196,4 @@ $string['rule_quiz_is_repeatable_description'] = 'Checks if a quiz is set to all
 $string['button_enable_repeatable'] = 'Enable Unlimited Attempts';
 
 $string['courselevel'] = 'Course Level';
+$string['startnewaudit'] = 'Start New Audit';
