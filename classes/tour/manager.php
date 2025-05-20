@@ -263,6 +263,11 @@ class manager
      */
     public function delete_tour($tourid)
     {
+        //TODO Since moodle doesnt always trigger tour events correctly, this might happen twice. Therefore we should check if the tour exists.
+        if (!tour::instance($tourid)) {
+            return false;
+        }
+
         $tour = tour::instance($tourid);
         $tour->remove();
 

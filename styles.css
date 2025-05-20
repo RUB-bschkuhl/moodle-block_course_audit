@@ -446,3 +446,117 @@
   height: 480px;
   margin-bottom: 0;
 }
+
+/* --- Tour Step Visual Enhancements --- */
+
+/* Main tour step popover content area */
+/* Assumes a structure like: span[data-flexitour="container"] > .modal > .modal-dialog > .modal-content */
+span[data-flexitour="container"] .modal-content {
+    border-radius: 12px; /* Softer, larger rounding */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Softer shadow */
+    border: none; /* Remove default modal border, rely on shadow */
+}
+
+/* Tour step header */
+span[data-flexitour="container"] .modal-header {
+    background-color: #f0f3f5; /* A light, neutral background */
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+    border-top-left-radius: 12px; /* Match parent rounding */
+    border-top-right-radius: 12px; /* Match parent rounding */
+}
+
+span[data-flexitour="container"] .modal-header .modal-title {
+    font-size: 1.2rem; /* Slightly larger title */
+    color: #333;
+    font-weight: 500;
+}
+
+/* Tour step body */
+span[data-flexitour="container"] .modal-body {
+    padding: 1.5rem;
+    line-height: 1.6;
+    color: #555;
+}
+
+span[data-flexitour="container"] .modal-body p.mb-1 { /* The main text before the list */
+    margin-bottom: 1rem !important; /* More space before the list */
+    font-size: 0.95rem;
+}
+
+span[data-flexitour="container"] .modal-body ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 1rem;
+}
+
+span[data-flexitour="container"] .modal-body ul li {
+    padding-left: 1.75em; /* Space for custom bullet */
+    position: relative;
+    margin-bottom: 0.6rem; /* Space between list items */
+    font-size: 0.9rem;
+}
+
+span[data-flexitour="container"] .modal-body ul li::before {
+    content: "\27A4"; /* Heavy Rightwards Arrow Unicode U+27A4. Alternatives: "\2713" (check), "\2023" (triangle) */
+    position: absolute;
+    left: 0;
+    color: #007bff; /* Primary Moodle blue, or your theme color */
+    font-size: 1.1em;
+    line-height: 1;
+}
+
+/* Distinct styling for the plugin-specific action button (e.g., "Add Quiz") */
+span[data-flexitour="container"] .modal-body .course-audit-action-button {
+    background-color: #28a745; /* Green - success/action color */
+    border-color: #28a745;
+    color: #fff !important; /* Important to override potential a tag colors if button is an <a> */
+    display: block; /* Make it full width or more prominent */
+    width: 100%;
+    padding: 0.65rem 1rem; /* Adjust padding for better feel */
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-top: 1.5rem; /* Space above the button */
+    margin-bottom: 0.5rem; /* Space below */
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+span[data-flexitour="container"] .modal-body .course-audit-action-button:hover,
+span[data-flexitour="container"] .modal-body .course-audit-action-button:focus {
+    background-color: #218838;
+    border-color: #1e7e34;
+    color: #fff !important;
+}
+
+/* Styling for completed action button (if you use the JS class 'action-completed') */
+span[data-flexitour="container"] .modal-body .course-audit-action-button.action-completed {
+    background-color: #17a2b8; /* Info blue/teal for completed */
+    border-color: #17a2b8;
+    color: #fff !important;
+    cursor: default;
+}
+span[data-flexitour="container"] .modal-body .course-audit-action-button.action-completed:hover {
+    background-color: #138496;
+    border-color: #117a8b;
+}
+
+
+/* Tour step footer */
+span[data-flexitour="container"] .modal-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    justify-content: space-between; /* Ensure buttons are spaced out */
+    border-bottom-left-radius: 12px; /* Match parent rounding */
+    border-bottom-right-radius: 12px; /* Match parent rounding */
+}
+
+span[data-flexitour="container"] .modal-footer .btn {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+}
+
+/* --- End of Tour Step Visual Enhancements --- */

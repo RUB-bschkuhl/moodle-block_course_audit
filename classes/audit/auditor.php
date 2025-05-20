@@ -115,7 +115,7 @@ class auditor
 
                             $tour_steps[] = [
                                 'type' => 'section',
-                                'title' => $result->rule_name . ': ' . $result->rule_category,
+                                'title' => $result->rule_name,
                                 'number' => $sectionobj->section,
                                 'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
                             ];
@@ -133,7 +133,7 @@ class auditor
 
                             $tour_steps[] = [
                                 'type' => 'mod',
-                                'title' => $result->rule_name . ': ' . $result->rule_category,
+                                'title' => $result->rule_name,
                                 'number' => $result->rule_target_id,
                                 'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
                             ];
@@ -151,7 +151,7 @@ class auditor
 
                             $tour_steps[] = [
                                 'type' => 'course',
-                                'title' => $result->rule_name . ': ' . $result->rule_category,
+                                'title' => $result->rule_name,
                                 'number' => $sectionobj->section,
                                 'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
                             ];
