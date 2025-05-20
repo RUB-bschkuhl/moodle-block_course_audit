@@ -27,13 +27,11 @@ class observer
             return;
         }
 
-        try {
-            $manager = new tour_manager();
-            //TODO throws error after deletion, when tour is supposed to be marked as complete
-            if (!$manager->get_tour_by_id($tourid)) {
-                return;
-            }
-            $deleted = $manager->delete_tour($tourid);
+        $manager = new tour_manager();
+        //TODO throws error after deletion, when tour is supposed to be marked as complete
+        if (!$manager->get_tour_by_id($tourid)) {
+            return;
         }
+        $deleted = $manager->delete_tour($tourid);
     }
 }
