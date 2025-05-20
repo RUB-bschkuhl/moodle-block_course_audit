@@ -58,7 +58,7 @@ $string['rule_category_hint'] = 'Hinweis';
 $string['rule_category_action'] = 'Aktion';
 
 // Rules - PDF Only
-$string['rule_pdf_only_name'] = 'Nur PDF-Ressourcen';
+$string['rule_pdf_only_name'] = 'Ausschließlich PDF-Ressourcen';
 $string['rule_pdf_only_description'] = 'Prüft, ob ein Abschnitt nur PDF-Ressourcen enthält';
 $string['rule_pdf_only_empty_section'] = 'Der Abschnitt ist leer. Bitte fügen Sie Ressourcen hinzu.';
 $string['rule_pdf_only_non_pdf_resources'] = 'Der Abschnitt enthält Nicht-PDF-Ressourcen:';
@@ -66,7 +66,7 @@ $string['rule_pdf_only_non_pdf_resource_item'] = '- "{$a->name}" ({$a->type})';
 $string['rule_pdf_only_success'] = 'Alle {$a->count} Ressourcen im Abschnitt sind PDFs.';
 
 // Standardisierte Schlüsselnamen mit section_ Präfix für PDFs
-$string['rule_section_has_pdfs_name'] = 'Nur PDF-Ressourcen';
+$string['rule_section_has_pdfs_name'] = 'Vorhandensein von PDF-Ressourcen im Abschnitt';
 $string['rule_section_has_pdfs_description'] = 'Prüft, ob ein Abschnitt nur PDF-Ressourcen enthält';
 $string['rule_section_has_pdfs_empty_section'] = 'Der Abschnitt ist leer. Bitte fügen Sie Ressourcen hinzu.';
 $string['rule_section_has_pdfs_non_pdf_resources'] = 'Der Abschnitt enthält Nicht-PDF-Ressourcen:';
@@ -74,7 +74,7 @@ $string['rule_section_has_pdfs_non_pdf_resource_item'] = '- "{$a->name}" ({$a->t
 $string['rule_section_has_pdfs_success'] = 'Der Abschnitt enthält {$a->count} PDF-Ressource(n).';
 
 // Rules - Has Connections
-$string['rule_has_connections_name'] = 'Aktivitätsverbindungen';
+$string['rule_has_connections_name'] = 'Aktivitätsverknüpfungen';
 $string['rule_has_connections_description'] = 'Prüft, ob Aktivitäten in einem Abschnitt durch Abschlussbedingungen verbunden sind';
 $string['rule_has_connections_empty_section'] = 'Der Abschnitt ist leer. Bitte fügen Sie Aktivitäten hinzu.';
 $string['rule_has_connections_single_module'] = 'Der Abschnitt enthält nur eine Aktivität ("{$a->name}"). Mindestens zwei Aktivitäten sind erforderlich, um Verbindungen zu erstellen.';
@@ -85,7 +85,7 @@ $string['rule_has_connections_some_without_conditions'] = '{$a->count} Aktivitä
 $string['rule_has_connections_module_without_condition'] = '- "{$a->name}" hat keine Abschlussbedingungen';
 
 // Standardisierte Schlüsselnamen mit section_ Präfix
-$string['rule_section_has_connections_name'] = 'Aktivitätsverbindungen';
+$string['rule_section_has_connections_name'] = 'Aktivitätsverknüpfungen im Abschnitt';
 $string['rule_section_has_connections_description'] = 'Prüft, ob Aktivitäten in einem Abschnitt durch Abschlussbedingungen verbunden sind';
 $string['rule_section_has_connections_empty_section'] = 'Der Abschnitt ist leer. Bitte fügen Sie Aktivitäten hinzu.';
 $string['rule_section_has_connections_single_module'] = 'Der Abschnitt enthält nur eine Aktivität ("{$a->name}"). Mindestens zwei Aktivitäten sind erforderlich, um Verbindungen zu erstellen.';
@@ -96,7 +96,7 @@ $string['rule_section_has_connections_some_without_conditions'] = '{$a->count} A
 $string['rule_section_has_connections_module_without_condition'] = '- "{$a->name}" hat keine Abschlussbedingungen';
 
 // Rules - Has Label - used in rule implementations
-$string['rule_has_label_name'] = 'Textfeld vorhanden';
+$string['rule_has_label_name'] = 'Vorhandensein von Textfeldern';
 $string['rule_has_label_description'] = 'Prüft, ob ein Abschnitt ein Textfeld enthält';
 $string['rule_has_label_empty_section'] = 'Der Abschnitt ist leer. Bitte fügen Sie Ressourcen hinzu.';
 $string['rule_has_label_success'] = 'Der Abschnitt enthält ein Textfeld.';
@@ -148,14 +148,14 @@ $string['status_done'] = 'Abgeschlossen';
 $string['status_todo'] = 'Ausstehend';
 
 // Rule: section_has_quiz
-$string['rule_section_has_quiz_name'] = 'Abschnitt hat Quiz';
+$string['rule_section_has_quiz_name'] = 'Vorhandensein von Tests im Abschnitt';
 $string['rule_section_has_quiz_description'] = 'Prüft, ob der Abschnitt mindestens ein Quiz enthält.';
 $string['rule_section_has_quiz_success'] = 'Abschnitt enthält ein Quiz: {$a->quizname}';
 $string['rule_section_has_quiz_failure'] = 'Der Abschnitt enthält keine Quiz-Aktivitäten. Quiz-Aktivitäten sind wertvoll, um das Verständnis zu überprüfen und das Gelernte zu festigen. Erwägen Sie, ein Quiz hinzuzufügen, um:<ul><li>Das Verständnis der Lernenden für die Inhalte des Abschnitts zu testen.</li><li>Sofortiges Feedback zu geben und Wissenslücken aufzuzeigen.</li><li>Aktives Erinnern und die Auseinandersetzung mit dem Material zu fördern.</li></ul>';
 $string['rule_section_has_quiz_empty_section'] = 'Abschnitt ist leer, kann kein Quiz enthalten.';
 
 // Rule: course_has_section
-$string['rule_course_has_section_name'] = 'Kurs hat Abschnitt';
+$string['rule_course_has_section_name'] = 'Vorhandensein von Kursabschnitten';
 
 // Settings page strings
 $string['settings_heading'] = 'Kurs-Prüfer Einstellungen';
@@ -164,7 +164,7 @@ $string['example_setting_desc'] = 'Dies ist eine Beispiel-Texteinstellung für d
 $string['settings_link_description'] = 'Um die Einstellungen für den Kurs-Prüfer-Block zu konfigurieren, gehen Sie bitte zu <a href="{$a}">Block-Einstellungen</a>.';
 
 // Standardisierte Schlüsselnamen mit section_ Präfix für Labels
-$string['rule_section_has_label_name'] = 'Textfeld vorhanden';
+$string['rule_section_has_label_name'] = 'Vorhandensein von Textfeldern im Abschnitt';
 $string['rule_section_has_label_description'] = 'Prüft, ob ein Abschnitt ein Textfeld enthält';
 $string['rule_section_has_label_empty_section'] = 'Der Abschnitt ist leer. Bitte fügen Sie Ressourcen hinzu.';
 $string['rule_section_has_label_success'] = 'Der Abschnitt enthält ein Textfeld.';
@@ -178,6 +178,6 @@ $string['repeatenabledsuccess'] = 'Quiz-Versuche erfolgreich auf unbegrenzt gese
 $string['rule_quiz_is_repeatable_failure'] = 'Quiz erlaubt {$a->attempts} Versuch(e). Für Übungszwecke oder formative Bewertungen können unbegrenzte Versuche vorteilhaft sein. Erwägen Sie, unbegrenzte Versuche zu aktivieren, wenn:<ul><li>Das Quiz der Selbsteinschätzung und dem Lernen dient, nicht der formalen Benotung.</li><li>Sie Studierenden ermöglichen möchten, so lange zu üben, bis sie den Stoff beherrschen.</li><li>Das Ziel ist, eine wiederholte Auseinandersetzung mit den Quizinhalten zu fördern.</li></ul>';
 
 // Rule: quiz_is_repeatable
-$string['rule_quiz_is_repeatable_name'] = 'Quiz ist wiederholbar';
+$string['rule_quiz_is_repeatable_name'] = 'Wiederholbarkeit von Tests';
 $string['rule_quiz_is_repeatable_description'] = 'Prüft, ob ein Quiz auf unbegrenzte Versuche eingestellt ist.';
 $string['button_enable_repeatable'] = 'Unbegrenzte Versuche aktivieren';

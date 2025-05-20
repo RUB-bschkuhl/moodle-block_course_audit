@@ -58,7 +58,7 @@ $string['rule_category_hint'] = 'Hint';
 $string['rule_category_action'] = 'Action';
 
 // Rules - PDF Only - used in rule implementations
-$string['rule_pdf_only_name'] = 'PDF Only Resources';
+$string['rule_pdf_only_name'] = 'Exclusivly PDF Resources';
 $string['rule_pdf_only_description'] = 'Checks if a section contains only PDF resources';
 $string['rule_pdf_only_empty_section'] = 'The section is empty. Please add some resources.';
 $string['rule_pdf_only_non_pdf_resources'] = 'Section contains non-PDF resources or activities:';
@@ -66,7 +66,7 @@ $string['rule_pdf_only_non_pdf_resource_item'] = '- "{$a->name}" ({$a->type})';
 $string['rule_pdf_only_success'] = 'All {$a->count} resources in the section are PDFs.';
 
 // Standard format keys with section_ prefix
-$string['rule_section_has_pdfs_name'] = 'PDF Only Resources';
+$string['rule_section_has_pdfs_name'] = 'Presence of PDF Resources in Section';
 $string['rule_section_has_pdfs_description'] = 'Checks if a section contains only PDF resources';
 $string['rule_section_has_pdfs_empty_section'] = 'The section is empty. Please add some resources.';
 $string['rule_section_has_pdfs_non_pdf_resources'] = 'Section contains non-PDF resources or activities:';
@@ -85,14 +85,14 @@ $string['rule_has_connections_some_without_conditions'] = '{$a->count} activitie
 $string['rule_has_connections_module_without_condition'] = '- "{$a->name}" has no completion conditions';
 
 // Rules - Has Label - used in rule implementations
-$string['rule_has_label_name'] = 'Label Presence';
+$string['rule_has_label_name'] = 'Presence of Labels';
 $string['rule_has_label_description'] = 'Checks if a section contains a label';
 $string['rule_has_label_empty_section'] = 'The section is empty. Please add some resources.';
 $string['rule_has_label_success'] = 'The section contains a label.';
 $string['rule_has_label_failure'] = 'The section does not contain a label. Adding labels can improve course structure and clarity for learners. Consider adding a label to:<ul><li>Provide clear headings for content blocks.</li><li>Offer brief instructions or context for activities.</li><li>Visually break up long lists of resources or activities.</li></ul>';
 
 // Standard format keys with section_ prefix for labels
-$string['rule_section_has_label_name'] = 'Label Presence';
+$string['rule_section_has_label_name'] = 'Presence of Labels in Section';
 $string['rule_section_has_label_description'] = 'Checks if a section contains a label';
 $string['rule_section_has_label_empty_section'] = 'The section is empty. Please add some resources.';
 $string['rule_section_has_label_success'] = 'The section contains a label.';
@@ -157,14 +157,14 @@ $string['status_done'] = 'Completed';
 $string['status_todo'] = 'Pending';
 
 // Rule: section_has_quiz
-$string['rule_section_has_quiz_name'] = 'Section Has Quiz';
+$string['rule_section_has_quiz_name'] = 'Presence of Quizzes in Section';
 $string['rule_section_has_quiz_description'] = 'Checks if the section contains at least one quiz activity.';
 $string['rule_section_has_quiz_success'] = 'Section contains a quiz: {$a->quizname}';
 $string['rule_section_has_quiz_failure'] = 'Section does not contain any quiz activities. Quizzes are valuable for assessing and reinforcing learning. Consider adding a quiz to:<ul><li>Test learners\' understanding of the section content.</li><li>Provide immediate feedback to help identify knowledge gaps.</li><li>Encourage active recall and engagement with the material.</li></ul>';
 $string['rule_section_has_quiz_empty_section'] = 'Section is empty, cannot contain a quiz.';
 
 // Rule: course_has_section
-$string['rule_course_has_section_name'] = 'Course Has Section';
+$string['rule_course_has_section_name'] = 'Presence of Course Sections';
 
 // Settings page strings
 $string['settings_heading'] = 'Course Audit Settings';
@@ -173,7 +173,7 @@ $string['example_setting_desc'] = 'This is an example text setting for the Cours
 $string['settings_link_description'] = 'To configure the settings for the Course Audit block, please go to <a href="{$a}">Block settings</a>.';
 
 // Standard format keys with section_ prefix
-$string['rule_section_has_connections_name'] = 'Activity Connections';
+$string['rule_section_has_connections_name'] = 'Activity Connections in Section';
 $string['rule_section_has_connections_description'] = 'Checks if activities in a section have connections through completion conditions';
 $string['rule_section_has_connections_empty_section'] = 'The section is empty. Please add some activities.';
 $string['rule_section_has_connections_single_module'] = 'The section has only one activity ("{$a->name}"). At least two activities are needed to create connections.';
@@ -191,7 +191,7 @@ $string['repeatenabledsuccess'] = 'Quiz attempts successfully set to unlimited.'
 $string['rule_quiz_is_repeatable_failure'] = 'Quiz allows {$a->attempts} attempt(s). For practice or formative assessment, unlimited attempts can be beneficial. Consider enabling unlimited attempts if:<ul><li>The quiz is for self-assessment and learning, not formal grading.</li><li>You want to allow students to practice until they master the material.</li><li>The goal is to encourage repeated engagement with the quiz content.</li></ul>';
 
 // Rule: quiz_is_repeatable
-$string['rule_quiz_is_repeatable_name'] = 'Quiz is Repeatable';
+$string['rule_quiz_is_repeatable_name'] = 'Repeatability of Quizzes';
 $string['rule_quiz_is_repeatable_description'] = 'Checks if a quiz is set to allow unlimited attempts.';
 $string['button_enable_repeatable'] = 'Enable Unlimited Attempts';
 
