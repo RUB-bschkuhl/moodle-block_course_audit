@@ -22,7 +22,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use block_course_audit\audit\auditor; // Corrected namespace separator
+use block_course_audit\audit\auditor;
 
 class block_course_audit extends block_base
 {
@@ -50,9 +50,9 @@ class block_course_audit extends block_base
         $sql = "SELECT ca.id AS auditrunid
                   FROM {block_course_audit_tours} ca
                  WHERE ca.courseid = :courseid
-              ORDER BY ca.timemodified DESC"; // Or timecreated DESC
+              ORDER BY ca.timemodified DESC";
 
-        $latest_audit_run = $DB->get_record_sql($sql, ['courseid' => $courseid], IGNORE_MULTIPLE); // Get only one record
+        $latest_audit_run = $DB->get_record_sql($sql, ['courseid' => $courseid], IGNORE_MULTIPLE);
 
         if ($latest_audit_run) {
             return (int)$latest_audit_run->auditrunid;
@@ -112,9 +112,7 @@ class block_course_audit extends block_base
                 'rule_category' => $result->rulecategory,
                 'targettype' => $result->targettype,
                 'targetid' => $result->targetid,
-                // Add action button details if needed for the summary template, similar to auditor.php
-                // This would require fetching/reconstructing them if they are not stored with results.
-                // For simplicity, this is omitted here but was part of the JS summary.
+                // TODO Add action button details if needed for the summary template, similar to auditor.php                
                 // 'action_button_details' => $this->get_action_details_for_rule_result($result) // Hypothetical method
             ];
 
@@ -137,8 +135,6 @@ class block_course_audit extends block_base
             'canmanagecourse' => has_capability('moodle/course:manageactivities', $this->page->context) // For conditional buttons
         ];
 
-        // Use the same summary template as the miau speech bubble if it's suitable,
-        // otherwise, you might need a specific one like 'block_course_audit/block_summary_content'.
         return $OUTPUT->render_from_template('block_course_audit/block/summary', $template_data);
     }
 
@@ -165,14 +161,11 @@ class block_course_audit extends block_base
 
         $courseid = $this->page->course->id;
 
-        // Check if an audit has been run for this course by looking for a stored audit run.
         $latest_auditrunid = $this->get_latest_audit_run_id($courseid);
 
         if ($latest_auditrunid == false) {
-            // An audit run exists, display its summary.
             $this->content->text = $this->get_summary_block_content($latest_auditrunid, $courseid);
         } else {
-            // No audit run found, display the default "Start Audit" content.
             $data = [
                 'pre' => ['start_hint' => get_string('start_hint', 'block_course_audit')],
                 'wrap_data' => [
@@ -190,8 +183,6 @@ class block_course_audit extends block_base
             $this->content->text = $OUTPUT->render_from_template('block_course_audit/main', $data);
         }
 
-        // Capability check: only show content if user can update the course.
-        // This applies whether showing summary or start button.
         if (!has_capability('moodle/course:update', $this->context)) {
             $this->content->text = '';
         }
@@ -211,26 +202,8 @@ class block_course_audit extends block_base
         parent::get_required_javascript();
 
         $courseid = $this->page->course->id;
-        if ($courseid != SITEID) { // SITEID check from original code
-            // Check if we are showing the summary or the start audit button.
-            // This mirrors the logic in get_content() to decide which JS to load.
-            $latest_auditrunid = $this->get_latest_audit_run_id($courseid);
+        if ($courseid != SITEID) {
             $PAGE->requires->js_call_amd('block_course_audit/tour_creator', 'init', [$courseid]);
-
-            // if ($latest_auditrunid === false) {
-            //     // No audit run yet, so initialize tour_creator for the "Start Audit" button.
-            //     $PAGE->requires->js_call_amd('block_course_audit/tour_creator', 'init', [$courseid]);
-            // } else {
-            //     // An audit summary is being displayed directly in the block.
-            //     // If this summary view has interactive elements (e.g., toggle details),
-            //     // initialize a specific JS module for them.
-            //     // This JS would be different from tour_creator.js which handles tour *creation*.
-            //     // For example:
-            //     // $PAGE->requires->js_call_amd('block_course_audit/summary_block_handler', 'init');
-            //     // For now, assuming the summary template block/summary.mustache might use generic
-            //     // JS for toggles if any, or the miau one (initToggleDetails).
-            //     // If the block/summary template needs its own dedicated JS, it should be called here.
-            // }
         }
     }
 
