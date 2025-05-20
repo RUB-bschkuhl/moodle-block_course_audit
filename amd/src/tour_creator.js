@@ -93,6 +93,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
 
                     $(document).on('click', '.course-audit-action-button', function (event) {
                         event.preventDefault();
+                        //TODO after callToAction soll button disabled werden mit checkmark
                         callAction(event);
                     });
 
@@ -115,15 +116,13 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
         };
 
         const callAction = function (event) {
+            const currentButton = $(event.target);
             const classList = event.target.classList;
             const auditActionClass = Array.from(classList).find(className => className.startsWith('audit-action-'));
             if (auditActionClass) {
                 const idParts = auditActionClass.split('-');
-                if (idParts.length === 4) {
-                    //TODO update for mod / course / section
-                    const sectionId = idParts[2];
-                    const ruleKey = idParts[3];
-                    const mapKey = `section_${sectionId}_${ruleKey}`;
+                if (idParts.length === 3) {
+                    const mapKey = idParts[2];
                     const actionDetails = Object.values(storedActionDetails).find(details => details.mapkey === mapKey);
                     if (actionDetails) {
                         const details = actionDetails;
@@ -133,15 +132,26 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                             const [key, value] = param.split('=');
                             args[key] = value;
                         });
-                        //TODO then console log response
-                        let response = Ajax.call([{
+                        //TODO doesnt work
+                        //TODO show loading state
+                        //TODO wenn action ok dann sollte summary das reflektieren
+                        currentButton.prop('disabled', true);
+
+                        Ajax.call([{
                             methodname: details.endpoint,
                             args: args
-                        }])[0];
-                        console.log('response', response);
-                        return response;
+                        }])[0].then(function(response) {
+                            if (response && response.status) { 
+                                currentButton.html('&#10004; Done');
+                                currentButton.removeClass('btn-primary'); 
+                                console.log('Action successful for key ' + mapKey + ':', response);
+                            } else {
+                                currentButton.prop('disabled', false); 
+                                console.error('Action failed or returned non-success status for key ' + mapKey + ':', response);
+                            }
+                        });
                     } else {
-                        console.error('Action details not found for key:', mapKey);
+                        currentButton.prop('disabled', false);
                     }
                 }
             }
@@ -168,17 +178,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
         const listenForStepChange = function () {
             const userTourEvents = userTourEventsModule.eventTypes;
             document.addEventListener(userTourEvents.stepRendered, function () {
-                /*   const stepElement = $('[id^="tour-step-tool_usertours"]');
-                   $('[id^="tour-step-tool_usertours"]').each(function() {
-                      if ($(this).is(':visible')) {
-                          console.log('stepElement', $(this));
-                      }
-                  });
-                  if (stepElement) {
-                      stepElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                  } else {
-                      console.warn('Course Audit: Could not find tour step element to scroll:', stepElement);
-                  } */
             });
             document.addEventListener(userTourEvents.stepHide, function () {
                 // TODO klick neben Tour Element cancelled Tour.

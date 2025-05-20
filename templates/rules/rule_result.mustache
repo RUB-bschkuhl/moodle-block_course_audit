@@ -37,10 +37,10 @@
 <div class="block_course_audit_rule_result">
     <div class="messages">
         {{#rule_result.messages}}
-            <p class="mb-1">{{.}}</p>
+            <p class="mb-1">{{{.}}}</p>
         {{/rule_result.messages}}
-        {{#rule_result.action_button_details}} mapkey
-            <a href="#" class="btn btn-primary course-audit-action-button audit-action-{{section_id}}-{{rule_result.rule_key}}" role="button">{{label}}</a>
+        {{#rule_result.action_button_details}} 
+            <a href="#" class="btn btn-primary course-audit-action-button audit-action-{{mapkey}}" role="button">{{label}}</a>
         {{/rule_result.action_button_details}}
     </div>
 </div> 

@@ -100,7 +100,7 @@ $string['rule_has_label_name'] = 'Textfeld vorhanden';
 $string['rule_has_label_description'] = 'Prüft, ob ein Abschnitt ein Textfeld enthält';
 $string['rule_has_label_empty_section'] = 'Der Abschnitt ist leer. Bitte fügen Sie Ressourcen hinzu.';
 $string['rule_has_label_success'] = 'Der Abschnitt enthält ein Textfeld.';
-$string['rule_has_label_failure'] = 'Der Abschnitt enthält kein Textfeld.';
+$string['rule_has_label_failure'] = 'Der Abschnitt enthält kein Textfeld (Label). Textfelder helfen, Inhalte zu strukturieren und Lernenden klare Anweisungen zu geben. Erwägen Sie, ein Textfeld hinzuzufügen, um:<ul><li>Klare Überschriften für Inhaltsblöcke bereitzustellen.</li><li>Kurze Anleitungen oder Kontext für Aktivitäten zu bieten.</li><li>Lange Listen von Materialien oder Aktivitäten visuell aufzulockern.</li></ul>';
 $string['button_add_label'] = 'Textfeld hinzufügen';
 $string['label_added_success'] = 'Textfeld erfolgreich hinzugefügt';
 $string['label_added_failure'] = 'Textfeld konnte nicht hinzugefügt werden';
@@ -151,7 +151,7 @@ $string['status_todo'] = 'Ausstehend';
 $string['rule_section_has_quiz_name'] = 'Abschnitt hat Quiz';
 $string['rule_section_has_quiz_description'] = 'Prüft, ob der Abschnitt mindestens ein Quiz enthält.';
 $string['rule_section_has_quiz_success'] = 'Abschnitt enthält ein Quiz: {$a->quizname}';
-$string['rule_section_has_quiz_failure'] = 'Abschnitt enthält keine Quiz-Aktivitäten.';
+$string['rule_section_has_quiz_failure'] = 'Der Abschnitt enthält keine Quiz-Aktivitäten. Quiz-Aktivitäten sind wertvoll, um das Verständnis zu überprüfen und das Gelernte zu festigen. Erwägen Sie, ein Quiz hinzuzufügen, um:<ul><li>Das Verständnis der Lernenden für die Inhalte des Abschnitts zu testen.</li><li>Sofortiges Feedback zu geben und Wissenslücken aufzuzeigen.</li><li>Aktives Erinnern und die Auseinandersetzung mit dem Material zu fördern.</li></ul>';
 $string['rule_section_has_quiz_empty_section'] = 'Abschnitt ist leer, kann kein Quiz enthalten.';
 
 // Rule: course_has_section
@@ -168,13 +168,14 @@ $string['rule_section_has_label_name'] = 'Textfeld vorhanden';
 $string['rule_section_has_label_description'] = 'Prüft, ob ein Abschnitt ein Textfeld enthält';
 $string['rule_section_has_label_empty_section'] = 'Der Abschnitt ist leer. Bitte fügen Sie Ressourcen hinzu.';
 $string['rule_section_has_label_success'] = 'Der Abschnitt enthält ein Textfeld.';
-$string['rule_section_has_label_failure'] = 'Der Abschnitt enthält kein Textfeld.';
+$string['rule_section_has_label_failure'] = 'Der Abschnitt enthält kein Textfeld (Label). Textfelder helfen, Inhalte zu strukturieren und Lernenden klare Anweisungen zu geben. Erwägen Sie, ein Textfeld hinzuzufügen, um:<ul><li>Klare Überschriften für Inhaltsblöcke bereitzustellen.</li><li>Kurze Anleitungen oder Kontext für Aktivitäten zu bieten.</li><li>Lange Listen von Materialien oder Aktivitäten visuell aufzulockern.</li></ul>';
 
 // Strings for enable_repeatable external function
 $string['quiznotfound'] = 'Quiz mit ID {$a->id} nicht gefunden.';
 $string['repeatalreadyenabled'] = 'Quiz ist bereits auf unbegrenzte Versuche eingestellt.';
 $string['errorupdatequiz'] = 'Fehler beim Aktualisieren der Quiz-Einstellungen.';
 $string['repeatenabledsuccess'] = 'Quiz-Versuche erfolgreich auf unbegrenzt gesetzt.';
+$string['rule_quiz_is_repeatable_failure'] = 'Quiz erlaubt {$a->attempts} Versuch(e). Für Übungszwecke oder formative Bewertungen können unbegrenzte Versuche vorteilhaft sein. Erwägen Sie, unbegrenzte Versuche zu aktivieren, wenn:<ul><li>Das Quiz der Selbsteinschätzung und dem Lernen dient, nicht der formalen Benotung.</li><li>Sie Studierenden ermöglichen möchten, so lange zu üben, bis sie den Stoff beherrschen.</li><li>Das Ziel ist, eine wiederholte Auseinandersetzung mit den Quizinhalten zu fördern.</li></ul>';
 
 // Rule: quiz_is_repeatable
 $string['rule_quiz_is_repeatable_name'] = 'Quiz ist wiederholbar';

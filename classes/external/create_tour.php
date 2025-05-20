@@ -202,17 +202,30 @@ class create_tour extends external_api
             //TODO: Add steps in tour_manager instead
             foreach ($tour_steps_data as $step_data) {
                 $targetselector = '#' . $step_data['type'] . '-' . $step_data['number'];
+                switch ($step_data['type']) {
+                    case 'section':
+                        $targetselector = '#' . $step_data['type'] . '-' . $step_data['number'];
+                        $targettype = target::TARGET_SELECTOR;
+                        break;
+                    case 'mod':
+                        $targetselector = '#module-' . $step_data['number'];
+                        $targettype = target::TARGET_SELECTOR;
+                        break;
+                    case 'course':
+                        $targetselector = '';
+                        $targettype = target::TARGET_UNATTACHED;
+                        break;
+                }
 
                 $manager->add_step(
                     $step_data['title'],
                     $step_data['content'],
-                    target::TARGET_SELECTOR,
+                    $targettype,
                     $targetselector,
                     ['placement' => 'right', 'backdrop' => true]
                 );
             }
 
-            //TODO: Store individual audit results in auditor instead
             self::store_audit_results($auditrunid, $raw_audit_results);
 
             // Reset tour for users only after steps and results are successfully created

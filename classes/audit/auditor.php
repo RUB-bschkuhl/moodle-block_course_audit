@@ -58,20 +58,18 @@ class auditor
         //TODO run audit_course first, audit course should only run rule with target_type course
         $course_results = $this->audit_course($course->id);
         foreach ($course_results as $result) {
-            //TODO switch for section mod course
-            $raw_results[] = $result; // Store raw result regardless of status
+/*             $raw_results[] = $result;
 
-            if ($result->rule_category == "action" && $result->action_button_details && $result->status == false) {
-                $map_key = 'section_' . $sectionobj->id . '_' . $result->rule_key;
-                $action_details_map[$map_key] = $result->action_button_details;
+            if ($result->rule_category == "action" && !empty($result->action_button_details) && isset($result->action_button_details['mapkey']) && $result->status == false) {
+                $action_details_map[$result->action_button_details['mapkey']] = $result->action_button_details;
             }
 
-            // Only create tour steps for failed checks, as before
             if (!$result->status) {
-                $section_template_data = [
-                    'section_id' => $sectionobj->id,
-                    'section_name' => get_section_name($course, $sectionobj),
-                    'section_number' => $sectionobj->section,
+                // Data for course-level rule results.
+                $course_template_data = [
+                    'section_id' => null, // No specific section for a course-level rule
+                    'section_name' => get_string('courselevel', 'block_course_audit'), // Or $course->fullname
+                    'section_number' => null, // No section number
                     'course_id' => $course->id,
                     'course_shortname' => $course->shortname,
                     'rule_result' => $result,
@@ -80,10 +78,10 @@ class auditor
                 $tour_steps[] = [
                     'type' => 'course',
                     'title' => $result->rule_name . ': ' . $result->rule_category,
-                    'number' => $sectionobj->section,
-                    'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
+                    // 'number' => null, // No specific section number for course-level items
+                    'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $course_template_data)
                 ];
-            }
+            } */
         }
 
         foreach ($sections as $sectionnum => $sectionobj) {
@@ -93,9 +91,12 @@ class auditor
             foreach ($section_results as $result) {
                 $raw_results[] = $result; // Store raw result regardless of status
 
-                if ($result->rule_category == "action" && $result->action_button_details && !$result->status) {
-                    foreach ($result->action_button_details as $detail) {
-                        $action_details_map[$detail->mapkey] = $detail;
+                if ($result->rule_category == "action" && !empty($result->action_button_details) && $result->status == false) {
+                    $action_buttons = is_array(reset($result->action_button_details)) && is_string(key(reset($result->action_button_details))) ? $result->action_button_details : [$result->action_button_details];
+                    foreach ($action_buttons as $button_detail) {
+                        if (is_array($button_detail) && !empty($button_detail['mapkey'])) {
+                            $action_details_map[$button_detail['mapkey']] = $button_detail;
+                        }
                     }
                 }
 
@@ -131,12 +132,11 @@ class auditor
                             ];
 
                             $tour_steps[] = [
-                                'type' => 'section',
+                                'type' => 'mod',
                                 'title' => $result->rule_name . ': ' . $result->rule_category,
-                                'number' => $sectionobj->section,
+                                'number' => $result->rule_target_id,
                                 'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
                             ];
-                            break;
                             break;
                         case "course":
                             //TODO
@@ -150,12 +150,11 @@ class auditor
                             ];
 
                             $tour_steps[] = [
-                                'type' => 'section',
+                                'type' => 'course',
                                 'title' => $result->rule_name . ': ' . $result->rule_category,
                                 'number' => $sectionobj->section,
                                 'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
                             ];
-                            break;
                             break;
                     }
                 }

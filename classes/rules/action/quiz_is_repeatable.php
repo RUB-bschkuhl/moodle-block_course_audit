@@ -86,7 +86,9 @@ class quiz_is_repeatable extends rule_base
             if ((int)$quiz->attempts === 0) {
                 return $this->create_result(true, []);
             } else {
-                return $this->create_result(false, ['Quiz allows ' . $quiz->attempts . ' attempt(s).'], $target->instance, $target->course);
+                $messages[] = get_string('rule_quiz_is_repeatable_failure', 'block_course_audit', 
+                    ['attempts' => $quiz->attempts]);
+                return $this->create_result(false, $messages, $target->id, $target->course);
             }
         } catch (\Exception $e) {
             return null;

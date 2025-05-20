@@ -89,14 +89,14 @@ $string['rule_has_label_name'] = 'Label Presence';
 $string['rule_has_label_description'] = 'Checks if a section contains a label';
 $string['rule_has_label_empty_section'] = 'The section is empty. Please add some resources.';
 $string['rule_has_label_success'] = 'The section contains a label.';
-$string['rule_has_label_failure'] = 'The section does not contain a label.';
+$string['rule_has_label_failure'] = 'The section does not contain a label. Adding labels can improve course structure and clarity for learners. Consider adding a label to:<ul><li>Provide clear headings for content blocks.</li><li>Offer brief instructions or context for activities.</li><li>Visually break up long lists of resources or activities.</li></ul>';
 
 // Standard format keys with section_ prefix for labels
 $string['rule_section_has_label_name'] = 'Label Presence';
 $string['rule_section_has_label_description'] = 'Checks if a section contains a label';
 $string['rule_section_has_label_empty_section'] = 'The section is empty. Please add some resources.';
 $string['rule_section_has_label_success'] = 'The section contains a label.';
-$string['rule_section_has_label_failure'] = 'The section does not contain a label.';
+$string['rule_section_has_label_failure'] = 'The section does not contain a label. Adding labels can improve course structure and clarity for learners. Consider adding a label to:<ul><li>Provide clear headings for content blocks.</li><li>Offer brief instructions or context for activities.</li><li>Visually break up long lists of resources or activities.</li></ul>';
 
 $string['button_add_label'] = 'Add Label';
 $string['label_added_success'] = 'Label added successfully';
@@ -160,7 +160,7 @@ $string['status_todo'] = 'Pending';
 $string['rule_section_has_quiz_name'] = 'Section Has Quiz';
 $string['rule_section_has_quiz_description'] = 'Checks if the section contains at least one quiz activity.';
 $string['rule_section_has_quiz_success'] = 'Section contains a quiz: {$a->quizname}';
-$string['rule_section_has_quiz_failure'] = 'Section does not contain any quiz activities.';
+$string['rule_section_has_quiz_failure'] = 'Section does not contain any quiz activities. Quizzes are valuable for assessing and reinforcing learning. Consider adding a quiz to:<ul><li>Test learners\' understanding of the section content.</li><li>Provide immediate feedback to help identify knowledge gaps.</li><li>Encourage active recall and engagement with the material.</li></ul>';
 $string['rule_section_has_quiz_empty_section'] = 'Section is empty, cannot contain a quiz.';
 
 // Rule: course_has_section
@@ -188,8 +188,11 @@ $string['quiznotfound'] = 'Quiz with ID {$a->id} not found.';
 $string['repeatalreadyenabled'] = 'Quiz is already set to unlimited attempts.';
 $string['errorupdatequiz'] = 'Error updating quiz settings.';
 $string['repeatenabledsuccess'] = 'Quiz attempts successfully set to unlimited.';
+$string['rule_quiz_is_repeatable_failure'] = 'Quiz allows {$a->attempts} attempt(s). For practice or formative assessment, unlimited attempts can be beneficial. Consider enabling unlimited attempts if:<ul><li>The quiz is for self-assessment and learning, not formal grading.</li><li>You want to allow students to practice until they master the material.</li><li>The goal is to encourage repeated engagement with the quiz content.</li></ul>';
 
 // Rule: quiz_is_repeatable
 $string['rule_quiz_is_repeatable_name'] = 'Quiz is Repeatable';
 $string['rule_quiz_is_repeatable_description'] = 'Checks if a quiz is set to allow unlimited attempts.';
 $string['button_enable_repeatable'] = 'Enable Unlimited Attempts';
+
+$string['courselevel'] = 'Course Level';

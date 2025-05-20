@@ -36,14 +36,16 @@ use core_external\external_single_structure;
 use context_module;
 use moodle_exception;
 
-class enable_repeatable extends external_api {
+class enable_repeatable extends external_api
+{
 
     /**
      * Define parameters for the external function.
      *
      * @return external_function_parameters
      */
-    public static function execute_parameters() {
+    public static function execute_parameters()
+    {
         return new external_function_parameters([
             'modid' => new external_value(PARAM_INT, 'The course module ID of the quiz.'),
             'courseid' => new external_value(PARAM_INT, 'The course ID where the quiz resides.')
@@ -61,6 +63,7 @@ class enable_repeatable extends external_api {
     public static function execute($modid, $courseid) {
         global $DB, $USER;
 
+        //TODO check if quiz already has attempts by students, if so DO NOT UPDATE 
         // Validate parameters.
         $params = self::validate_parameters(self::execute_parameters(), ['modid' => $modid, 'courseid' => $courseid]);
 
@@ -92,23 +95,8 @@ class enable_repeatable extends external_api {
                 throw new moodle_exception('errorupdatequiz', 'block_course_audit');
             }
 
-            // Call Moodle's internal function to handle post-update actions for the quiz.
-            // This is crucial for gradebook updates, event triggering, etc.
-            \mod_quiz_after_update($quiz, $cm, true);
-
-            // Log the action.
-            $event = \block_course_audit\event\quiz_attempts_updated::create([
-                'context' => $context,
-                'objectid' => $quiz->id,
-                'courseid' => $cm->course,
-                'relateduserid' => $USER->id,
-                'other' => ['attempts' => 0]
-            ]);
-            $event->trigger();
-
             $transaction->allow_commit();
             return ['status' => true, 'message' => get_string('repeatenabledsuccess', 'block_course_audit')];
-
         } catch (\Exception $e) {
             $transaction->rollback($e);
             throw $e; // Re-throw the exception to be caught by Moodle's external lib error handler.
@@ -120,10 +108,11 @@ class enable_repeatable extends external_api {
      *
      * @return external_single_structure
      */
-    public static function execute_returns() {
+    public static function execute_returns()
+    {
         return new external_single_structure([
             'status' => new external_value(PARAM_BOOL, 'True if the operation was successful, false otherwise.'),
             'message' => new external_value(PARAM_TEXT, 'A message describing the outcome.')
         ]);
     }
-} 
+}
