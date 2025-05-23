@@ -34,10 +34,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
             speechBubble = document.getElementById('miau-speech-bubble');
             miauContainer = document.getElementById('miau-gif');
             bubbleContainer = document.getElementById('bubble-container');
-
-            if (!miauWrapper || !speechBubble || !miauContainer || !bubbleContainer) {
-                console.error('Course Audit: Could not find one or more required elements. Ensure templates are loaded.');
-            }
         };
 
         /**
@@ -55,11 +51,18 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
 
             initMinimizeButton();
 
-            startAudit(courseId);
+            bindStartAudit(courseId);
+
+            initToggleDetails();
+
+            listenForTourStart();
+            listenForStepChange();
+            listenForTourEnd(courseId);
         };
 
-        const startAudit = function (courseId) {
-            $('#audit-start').on('click', function (e) {
+        const bindStartAudit = function (courseId) {
+            console.log("bindStartAudit", courseId);
+            $('.audit-start-button').on('click', function (e) {
                 e.preventDefault();
 
                 const $button = $(this);
@@ -75,29 +78,17 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                     }])[0];
                 }).then(function (response) {
                     let tourData = response.tourdata;
-                    listenForTourStart();
-                    listenForStepChange();
                     //TODO tourData.tourDetails[0] might not exist when all checks ok
                     if (tourData.tourDetails[0]) {
-                        listenForTourEnd(tourData.tourDetails[0].tourId);
                     } else {
-                        console.error('Course Audit: Could not find tour details in response');
                         //TODO Handle course audit no results
                     }
-
-                    if (!tourData || !response.status) {
-                        let errorMessage = response.message || 'Unknown error creating tour data.';
-                        throw new Error(errorMessage);
-                    }
-
+                    //TODO check if there is a running tour and then get the actionDetailsMap,
+                    // else it doesnt work when tour is started in any other way than clicking the button
+                    // e.g. continuing after reload
                     if (response.actionDetailsMap) {
                         storedActionDetails = response.actionDetailsMap;
                     }
-
-                    $(document).on('click', '.course-audit-action-button', function (event) {
-                        event.preventDefault();
-                        callAction(event);
-                    });
 
                     if (response.status) {
                         hideBubble();
@@ -109,8 +100,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                     return Str.get_string('tourerror', 'block_course_audit');
                 }).then(function (text) {
                     $button.text(text);
-                }).catch(function (errors) {
-                    console.error('Error creating tour:', errors);
+                }).catch(function () {
                     $button.text(originalText);
                     $button.prop('disabled', false);
                 });
@@ -134,54 +124,54 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                             const [key, value] = param.split('=');
                             args[key] = value;
                         });
-                        //TODO doesnt work
                         //TODO show loading state
                         //TODO wenn action ok dann sollte summary das reflektieren
-                        currentButton.prop('disabled', true);
+                        currentButton.off('click');
+                        currentButton.addClass('disabled-button-visuals');
 
                         Ajax.call([{
                             methodname: details.endpoint,
                             args: args
                         }])[0].then(function (response) {
-                            console.log(response);
+                            console.log("response", response, response.status);
                             if (response && response.status) {
                                 currentButton.html('&#10004; Done');
                                 currentButton.removeClass('btn-primary');
-                                console.log('Action successful for key ' + mapKey + ':', response);
-                            } else {
-                                currentButton.prop('disabled', false);
-                                console.error('Action failed or returned non-success status for key ' + mapKey + ':', response);
                             }
                         });
                     } else {
-                        currentButton.prop('disabled', false);
+                        currentButton.off('click');
+                        currentButton.addClass('disabled-button-visuals');
                     }
                 }
             }
         };
 
-        const listenForTourEnd = function (tourId) {
+        const listenForTourEnd = function (courseId) {
             const userTourEvents = userTourEventsModule.eventTypes;
             document.addEventListener(userTourEvents.tourEnded, function () {
-                // $(miauWrapper).show(); // TODO doesnt show when tour is cancelled
-                startTourSummary(tourId);
+                startTourSummary(courseId);
             });
         };
 
         const listenForTourStart = function () {
             const userTourEvents = userTourEventsModule.eventTypes;
+            //tourStart never fires?
             document.addEventListener(userTourEvents.tourStarted, function () {
                 expandAllSections();
-                // TODO open all sections to display all tour steps correctly
-                // $(miauWrapper).hide();
+                $(document).on('click', '.course-audit-action-button', function (event) {
+                    event.preventDefault();
+                    callAction(event);
+                });
             });
         };
 
         const listenForStepChange = function () {
             const userTourEvents = userTourEventsModule.eventTypes;
-            document.addEventListener(userTourEvents.stepRendered, function () {
-            });
+            /*             document.addEventListener(userTourEvents.stepRendered, function () {
+                        }); */
             document.addEventListener(userTourEvents.stepHide, function () {
+                console.log("stepHide");
                 // TODO klick neben Tour Element cancelled Tour.
                 // Dieses Event hier wird gefeuert, danach wird der nächste Step nicht gerendered.
                 // event genauer betrachten wodurch es ausgelöst wird.
@@ -189,11 +179,11 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
             });
         };
 
-        const startTourSummary = function (tourId) {
+        const startTourSummary = function (courseId) {
             const promise = Ajax.call([{
                 methodname: 'block_course_audit_get_summary',
                 args: {
-                    tourid: tourId
+                    courseid: courseId
                 }
             }])[0];
 
@@ -228,7 +218,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                                         let str = await Str.get_string(langKey, 'block_course_audit');
                                         return str;
                                     } catch (e) {
-                                        console.error('Error fetching string for key:', langKey, e);
                                         return 'Error: ' + langKey;
                                     }
                                 }
@@ -236,7 +225,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                             });
                             parsedMessages = await Promise.all(messagePromises);
                         } catch (e) {
-                            console.error('Error parsing messages JSON for rule:', result.rulekey, result.messages, e);
                             parsedMessages = [result.messages || 'Error displaying message.'];
                         }
 
@@ -274,20 +262,16 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                             initToggleDetails();
                             return response;
                         })
-                        .catch(function (error) {
-                            console.error('Error rendering template:', error);
+                        .catch(function () {
                             return response;
                         });
                 }
 
                 return response;
-            }).catch(function (errors) {
-                console.error(errors);
             });
         };
         const expandAllSections = function () {
             const allSections = document.querySelectorAll('[id^="collapsesections"]');
-            //document.querySelectorAll('[id^="collapsesections"]')[0].getAttribute('aria-expanded') === 'false'
             allSections.forEach(section => {
                 //check if all closed
                 if (section.getAttribute('aria-expanded') === 'false') {
@@ -296,7 +280,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                     const individualSections = document.querySelectorAll('[id^="collapsesectionid"]');
                     individualSections.forEach(i => {
                         //check if some closed
-                        console.log(i);
                         if (i.getAttribute('aria-expanded') === 'false') {
                             i.click();
                         }
@@ -312,11 +295,16 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
             });
         };
         const initToggleDetails = function () {
-            $(bubbleContainer).find('.check-header').on('click', function (e) {
-                e.preventDefault();
-                toggleDetails(this);
+            const headers = document.querySelectorAll('.check-header');
+            headers.forEach(header => {
+                header.addEventListener('click', function () {
+                    toggleRuleCheck(this);
+                });
             });
-            //TODO if detail is toggled, scroll to the item in the course
+        };
+        const toggleRuleCheck = function (header) {
+            const ruleCheck = header.parentElement;
+            ruleCheck.classList.toggle('expanded');
         };
         const hideBubble = function () {
             if (bubbleContainer && $(bubbleContainer).is(":visible")) {
@@ -349,20 +337,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                 }, 8000);
             }
         };
-        const toggleDetails = function (element) {
-            const details = element.nextElementSibling;
-            details.classList.toggle('active');
 
-            // Close other open details
-            const allDetails = document.querySelectorAll('.check-details.active');
-            allDetails.forEach(item => {
-                if (item !== details && item.classList.contains('active')) {
-                    item.classList.remove('active');
-                }
-            });
-        };
-
-        //TODO bind audit-start to startTour
         return {
             init: init
         };

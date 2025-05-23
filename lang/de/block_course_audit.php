@@ -182,3 +182,10 @@ $string['rule_quiz_is_repeatable_name'] = 'Wiederholbarkeit von Tests';
 $string['rule_quiz_is_repeatable_description'] = 'Prüft, ob ein Quiz auf unbegrenzte Versuche eingestellt ist.';
 $string['button_enable_repeatable'] = 'Unbegrenzte Versuche aktivieren';
 $string['startnewaudit'] = 'Neue Überprüfung starten';
+$string['lastaudit'] = 'Letzte Überprüfung:';
+$string['checksprocessed'] = 'Gesamt';
+$string['passedrules'] = 'Bestanden';
+$string['failedrules'] = 'Fehlgeschlagen';
+
+$string['courselevel'] = 'Kurs Ebene';
+$string['startnewaudit'] = 'Neue Überprüfung starten';

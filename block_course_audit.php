@@ -126,7 +126,7 @@ class block_course_audit extends block_base
         $template_data = [
             'results' => $processed_results,
             'hasResults' => $total_count > 0,
-            'timecreated' => userdate($audit_run_details->timecreated, get_string('strftimedate', 'langconfig')),
+            'timecreated' => userdate($audit_run_details->timecreated, get_string('strftimedaydatetime', 'langconfig')),
             'rulecount' => $total_count,
             'passedcount' => $passed_count,
             'failedcount' => $failed_count,
@@ -135,7 +135,8 @@ class block_course_audit extends block_base
             'canmanagecourse' => has_capability('moodle/course:manageactivities', $this->page->context) // For conditional buttons
         ];
 
-        return $OUTPUT->render_from_template('block_course_audit/block/summary', $template_data);
+        // TODO main template muss erweitert werden, entsprechend auch die template data. Wenn diese da ist soll summary im Block angezeigt werden, der button sonst
+        return $template_data;
     }
 
 
@@ -163,8 +164,24 @@ class block_course_audit extends block_base
 
         $latest_auditrunid = $this->get_latest_audit_run_id($courseid);
 
-        if ($latest_auditrunid == false) {
-            $this->content->text = $this->get_summary_block_content($latest_auditrunid, $courseid);
+        if ($latest_auditrunid !== false) {
+            $template_data = $this->get_summary_block_content($latest_auditrunid, $courseid);
+
+            $data = [
+                'pre' => ['start_hint' => get_string('start_hint', 'block_course_audit')],
+                'wrap_data' => [
+                    [
+                        'type' => 'disclaimer',
+                        'title' => get_string('disclaimer_title', 'block_course_audit'),
+                        'content' => $OUTPUT->render_from_template('block_course_audit/block/disclaimer', [
+                            'wiki_url' => new moodle_url('/blocks/course_audit/wiki.php')
+                        ]),
+                        'button_done' => get_string('disclaimer_button', 'block_course_audit')
+                    ],
+                ],
+                'summary_data' => $template_data
+            ];
+            $this->content->text = $OUTPUT->render_from_template('block_course_audit/main', $data);
         } else {
             $data = [
                 'pre' => ['start_hint' => get_string('start_hint', 'block_course_audit')],
@@ -175,8 +192,7 @@ class block_course_audit extends block_base
                         'content' => $OUTPUT->render_from_template('block_course_audit/block/disclaimer', [
                             'wiki_url' => new moodle_url('/blocks/course_audit/wiki.php')
                         ]),
-                        'button_done' => get_string('disclaimer_button', 'block_course_audit'),
-                        'button_id' => 'audit-start' // This ID is used by tour_creator.js
+                        'button_done' => get_string('disclaimer_button', 'block_course_audit')
                     ],
                 ]
             ];

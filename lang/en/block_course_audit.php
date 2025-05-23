@@ -51,7 +51,7 @@ $string['norestrictions'] = 'No restricitions in this section';
 // Disclaimer and wiki related - used in wiki.php
 $string['wiki_link'] = 'Open Documentation Wiki';
 $string['wiki_title'] = 'Course audit Documentation';
-$string['wiki_heading'] = 'Conversion Guidelines & Best Practices';
+$string['wiki_heading'] = 'Audit Guidelines & Best Practices';
 
 // Rules
 $string['rule_category_hint'] = 'Hint';
@@ -112,7 +112,7 @@ $string['quiz_added_success'] = 'Basic quiz added successfully. Please configure
 $string['quiz_added_failure'] = 'Failed to add quiz';
 
 // Summary related - used in summary display
-$string['summary_heading'] = 'Course Conversion Summary';
+$string['summary_heading'] = 'Course Audit Summary';
 $string['summary_button'] = 'End audit';
 
 // Error messages - used in error handling
@@ -193,7 +193,11 @@ $string['rule_quiz_is_repeatable_failure'] = 'Quiz allows {$a->attempts} attempt
 // Rule: quiz_is_repeatable
 $string['rule_quiz_is_repeatable_name'] = 'Repeatability of Quizzes';
 $string['rule_quiz_is_repeatable_description'] = 'Checks if a quiz is set to allow unlimited attempts.';
-$string['button_enable_repeatable'] = 'Enable Unlimited Attempts';
+$string['button_enable_repeatable'] = 'Enable repeatable attempts';
+$string['lastaudit'] = 'Last audit:';
+$string['checksprocessed'] = 'Total checks';
+$string['passedrules'] = 'Passed';
+$string['failedrules'] = 'Failed';
 
 $string['courselevel'] = 'Course Level';
 $string['startnewaudit'] = 'Start New Audit';

@@ -46,81 +46,75 @@
     }}
 
 <div class="block_course_audit-summary-container">
-<div class="card shadow-sm">
-    <div class="card-header">
-      <div class="card-title">{{#str}}summary_heading, block_course_audit{{/str}}</div>
-      <div class="card-subtitle">Last updated: {{timecreated}}</div>
-        <button class="btn btn-sm btn-close btn-minimize" aria-label="{{#str}}close, block_course_audit{{/str}}"></button>
-    </div>
 
-    <div class="card-body">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">{{#str}}summary_heading, block_course_audit{{/str}}</h3>
+      <p class="card-subtitle">{{#str}}lastaudit, block_course_audit{{/str}}</p>
+      <button class="btn btn-sm btn-close btn-minimize" aria-label="{{#str}}close, block_course_audit{{/str}}"></button>
+      <div class="card-stats">
+        <div class="stat total">
+            <div class="stat-number">{{rulecount}}</div>
+            <div class="stat-label">{{#str}}checksprocessed, block_course_audit, {{/str}}</div>
+        </div>
+        <div class="stat passed">
+            <div class="stat-number">{{passedcount}}</div>
+            <div class="stat-label">{{#str}}passedrules, block_course_audit, {{/str}}</div>
+        </div>
+        <div class="stat failed">
+            <div class="stat-number">{{failedcount}}</div>
+            <div class="stat-label">{{#str}}failedrules, block_course_audit, {{/str}}</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="checks-container">
     {{#hasResults}}
-      <ul class="check-list">
         {{#results}}
-        <li class="check-item">
+        <div class="rule-check">
           <div class="check-header">
-            <span class="check-name">{{ruleNameDisplay}}</span>
-            <span class="check-status">
               {{#isTodo}}
-                <span class="status-icon status-failed">✗</span>
+              <div class="check-icon failed">✗</div>
               {{/isTodo}}
               {{#isDone}}
-                <span class="status-icon status-passed">✓</span>
+              <div class="check-icon passed">✓</div>
               {{/isDone}}
-            </span>
+              <h4 class="check-title">{{ruleNameDisplay}}</h4>
+              <span class="expand-arrow">▶</span>
           </div>
-          <div class="check-details">
-            <div class="details-content">
-                    <div class="collapse mt-3" id="details-{{id}}">
-                        <div class="card card-body bg-light small border p-3">
-                            <em class="text-muted small mt-2">({{rulekey}} - {{targettype}} {{targetid}})</em>
-                        </div>
-                    </div>
-                    {{#messages}}
-                    <p>{{.}}</p>
-                    {{/messages}}
-              <div class="attribute">
-                <span class="attribute-label">rulekey:</span>
-                <span class="attribute-value">{{rulekey}}</span>
+
+          <div class="check-body">
+              <div class="check-content">
+                  {{#messages}}
+                    <p class="check-description">{{{.}}}</p>
+                  {{/messages}}
+                  <div class="check-stats">
+                      <div class="stat-item">
+                          <div class="stat-label">Key:</div>
+                          <div class="stat-value">{{rulekey}}</div>
+                      </div>
+                      <div class="stat-item">
+                          <div class="stat-label">Target:</div>
+                          <div class="stat-value">{{targettype}} {{targetid}}</div>
+                      </div>
+                  </div>
               </div>
-              
-              <div class="attribute">
-                <span class="attribute-label">targettype:</span>
-                <span class="attribute-value">{{targettype}} {{targetid}}</span>
-              </div>
-            </div>
           </div>
-        </li>
+        </div>
         {{/results}}
-      </ul>
     {{/hasResults}}
+
     {{^hasResults}}
         <div class="p-3 text-center text-muted">
             {{#str}}noauditresults, block_course_audit{{/str}}
         </div>
     {{/hasResults}}
     </div>
-    
-    <div class="card-footer">
-      <span>{{rulecount}} checks processed</span>
-      <span>{{passedcount}} passed • {{failedcount}} failed</span>
-    </div>
-  </div>
 </div>
-
 {{#fromblock}}
     {{#canmanagecourse}}
         <div class="mt-3 text-center">
-            <button class="btn btn-secondary" id="audit-start-new">{{#str}}startnewaudit, block_course_audit{{/str}}</button>
+            <button class="btn btn-secondary audit-start-button">{{#str}}startnewaudit, block_course_audit{{/str}}</button>
         </div>
     {{/canmanagecourse}}
-{{/fromblock}}
-
-{{^fromblock}}
-    {{! This is the original button structure from miau, which might need review if this template is sole-purposed for block view now}}
-    {{#hasResults}}
-        <div class="card-footer d-flex justify-content-end">
-            <button class="btn btn-primary" id="audit-start-new-miau">{{#str}}startnewaudit, block_course_audit{{/str}}</button> {{! Changed ID and string key }}
-        </div>
-    {{/hasResults}}
 {{/fromblock}}

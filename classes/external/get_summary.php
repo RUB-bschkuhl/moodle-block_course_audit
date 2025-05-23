@@ -92,17 +92,18 @@ class get_summary extends external_api
      * @param int $tourid The tour ID to retrieve audit results for
      * @return array Operation status, response message, and audit results data
      */
-    public static function execute($tourid)
+    public static function execute($courseid)
     {
-        global $DB, $OUTPUT;
+        global $DB;
 
         // Validate parameters using parent method
-        $params = parent::validate_parameters(self::execute_parameters(), ['tourid' => $tourid]);
-        $tourid = $params['tourid'];
+        $params = parent::validate_parameters(self::execute_parameters(), ['courseid' => $courseid]);
+        $courseid = $params['courseid'];
 
         try {
-            $audittour = $DB->get_record('block_course_audit_tours', ['tourid' => $tourid], '*', MUST_EXIST);
-
+            $audittours = $DB->get_records('block_course_audit_tours', ['courseid' => $courseid], 'timecreated DESC', '*', MUST_EXIST);
+            $audittour = $audittours[0];
+            
             $coursecontext = context_course::instance($audittour->courseid);
 
             // Validate context using parent method

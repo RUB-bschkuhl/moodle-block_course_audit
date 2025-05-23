@@ -63,7 +63,7 @@ class manage_quiz extends external_api {
     public static function execute_returns() {
         return new external_single_structure(
             [
-                'success' => new external_value(PARAM_BOOL, 'Indicates if the operation was successful'),
+                'status' => new external_value(PARAM_BOOL, 'Indicates if the operation was successful'),
                 'message' => new external_value(PARAM_TEXT, 'Success or error message')
             ]
         );
@@ -140,7 +140,7 @@ class manage_quiz extends external_api {
         rebuild_course_cache($params['courseid']);
 
         return [
-            'success' => true,
+            'status' => true,
             'message' => get_string('quiz_added_success', 'block_course_audit')
         ];
     }

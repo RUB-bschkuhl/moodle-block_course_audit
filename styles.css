@@ -1,38 +1,12 @@
 #block-course-audit.block-course-audit {
   max-width: 600px;
   margin: 0 auto;
+  border: 0;
 }
 
 #block-course-audit .page-nav.disabled {
   opacity: 0.5;
   pointer-events: none;
-}
-
-/* Wiki-Card */
-.block-course-audit-wiki {
-  max-width: 800px;
-  margin: 2rem auto;
-  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
-  border: none;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  /* Für abgerundete Ecken beim SVG */
-}
-
-.block-course-audit-wiki .card-header {
-  border-radius: 0.5rem 0.5rem 0 0;
-  padding: 1.25rem 1.5rem;
-}
-
-.block-course-audit-wiki .card-body {
-  padding: 2rem;
-}
-
-.block-course-audit-wiki .wiki-content svg {
-  width: 100%;
-  height: auto;
-  border: 1px solid #dee2e6;
-  border-radius: 0.25rem;
 }
 
 #block-course-audit .btn-minimize {
@@ -253,6 +227,7 @@
 }
 
 #miau-speech-bubble .card-body {
+  /*TODO move cats head to above step when active only show summary in block*/
   overflow-y: auto;
 }
 
@@ -289,57 +264,50 @@
   overflow: auto;
 } */
 
-
-
-
-.block_course_audit-summary-container>.card {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  max-width: 100%;
+#miau-speech-bubble .block_course_audit-summary-container > .card {
+  margin: 0;
 }
 
-.block_course_audit-summary-container>.card>.card-header {
+/* 
+.block_course_audit-summary-container > .card > .card-header {
   padding: 16px;
   background-color: #f8f9fa;
   border-bottom: 1px solid #eaeaea;
 }
 
-.block_course_audit-summary-container>.card .card-title {
+.block_course_audit-summary-container > .card .card-title {
   font-size: 18px;
   font-weight: 600;
   color: #333;
   margin-bottom: 4px;
 }
 
-.block_course_audit-summary-container>.card .card-subtitle {
+.block_course_audit-summary-container > .card .card-subtitle {
   font-size: 14px;
   color: #666;
 }
 
-.block_course_audit-summary-container>.card .card-body {
+.block_course_audit-summary-container > .card .card-body {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
+  padding: 0px;
 }
 
-.block_course_audit-summary-container>.card .check-list {
+.block_course_audit-summary-container > .card .check-list {
   list-style: none;
   padding-left: 0;
+  margin-bottom: 0;
 }
 
-.block_course_audit-summary-container>.card .check-item {
-  margin-bottom: 16px;
+.block_course_audit-summary-container > .card .check-item {
+  margin-bottom: 0px;
   border-radius: 6px;
   background-color: #f8f9fa;
   overflow: hidden;
 }
 
-.block_course_audit-summary-container>.card .check-header {
-  padding: 12px 16px;
+.block_course_audit-summary-container > .card .check-header {
+  padding: 6px 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -347,23 +315,23 @@
   position: relative;
 }
 
-.block_course_audit-summary-container>.card .check-header:hover {
+.block_course_audit-summary-container > .card .check-header:hover {
   background-color: #f1f3f5;
 }
 
-.block_course_audit-summary-container>.card .check-name {
+.block_course_audit-summary-container > .card .check-name {
   font-weight: 500;
   color: #2c3e50;
   font-size: 15px;
   margin-right: 8px;
 }
 
-.block_course_audit-summary-container>.card .check-status {
+.block_course_audit-summary-container > .card .check-status {
   display: flex;
   align-items: center;
 }
 
-.block_course_audit-summary-container>.card .status-icon {
+.block_course_audit-summary-container > .card .status-icon {
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -372,15 +340,15 @@
   justify-content: center;
 }
 
-.block_course_audit-summary-container>.card .status-passed {
+.block_course_audit-summary-container > .card .status-passed {
   color: #22c55e;
 }
 
-.block_course_audit-summary-container>.card .status-failed {
+.block_course_audit-summary-container > .card .status-failed {
   color: #ef4444;
 }
 
-.block_course_audit-summary-container>.card .check-details {
+.block_course_audit-summary-container > .card .check-details {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease;
@@ -388,34 +356,34 @@
   border-top: 1px solid #eaeaea;
 }
 
-.block_course_audit-summary-container>.card .check-details.active {
+.block_course_audit-summary-container > .card .check-details.active {
   max-height: 200px;
 }
 
-.block_course_audit-summary-container>.card .details-content {
+.block_course_audit-summary-container > .card .details-content {
   padding: 16px;
   font-size: 14px;
   color: #4a5568;
 }
 
-.block_course_audit-summary-container>.card .attribute {
+.block_course_audit-summary-container > .card .attribute {
   margin-top: 12px;
   display: flex;
   font-size: 12px;
 }
 
-.block_course_audit-summary-container>.card .attribute-label {
+.block_course_audit-summary-container > .card .attribute-label {
   font-weight: 500;
   color: #718096;
   width: 90px;
   flex-shrink: 0;
 }
 
-.block_course_audit-summary-container>.card .attribute-value {
+.block_course_audit-summary-container > .card .attribute-value {
   color: #2d3748;
 }
 
-.block_course_audit-summary-container>.card .card-footer {
+.block_course_audit-summary-container > .card .card-footer {
   padding: 12px 16px;
   border-top: 1px solid #eaeaea;
   display: flex;
@@ -426,135 +394,353 @@
 }
 
 @media (max-width: 340px) {
-  .block_course_audit-summary-container>.card {
+  .block_course_audit-summary-container > .card {
     width: 100%;
     height: auto;
     min-height: 480px;
   }
 
-  .block_course_audit-summary-container>.card .check-name {
+  .block_course_audit-summary-container > .card .check-name {
     font-size: 14px;
   }
 
-  .block_course_audit-summary-container>.card .details-content {
+  .block_course_audit-summary-container > .card .details-content {
     font-size: 13px;
   }
 }
 
-.block_course_audit-summary-container>.card {
+.block_course_audit-summary-container > .card {
   max-height: 60vh;
   height: 480px;
   margin-bottom: 0;
-}
+} */
 
 /* --- Tour Step Visual Enhancements --- */
 
 /* Main tour step popover content area */
 /* Assumes a structure like: span[data-flexitour="container"] > .modal > .modal-dialog > .modal-content */
 span[data-flexitour="container"] .modal-content {
-    border-radius: 12px; /* Softer, larger rounding */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Softer shadow */
-    border: none; /* Remove default modal border, rely on shadow */
+  border-radius: 12px; /* Softer, larger rounding */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Softer shadow */
+  border: none; /* Remove default modal border, rely on shadow */
 }
 
 /* Tour step header */
 span[data-flexitour="container"] .modal-header {
-    background-color: #f0f3f5; /* A light, neutral background */
-    border-bottom: 1px solid #dee2e6;
-    padding: 1rem 1.5rem;
-    border-top-left-radius: 12px; /* Match parent rounding */
-    border-top-right-radius: 12px; /* Match parent rounding */
+  background-color: #f0f3f5; /* A light, neutral background */
+  border-bottom: 1px solid #dee2e6;
+  padding: 1rem 1.5rem;
+  border-top-left-radius: 12px; /* Match parent rounding */
+  border-top-right-radius: 12px; /* Match parent rounding */
 }
 
 span[data-flexitour="container"] .modal-header .modal-title {
-    font-size: 1.2rem; /* Slightly larger title */
-    color: #333;
-    font-weight: 500;
+  font-size: 1.2rem; /* Slightly larger title */
+  /* color: #333; */
+  font-weight: 500;
 }
 
 /* Tour step body */
 span[data-flexitour="container"] .modal-body {
-    padding: 1.5rem;
-    line-height: 1.6;
-    color: #555;
+  padding: 1.5rem;
+  line-height: 1.6;
+  /* color: #555; */
 }
 
-span[data-flexitour="container"] .modal-body p.mb-1 { /* The main text before the list */
-    margin-bottom: 1rem !important; /* More space before the list */
-    font-size: 0.95rem;
+span[data-flexitour="container"] .modal-body p.mb-1 {
+  /* The main text before the list */
+  margin-bottom: 1rem !important; /* More space before the list */
+  font-size: 0.95rem;
 }
 
 span[data-flexitour="container"] .modal-body ul {
-    list-style-type: none;
-    padding-left: 0;
-    margin-top: 1rem;
+  list-style-type: none;
+  padding-left: 0;
+  margin-top: 1rem;
 }
 
 span[data-flexitour="container"] .modal-body ul li {
-    padding-left: 1.75em; /* Space for custom bullet */
-    position: relative;
-    margin-bottom: 0.6rem; /* Space between list items */
-    font-size: 0.9rem;
+  padding-left: 1.75em; /* Space for custom bullet */
+  position: relative;
+  margin-bottom: 0.6rem; /* Space between list items */
+  font-size: 0.9rem;
 }
 
 span[data-flexitour="container"] .modal-body ul li::before {
-    content: "\27A4"; /* Heavy Rightwards Arrow Unicode U+27A4. Alternatives: "\2713" (check), "\2023" (triangle) */
-    position: absolute;
-    left: 0;
-    color: #007bff; /* Primary Moodle blue, or your theme color */
-    font-size: 1.1em;
-    line-height: 1;
+  content: "\27A4"; /* Heavy Rightwards Arrow Unicode U+27A4. Alternatives: "\2713" (check), "\2023" (triangle) */
+  position: absolute;
+  left: 0;
+  color: #007bff; /* Primary Moodle blue, or your theme color */
+  font-size: 1.1em;
+  line-height: 1;
 }
 
 /* Distinct styling for the plugin-specific action button (e.g., "Add Quiz") */
 span[data-flexitour="container"] .modal-body .course-audit-action-button {
-    background-color: #28a745; /* Green - success/action color */
-    border-color: #28a745;
-    color: #fff !important; /* Important to override potential a tag colors if button is an <a> */
-    display: block; /* Make it full width or more prominent */
-    width: 100%;
-    padding: 0.65rem 1rem; /* Adjust padding for better feel */
-    font-size: 0.95rem;
-    font-weight: 500;
-    margin-top: 1.5rem; /* Space above the button */
-    margin-bottom: 0.5rem; /* Space below */
-    border-radius: 5px;
-    text-align: center;
-    transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  background-color: #28a745; /* Green - success/action color */
+  border-color: #28a745;
+  color: #fff !important; /* Important to override potential a tag colors if button is an <a> */
+  display: block; /* Make it full width or more prominent */
+  width: 100%;
+  padding: 0.65rem 1rem; /* Adjust padding for better feel */
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-top: 1.5rem; /* Space above the button */
+  margin-bottom: 0.5rem; /* Space below */
+  border-radius: 5px;
+  text-align: center;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
 
 span[data-flexitour="container"] .modal-body .course-audit-action-button:hover,
 span[data-flexitour="container"] .modal-body .course-audit-action-button:focus {
-    background-color: #218838;
-    border-color: #1e7e34;
-    color: #fff !important;
+  background-color: #218838;
+  border-color: #1e7e34;
+  color: #fff !important;
 }
 
 /* Styling for completed action button (if you use the JS class 'action-completed') */
-span[data-flexitour="container"] .modal-body .course-audit-action-button.action-completed {
-    background-color: #17a2b8; /* Info blue/teal for completed */
-    border-color: #17a2b8;
-    color: #fff !important;
-    cursor: default;
+span[data-flexitour="container"]
+  .modal-body
+  .course-audit-action-button.action-completed {
+  background-color: #17a2b8; /* Info blue/teal for completed */
+  border-color: #17a2b8;
+  color: #fff !important;
+  cursor: default;
 }
-span[data-flexitour="container"] .modal-body .course-audit-action-button.action-completed:hover {
-    background-color: #138496;
-    border-color: #117a8b;
+span[data-flexitour="container"]
+  .modal-body
+  .course-audit-action-button.action-completed:hover {
+  background-color: #138496;
+  border-color: #117a8b;
 }
-
 
 /* Tour step footer */
 span[data-flexitour="container"] .modal-footer {
-    background-color: #f8f9fa;
-    border-top: 1px solid #e9ecef;
-    padding: 0.75rem 1.5rem;
-    display: flex;
-    justify-content: space-between; /* Ensure buttons are spaced out */
-    border-bottom-left-radius: 12px; /* Match parent rounding */
-    border-bottom-right-radius: 12px; /* Match parent rounding */
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  justify-content: space-between; /* Ensure buttons are spaced out */
+  border-bottom-left-radius: 12px; /* Match parent rounding */
+  border-bottom-right-radius: 12px; /* Match parent rounding */
 }
 
 span[data-flexitour="container"] .modal-footer .btn {
-    font-size: 0.9rem;
-    padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
 }
+
+span[data-flexitour="container"] .disabled-button-visuals {
+  opacity: 0.6;
+  cursor: not-allowed !important; /* Important to override other cursor styles */
+}
+
+/*End Tour Step Visual Enhancements*/
+/*Summary Card Visual Enhancements v3*/
+
+#block-course-audit .card {
+  height: 480px;
+  border-radius: 0px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin: 0px -17px;
+}
+
+#block-course-audit .card-header {
+  padding: 16px;
+  border-bottom: 1px solid #e5e5e5;
+  background: #fafafa;
+}
+
+#block-course-audit .card-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+#block-course-audit .card-subtitle {
+  margin: 4px 0 0 0;
+  font-size: 12px;
+  color: #666;
+}
+
+#block-course-audit .checks-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+#block-course-audit .rule-check {
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  background: white;
+}
+
+#block-course-audit .rule-check.failed {
+  border-color: #d1d5db;
+  background: #fafafa;
+}
+
+#block-course-audit .check-header {
+  padding: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+#block-course-audit .check-header:hover {
+  background: #f9f9f9;
+}
+
+#block-course-audit .check-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+#block-course-audit .check-icon.passed {
+  background: #22c55e;
+  color: white;
+}
+
+#block-course-audit .check-icon.failed {
+  background: #ef4444;
+  color: white;
+}
+
+#block-course-audit .check-title {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+}
+
+#block-course-audit .expand-arrow {
+  font-size: 12px;
+  color: #666;
+  transition: transform 0.2s;
+}
+
+#block-course-audit .rule-check.expanded .expand-arrow {
+  transform: rotate(90deg);
+}
+
+#block-course-audit .check-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  border-top: 1px solid #e5e5e5;
+  background: #fafafa;
+}
+
+#block-course-audit .rule-check.expanded .check-body {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+#block-course-audit .check-content {
+  padding: 12px;
+}
+
+#block-course-audit .check-content p,
+#block-course-audit .check-content span,
+#block-course-audit .check-content li {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.4;
+  margin: 0 0 12px 0;
+}
+
+#block-course-audit .check-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+#block-course-audit .stat-item {
+  font-size: 11px;
+  color: #666;
+}
+
+#block-course-audit .stat-label {
+  font-weight: 500;
+  color: #444;
+}
+
+#block-course-audit .stat-value {
+  color: #333;
+}
+
+/* Custom scrollbar */
+#block-course-audit .checks-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+#block-course-audit .checks-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+#block-course-audit .checks-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 2px;
+}
+
+#block-course-audit .checks-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+#block-course-audit .card-stats {
+  margin: 8px 0 0 0;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+#block-course-audit .stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+#block-course-audit .stat-number {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+#block-course-audit .stat-label {
+  color: #666;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#block-course-audit .stat.total .stat-number {
+  color: #333;
+}
+
+#block-course-audit .stat.passed .stat-number {
+  color: #22c55e;
+}
+
+#block-course-audit .stat.failed .stat-number {
+  color: #ef4444;
+}
+
+
+/*End Summary Card Visual Enhancements v3*/

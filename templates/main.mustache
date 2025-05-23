@@ -39,11 +39,89 @@
 }}
 
 <div class="block-course-audit card" id="block-course-audit">
+{{#summary_data}}
+<div class="block_course_audit-summary-container">
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">{{#str}}summary_heading, block_course_audit{{/str}}</h3>
+      <p class="card-subtitle">{{#str}}lastaudit, block_course_audit{{/str}} {{timecreated}}</p>
+
+      <div class="card-stats">
+        <div class="stat total">
+            <div class="stat-number">{{rulecount}}</div>
+            <div class="stat-label">{{#str}}checksprocessed, block_course_audit, {{/str}}</div>
+        </div>
+        <div class="stat passed">
+            <div class="stat-number">{{passedcount}}</div>
+            <div class="stat-label">{{#str}}passedrules, block_course_audit, {{/str}}</div>
+        </div>
+        <div class="stat failed">
+            <div class="stat-number">{{failedcount}}</div>
+            <div class="stat-label">{{#str}}failedrules, block_course_audit, {{/str}}</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="checks-container">
+    {{#hasResults}}
+        {{#results}}
+        <div class="rule-check">
+          <div class="check-header">
+              {{#isTodo}}
+              <div class="check-icon failed">✗</div>
+              {{/isTodo}}
+              {{#isDone}}
+              <div class="check-icon passed">✓</div>
+              {{/isDone}}
+              <h4 class="check-title">{{ruleNameDisplay}}</h4>
+              <span class="expand-arrow">▶</span>
+          </div>
+
+          <div class="check-body">
+              <div class="check-content">
+                  {{#messages}}
+                    <p class="check-description">{{{.}}}</p>
+                  {{/messages}}
+                  <div class="check-stats">
+                      <div class="stat-item">
+                          <div class="stat-label">Key:</div>
+                          <div class="stat-value">{{rulekey}}</div>
+                      </div>
+                      <div class="stat-item">
+                          <div class="stat-label">Target:</div>
+                          <div class="stat-value">{{targettype}} {{targetid}}</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+        {{/results}}
+    {{/hasResults}}
+
+    {{^hasResults}}
+        <div class="p-3 text-center text-muted">
+            {{#str}}noauditresults, block_course_audit{{/str}}
+        </div>
+    {{/hasResults}}
+    </div>
+</div>
+
+{{#fromblock}}
+    {{#canmanagecourse}}
+        <div class="mt-3 text-center">
+            <button class="btn btn-secondary audit-start-button">{{#str}}startnewaudit, block_course_audit{{/str}}</button>
+        </div>
+    {{/canmanagecourse}}
+{{/fromblock}}
+{{/summary_data}}
+
+{{^summary_data}}
 {{#pre}}
 <button type="button" class="btn btn-secondary page-nav" id="start-course-audit" >
 {{start_hint}}
 </button>
 {{/pre}}
+{{/summary_data}}
     <div id="miau-wrapper" class="slide-in">
         <div id="miau-gif" aria-hidden="true" role="presentation" tabindex="0">
             <div id="bubble-container" role="presentation" style="display: none;">
@@ -59,7 +137,7 @@
                             {{{content}}}
                         </div>
                         <div class="card-footer d-flex justify-content-end">
-                            <button type="button" class="btn btn-secondary page-nav" id="{{{button_id}}}" >
+                            <button type="button" class="btn btn-secondary page-nav audit-start-button">
                                 {{{button_done}}}
                             </button>
                         </div>
