@@ -36,11 +36,11 @@ if (file_exists($svgpath)) {
 // An Template übergeben
 $data = ['svgcontent' => $svgcontent];
 
-$PAGE->set_url(new moodle_url('/blocks/course_audit/wiki.php'));
+$PAGE->set_url(new moodle_url('/blocks/course_audit/documentation.php'));
 $PAGE->set_context(context_system::instance());
-$PAGE->set_title(get_string('wiki_title', 'block_course_audit'));
-$PAGE->set_heading(get_string('wiki_heading', 'block_course_audit'));
+$PAGE->set_title(get_string('documentation_title', 'block_course_audit'));
+$PAGE->set_heading(get_string('documentation_heading', 'block_course_audit'));
 
 echo $OUTPUT->header();
-echo $OUTPUT->render_from_template('block_course_audit/wiki/wiki', $data);
+echo $OUTPUT->render_from_template('block_course_audit/documentation/documentation', $data);
 echo $OUTPUT->footer();

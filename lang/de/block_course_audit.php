@@ -48,10 +48,10 @@ $string['modules'] = 'Module';
 $string['nomodules'] = 'Keine Aktivitäten in diesem Abschnitt';
 $string['norestrictions'] = 'Keine Einschränkungen in diesem Abschnitt';
 
-// Disclaimer and wiki related
-$string['wiki_link'] = 'Dokumentations-Wiki öffnen';
-$string['wiki_title'] = 'Kurs-Prüfer Dokumentation (TODO)';
-$string['wiki_heading'] = 'Richtlinien & Best Practices (TODO)';
+// Disclaimer and documentation related
+$string['documentation_link'] = 'Dokumentations-documentation öffnen';
+$string['documentation_title'] = 'Kurs-Prüfer Dokumentation (TODO)';
+$string['documentation_heading'] = 'Richtlinien & Best Practices (TODO)';
 
 // Rules
 $string['rule_category_hint'] = 'Hinweis';

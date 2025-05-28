@@ -48,10 +48,10 @@ $string['modules'] = 'Modules';
 $string['nomodules'] = 'No activities in this section';
 $string['norestrictions'] = 'No restricitions in this section';
 
-// Disclaimer and wiki related - used in wiki.php
-$string['wiki_link'] = 'Open Documentation Wiki';
-$string['wiki_title'] = 'Course audit Documentation';
-$string['wiki_heading'] = 'Audit Guidelines & Best Practices';
+// Disclaimer and documentation related - used in documentation.php
+$string['documentation_link'] = 'Open Documentation documentation';
+$string['documentation_title'] = 'Course audit Documentation';
+$string['documentation_heading'] = 'Audit Guidelines & Best Practices';
 
 // Rules
 $string['rule_category_hint'] = 'Hint';

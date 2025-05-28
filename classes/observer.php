@@ -19,6 +19,7 @@ class observer
      */
     public static function tour_ended(\tool_usertours\event\tour_ended $event): void
     {
+        //TODO debug. Is this event called when tour is "cancelled"?
         $eventdata = $event->get_data();
         $tourid = $eventdata['objectid'] ?? null;
         $userid = $eventdata['userid'] ?? null;

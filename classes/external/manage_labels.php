@@ -104,7 +104,7 @@ class manage_labels extends external_api {
         $labelmodule = $DB->get_record('modules', ['name' => 'label'], '*', MUST_EXIST);
 
         $label = new stdClass();
-        $label->sortorder = 0; //TODO doesnt work
+        $label->sortorder = 0;
         
         $label->course = $course->id;
         $label->modulename = 'label';

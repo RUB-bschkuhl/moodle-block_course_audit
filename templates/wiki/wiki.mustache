@@ -15,7 +15,7 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template block_course_audit/wiki/wiki
+    @template block_course_audit/documentation/documentation
 
     Displays the admin tree as a list of grouped links.
 
@@ -38,15 +38,15 @@
     }
 }}
 
-<div class="block-course-audit-wiki card">
+<div class="block-course-audit-documentation card">
     <div class="card-header bg-primary text-white">
-        <h2 class="h4 mb-0">{{#str}} wiki_heading, block_course_audit {{/str}}</h2>
+        <h2 class="h4 mb-0">{{#str}} documentation_heading, block_course_audit {{/str}}</h2>
     </div>
     
     <div class="card-body">
-        <div class="wiki-content">
+        <div class="documentation-content">
             {{{svgcontent}}} <!-- SVG als Card-Body-Inhalt -->
-            {{> block_course_audit/wiki/wiki_content}}
+            {{> block_course_audit/documentation/documentation_content}}
         </div>
     </div>
 {{#courseid}}

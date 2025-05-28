@@ -174,7 +174,7 @@ class block_course_audit extends block_base
                         'type' => 'disclaimer',
                         'title' => get_string('disclaimer_title', 'block_course_audit'),
                         'content' => $OUTPUT->render_from_template('block_course_audit/block/disclaimer', [
-                            'wiki_url' => new moodle_url('/blocks/course_audit/wiki.php')
+                            'documentation_url' => new moodle_url('/blocks/course_audit/documentation.php')
                         ]),
                         'button_done' => get_string('disclaimer_button', 'block_course_audit')
                     ],
@@ -190,7 +190,7 @@ class block_course_audit extends block_base
                         'type' => 'disclaimer',
                         'title' => get_string('disclaimer_title', 'block_course_audit'),
                         'content' => $OUTPUT->render_from_template('block_course_audit/block/disclaimer', [
-                            'wiki_url' => new moodle_url('/blocks/course_audit/wiki.php')
+                            'documentation_url' => new moodle_url('/blocks/course_audit/documentation.php')
                         ]),
                         'button_done' => get_string('disclaimer_button', 'block_course_audit')
                     ],
