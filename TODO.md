@@ -7,3 +7,4 @@ Preconditions?
 Absprung aus Tour in Subtour
 Abgebrochene Tour fortsetzen können
 Summary screen
+Regeln aktiv Kursabhängig einstellbar

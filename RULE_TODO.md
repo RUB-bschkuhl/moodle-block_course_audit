@@ -1,0 +1,199 @@
+# Moodle Plugin Rule System Information - TODO List
+
+This document outlines the information needed to build a dynamic rule creation system for the Course Audit plugin.
+
+## Task List
+
+- [x] **1. Identify all available Moodle Modules (mods):**
+    - [x] Find the directory/mechanism Moodle uses to list all installable modules.
+    - [x] List the names/identifiers of each module.
+    - [*] *Location in Moodle code (to be filled):* `moodle-500/mod/`
+    - [*] *Extracted Data (to be filled):* workshop, wiki, url, subsection, scorm, resource, quiz, qbank, page, lti, lesson, label, imscp, h5pactivity, glossary, forum, folder, feedback, data, choice, book, bigbluebuttonbn, assign (List derived from directory names in `moodle-500/mod/`)
+
+- [x] **2. Identify all Question Types for Quizzes:**
+    - [x] Find where Moodle defines its question types.
+    - [x] List the names/identifiers of each question type.
+    - [*] *Location in Moodle code (to be filled):* `moodle-500/question/type/`
+    - [*] *Extracted Data (to be filled):* truefalse, shortanswer, randomsamatch, random, ordering, numerical, multichoice, multianswer, missingtype, match, gapselect, essay, description, ddwtos, ddmarker, ddimageortext, calculatedsimple, calculatedmulti, calculated (List derived from directory names in `moodle-500/question/type/`)
+
+- [ ] **3. Identify Common and Unique Settings for Modules (mods):**
+    - [x] Find the base class/interface for Moodle modules.
+    - [x] Identify how common settings are defined (e.g., visibility, group mode).
+    - [ ] For a selection of representative modules (e.g., forum, assign, quiz, page, url):
+        - [ ] Identify their unique settings.
+    - [*] *Location in Moodle code for common settings (to be filled):* `moodle-500/course/moodleform_mod.php` (primarily in `standard_coursemodule_elements()` and `init_features()`). Individual modules extend this.
+    - [*] *Location in Moodle code for unique settings (examples) (to be filled):* e.g., `moodle-500/mod/assign/mod_form.php`, `moodle-500/mod/quiz/mod_form.php` etc. (in their `definition()` method).
+    - [*] *Extracted Data (Common Settings - to be filled based on `moodleform_mod.php` analysis):*
+        - Module Name (usually `name`)
+        - Introduction/Description (usually `intro` or `introeditor`)
+        - Visibility (`visible`)
+        - ID Number (`cmidnumber`)
+        - Group Mode (`groupmode`)
+        - Grouping ID (`groupingid`)
+        - Outcomes (elements like `outcome_<id>`)
+        - Ratings (elements added by `add_rating_settings()`)
+        - Availability/Access Restrictions (`availabilityconditionsjson`)
+        - Activity Completion (various elements like `completion`, `completionview`, `completionexpected`)
+        - Tags (`tags`)
+        - Force Language (`lang`)
+        - Download Content (`downloadcontent`)
+        - (Potentially others like `showdescription` from `init_features` if not covered by introeditor)
+    - [*] *Extracted Data (Unique Settings - to be filled by inspecting individual module `mod_form.php` files):*
+        - Example (Assignment): `assignsubmission_onlinetext_enabled`, `assignfeedback_comments_enabled`, `grade`, `duedate`, `cutoffdate`, etc.
+        - Example (Quiz): `timeopen`, `timeclose`, `timelimit`, `shufflequestions`, `attempts`, etc.
+
+- [x] **4. Identify Course Object Structure and Settings:**
+    - [x] Find the main Moodle course class definition.
+    - [x] List settable properties/fields of a course object.
+    - [x] Identify how course settings are managed (e.g., course format options, completion settings).
+    - [*] *Location in Moodle code (to be filled):* Course data is primarily stored in the `mdl_course` table. Settings are managed via `moodle-500/course/edit_form.php`. Core course functionalities are in `moodle-500/course/lib.php`.
+    - [*] *Extracted Data (Course Settings - based on `course/edit_form.php` analysis - this is not exhaustive and some are conditional):*
+        - **General:**
+            - `fullname` (string): Course full name
+            - `shortname` (string): Course short name
+            - `category` (int): Course category ID
+            - `visible` (int): Course visibility (0 = Hide, 1 = Show)
+            - `startdate` (timestamp): Course start date
+            - `enddate` (timestamp, optional): Course end date
+            - `idnumber` (string, optional): Course ID number (for external systems)
+            - `relativedatesmode` (int): Enable relative dates (0 = No, 1 = Yes)
+        - **Description:**
+            - `summary` (string, HTML): Course summary
+            - `overviewfiles` (filearea): Course overview files (typically images)
+        - **Course Format:**
+            - `format` (string): Course format (e.g., `topics`, `weeks`, `social`)
+            - `numsections` (int, format-dependent): Number of sections (for formats like Topics, Weeks)
+            - Other format-specific settings (e.g., `hiddensections`, `coursedisplay` for some formats)
+        - **Appearance:**
+            - `theme` (string, optional): Force theme name
+            - `lang` (string, optional): Force language
+            - `showgrades` (int): Show gradebook to students
+            - `showreports` (int): Show activity reports
+        - **Files and Uploads:**
+            - `maxbytes` (int): Maximum upload size for the course
+        - **Completion Tracking:**
+            - `enablecompletion` (int): Enable completion tracking (0 = Disabled, 1 = Enabled)
+        - **Groups:**
+            - `groupmode` (int): Group mode (0 = No groups, 1 = Separate groups, 2 = Visible groups)
+            - `groupmodeforce` (int): Force group mode for all activities
+            - `defaultgroupingid` (int): Default grouping ID
+        - **Tags:**
+            - `tags` (array of strings/ids): Course tags
+        - **(Other potential settings not explicitly listed but present in the form)**
+
+- [x] **5. Identify Sections Object Structure and Settings:**
+    - [x] Find how Moodle defines course sections.
+    - [x] List settable properties/fields of a section object.
+    - [x] Identify common settings for sections (e.g., visibility, name, summary).
+    - [*] *Location in Moodle code (to be filled):* Section data is primarily stored in the `mdl_course_sections` table. Settings are managed via `moodle-500/course/editsection_form.php`. Course format plugins can add their own section settings.
+    - [*] *Extracted Data (Section Settings - based on `course/editsection_form.php` and general Moodle structure):*
+        - `name` (string, optional): Custom section name. If not set, a default name is used (e.g., "Topic 1", "Week 1").
+        - `summary` (string, HTML): Section summary or description.
+        - `visible` (int): Section visibility (0 = Hidden, 1 = Shown). (This is a common field in `mdl_course_sections` but might be controlled differently by some formats).
+        - `availabilityconditionsjson` (string, JSON): Access restrictions for the section.
+        - `sequence` (string, comma-separated ints): Comma-separated list of course module IDs within the section. (Managed by course editing, not typically a direct form field for the user in this raw format).
+        - *Format-specific settings:* Course formats (e.g., Tiles, Grid format) can add their own settings for sections (e.g., background image, icon, layout options). These are not universal. 
+
+- [x] **6. Identify Common and Unique Settings for Question Types:**
+    - [x] Find the base class/interface for Moodle question type editing forms.
+    - [x] Identify how common question settings are defined (e.g., question name, question text, default mark).
+    - [ ] For a selection of representative question types (e.g., multichoice, truefalse, essay, shortanswer):
+        - [ ] Identify their unique settings.
+    - [*] *Location in Moodle code for common settings (to be filled):* `moodle-500/question/type/edit_question_form.php` (class `question_edit_form`).
+    - [*] *Location in Moodle code for unique settings (examples) (to be filled):* e.g., `moodle-500/question/type/multichoice/edit_multichoice_form.php` (in `definition_inner()`), etc.
+    - [*] *Extracted Data (Common Settings - based on `edit_question_form.php`):*
+        - `category` (int): Question category ID.
+        - `name` (string): Question name.
+        - `questiontext` (string, HTML): The main content of the question.
+        - `status` (string): Question status (e.g., 'draft', 'ready').
+        - `defaultmark` (float): Default points for the question.
+        - `generalfeedback` (string, HTML, optional): General feedback shown to the student after attempting the question.
+        - `tags` (array of strings/ids, optional): Question tags.
+        - `idnumber` (string, optional): An optional ID number for the question.
+        - (Potentially `penalty` for adaptive quizzes, `hidden` status, `version` - though these might be more specialized or part of the question object itself rather than explicit form fields in the base class).
+    - [*] *Extracted Data (Unique Settings - to be filled by inspecting individual question type `edit_..._form.php` files):*
+        - Example (Multiple Choice): `answer` (repeated for choices), `fraction` (grade for choice), `feedback` (for choice), `single` (single or multiple answers), `shuffleanswers`, `answernumbering`.
+        - Example (True/False): `feedbacktrue`, `feedbackfalse`, `correctanswer`.
+        - Example (Essay): `responseformat` (e.g., html, plain text), `responserequired` (e.g., text required or optional), `responsefieldlines` (input box size), `attachments` (allow attachments), `graderinfo`, `responsetemplate`.
+
+- [ ] **7. Identify Container Modules and Their Sub-Elements:**
+    - [ ] List modules that primarily function as containers for other configurable elements.
+    - [ ] For each container module, identify the type(s) of sub-elements they hold.
+    - [*] *Extracted Data (Container Modules and Sub-Elements):*
+        - **Quiz (`quiz`):**
+            - Contains: **Questions** (drawn from the question bank or created in-quiz).
+        - **Lesson (`lesson`):**
+            - Contains: **Pages** (content pages, question pages).
+        - **Folder (`folder`):**
+            - Contains: **Files**, **Sub-folders**.
+        - **Book (`book`):**
+            - Contains: **Chapters**, **Sub-chapters** (HTML content pages).
+        - **Database (`data`):**
+            - Contains: **Entries** (composed of defined fields).
+        - **Glossary (`glossary`):**
+            - Contains: **Entries** (terms and definitions).
+        - **Workshop (`workshop`):**
+            - Contains: **Submissions**, **Peer/Teacher Assessments**.
+        - **SCORM Package (`scorm`):**
+            - Contains: **SCOs (Shareable Content Objects)** and internal assets (defined by SCORM standard).
+        - **H5P Activity (`h5pactivity`):**
+            - Contains: **H5P Content Package** (with its own internal structure).
+        - **IMSCP Content Package (`imscp`):**
+            - Contains: Packaged resources and organization (defined by IMS Content Packaging standard).
+        - *(Note: Modules like Forum, Wiki, Assignment, etc., while containing user-generated content or submissions, are generally not treated as containers of distinct, structurally configurable sub-elements in the same way as the above for rule-making purposes, though their own settings can be subject to rules.)*
+
+- [ ] **8. Define Rule Creation Form Structure and Components:**
+    - [ ] **A. Base Rule Condition Structure:**
+        - [ ] Target Selector: Dropdown for selecting the primary target of the rule.
+            - Options: "Course", "Section", "Mod" (Activity), "Sub-Elements" (e.g., Quiz Question, Book Chapter).
+            - Hierarchical drill-down: If "Mod" is selected, a further selector for specific Mod type appears. If "Sub-Elements" is selected, context-aware selectors for parent Mod and then sub-element type appear.
+        - [ ] Condition Type Selector: Dropdown for the type of check.
+            - Options: "Has Content", "Has Setting", "NOT Has Content", "NOT Has Setting".
+
+    - [ ] **B. "Has Content" / "NOT Has Content" Logic:**
+        - [ ] If selected, allows further selection of a child element type down the hierarchy.
+            - Hierarchy: Course -> Section -> Mod -> Sub-Element.
+            - Example: Course "Has Content" -> Section (selector) "Has Content" -> Quiz (mod type selector) "Has Content" -> Question (sub-element type selector).
+        - [ ] Maximum depth of 4 levels (e.g., Course -> Section -> Container Mod -> Specific Sub-Element Type).
+
+    - [ ] **C. "Has Setting" / "NOT Has Setting" Logic:**
+        - [ ] If selected, dynamically display a "Setting Name" dropdown.
+            - Options populated based on the last selected Target in the hierarchy (e.g., if Course is target, show course settings; if Quiz mod is target, show Quiz settings).
+        - [ ] "Expected Value" Input Field: Type-aware based on the selected setting (e.g., text input, number input, boolean toggle/dropdown).
+        - [ ] Comparison Operator Selector (for Expected Value):
+            - Options: "equals", "does not equal", "contains" (for text), "does not contain" (for text), "matches regex" (for text), ">", "<", ">=", "<=", etc. (for numerical).
+            - Boolean settings might just check for "is true" / "is false".
+
+    - [ ] **D. Multiple Conditions (Rule Chaining):**
+        - [ ] UI element (e.g., "+" button) to add an additional condition block to the current rule.
+        - [ ] Logical Operator Selector (AND/OR) to connect the current condition block with the next one.
+        - [ ] Example Rule: (Course "Has Setting" fullname "contains" "Introduction") AND (Course "Has Content" Section "Has Content" Quiz "Has Setting" attempts "equals" 1).
+
+    - [ ] **E. Failure Actions (What to do if the rule check fails):**
+        - [ ] Optional: Hint Text Field: User can input a message/guidance to be shown if the rule fails.
+        - [ ] Optional: Action Button Configuration:
+            - [ ] Define Button Label (e.g., "Fix This", "Set Attempts to 1").
+            - [ ] Action Type Selector:
+                - Option 1: "Change Setting":
+                    - Target: Automatically infers the element checked by the rule condition (e.g., the specific Quiz instance).
+                    - Setting Name: Dropdown of settings for the inferred target.
+                    - New Value: Input field for the desired value.
+                    - Example: For a rule checking Quiz attempts, action could be "Change Setting" -> attempts -> to value "1".
+                - Option 2: "Add Content":
+                    - Target: Automatically infers the parent element where content can be added (e.g., the specific Section checked).
+                    - Content Type to Add: Dropdown of addable elements (e.g., Mod types like "Quiz", "Page").
+                    - (Optional) Basic settings for the new content: Allow specifying a few key initial settings for the added content (e.g., name/title for a new Quiz).
+                    - Example: For a rule checking if a Section has a Quiz, action could be "Add Content" -> to the checked Section -> content type "Quiz".
+
+    - [ ] **F. Rule Set Management (Grouping Rules):**
+        - [ ] Interface to create a new Rule Set (e.g., "Adaptivity Rules", "General Content Check Rules").
+            - [ ] Input field for Rule Set Name.
+            - [ ] Optional: Input field for Rule Set Description.
+        - [ ] Mechanism to assign individual rules (defined by sections A-E) to one or more Rule Sets.
+            - This could be part of the individual rule creation/editing interface (e.g., a multi-select dropdown for Rule Sets).
+            - Or, an interface within the Rule Set management area to add/remove rules from a set.
+        - [ ] Interface to view and manage existing Rule Sets.
+            - [ ] List all Rule Sets.
+            - [ ] For each set, show contained rules (or a count).
+            - [ ] Options to edit Rule Set name/description.
+            - [ ] Option to delete a Rule Set (should clarify if this deletes the rules within it or just unassigns them).

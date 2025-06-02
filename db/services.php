@@ -64,6 +64,14 @@ $functions = array(
         'type'          => 'write',
         'ajax'          => true,
         'capabilities'  => 'moodle/course:manageactivities' // Or a more specific capability like 'block/course_audit:managequizsettings'
+    ),
+    'block_course_audit_execute_action' => array(
+        'classname'     => 'block_course_audit_external',
+        'methodname'    => 'execute_action',
+        'description'   => 'Executes a predefined corrective action from a course audit rule.',
+        'type'          => 'write',
+        'ajax'          => true,
+        'capabilities'  => '' // Capabilities are checked dynamically within the method.
     )
 );
 

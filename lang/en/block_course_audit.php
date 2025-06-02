@@ -201,3 +201,79 @@ $string['failedrules'] = 'Failed';
 
 $string['courselevel'] = 'Course Level';
 $string['startnewaudit'] = 'Start New Audit';
+
+$string['blocktitle'] = 'Course Audit Toolkit';
+$string['managerules'] = 'Manage Audit Rules';
+$string['createnewrule'] = 'Create New Rule';
+$string['editrule'] = 'Edit Rule';
+$string['ruleset'] = 'Rule Set';
+$string['selectruleset'] = 'Select Rule Set';
+$string['createnewruleset'] = 'Create New Rule Set';
+$string['rulesetname'] = 'Rule Set Name';
+$string['rulesetdescription'] = 'Rule Set Description';
+$string['rulename'] = 'Rule Name';
+$string['conditiontype'] = 'Condition Type';
+$string['target'] = 'Target';
+$string['settingname'] = 'Setting Name';
+$string['expectedvalue'] = 'Expected Value';
+$string['comparisonoperator'] = 'Comparison';
+$string['hascontent_targetchild'] = 'Child Element Type';
+$string['addconditionchain'] = 'Add Condition Group (AND/OR)';
+$string['logicaloperator'] = 'Logic to next group';
+$string['failureactions'] = 'Actions on Failure';
+$string['failurehint'] = 'Hint Text on Failure';
+$string['addaction'] = 'Add Action';
+$string['actiontype'] = 'Action Type';
+$string['actionbuttonlabel'] = 'Button Label';
+$string['actionchangesetting'] = 'Setting to Change';
+$string['actionnewvalue'] = 'New Value for Setting';
+$string['actionaddcontenttype'] = 'Content Type to Add';
+
+// Error messages from rule_manager & external
+$string['error_rule_not_found'] = 'Error: Rule with ID {$a} not found.';
+$string['error_action_not_found'] = 'Error: Action with ID {$a} not found.';
+$string['error_action_target_definition_not_found'] = 'Error: Action target definition could not be fully resolved.';
+
+// Rule form options
+$string['target_course'] = 'Course';
+$string['target_section'] = 'Section';
+$string['target_module'] = 'Activity/Resource (Mod)';
+$string['target_subelement'] = 'Sub-Element (e.g., Quiz Question)';
+
+$string['checktype_hascontent'] = 'Has Content';
+$string['checktype_nothascontent'] = 'NOT Has Content';
+$string['checktype_hassetting'] = 'Has Setting';
+$string['checktype_nothassetting'] = 'NOT Has Setting';
+
+$string['operator_equals'] = 'equals';
+$string['operator_notequals'] = 'does not equal';
+$string['operator_contains'] = 'contains';
+$string['operator_notcontains'] = 'does not contain';
+$string['operator_regex'] = 'matches regex';
+$string['operator_gt'] = 'greater than (>)';
+$string['operator_lt'] = 'less than (<)';
+$string['operator_gte'] = 'greater than or equals (>=)';
+$string['operator_lte'] = 'less than or equals (<=)';
+$string['operator_istrue'] = 'is true';
+$string['operator_isfalse'] = 'is false';
+$string['operator_isempty'] = 'is empty';
+$string['operator_isnotempty'] = 'is not empty';
+
+$string['actiontype_changesetting'] = 'Change a Setting';
+$string['actiontype_addcontent'] = 'Add Content';
+
+$string['error_mustspecifycourseorsection'] = 'You must specify either a course or a section to check.';
+$string['error_nocoursemodselected'] = 'No course module selected for the current rule section.';
+$string['error_noquizselected'] = 'No quiz selected for the current rule section.';
+$string['error_noformselected'] = 'No form selected for the current rule section.';
+$string['error_failedtosaveform'] = 'Failed to save the form.';
+$string['error_tourcreationfailed'] = 'Tour creation failed.';
+$string['error_labelcreationfailed'] = 'Label creation failed.';
+$string['error_quizcreationfailed'] = 'Quiz creation failed.';
+$string['error_quizsettingupdatefailed'] = 'Failed to update quiz settings.';
+$string['error_invalidquizid'] = 'Invalid Quiz ID.';
+$string['error_couldnotgetquiz'] = 'Could not retrieve quiz details.';
+
+$string['conditiongroup'] = 'Condition Group {$a}';
+$string['moduletypeorname'] = 'Module Type / Name / Identifier';
+$string['initialsettingsjson'] = 'Initial Settings (JSON)';
