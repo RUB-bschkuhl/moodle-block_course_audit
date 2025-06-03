@@ -18,7 +18,7 @@
  * External functions for the Course Audit block.
  *
  * @package    block_course_audit
- * @copyright  2024 Your Name (PLEASE UPDATE)
+ * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -27,13 +27,15 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . '/course/lib.php'); // For course/module functions.
 
-class block_course_audit_external extends external_api {
+class block_course_audit_external extends external_api
+{
 
     /**
      * Describes the parameters for the execute_action external function.
      * @return external_function_parameters
      */
-    public static function execute_action_parameters(): external_function_parameters {
+    public static function execute_action_parameters(): external_function_parameters
+    {
         return new external_function_parameters(
             array(
                 'actionid' => new external_value(PARAM_INT, 'The ID of the action to execute from block_course_audit_actions table.'),
@@ -52,12 +54,15 @@ class block_course_audit_external extends external_api {
      * @return array Status of the action execution.
      * @throws moodle_exception
      */
-    public static function execute_action(int $actionid, int $courseid, string $targetentityidsjson): array {
+    public static function execute_action(int $actionid, int $courseid, string $targetentityidsjson): array
+    {
         global $DB, $USER, $CFG;
 
         // Validate parameters.
-        $params = self::validate_parameters(self::execute_action_parameters(),
-            ['actionid' => $actionid, 'courseid' => $courseid, 'targetentityidsjson' => $targetentityidsjson]);
+        $params = self::validate_parameters(
+            self::execute_action_parameters(),
+            ['actionid' => $actionid, 'courseid' => $courseid, 'targetentityidsjson' => $targetentityidsjson]
+        );
 
         $coursecontext = context_course::instance($params['courseid']);
         self::validate_context($coursecontext); // Basic context validation.
@@ -77,7 +82,7 @@ class block_course_audit_external extends external_api {
         // Load the rule definition to understand the context of the action target.
         $rule = $DB->get_record('block_course_audit_rules', ['id' => $action->ruleid]);
         $chain = $DB->get_record('block_course_audit_condition_chains', [
-            'ruleid' => $action->ruleid, 
+            'ruleid' => $action->ruleid,
             'chain_order' => $action->action_target_chain_index
         ]);
         $segment = null;
@@ -122,7 +127,6 @@ class block_course_audit_external extends external_api {
             } else {
                 $message = 'Target module CMID not found in targetentityidsjson or action target segment misconfigured.';
             }
-
         } else if ($action->action_type === 'ADD_CONTENT') {
             // Example: Adding a module to a section.
             // 1. Identify the specific section id from $targetentities.
@@ -140,7 +144,7 @@ class block_course_audit_external extends external_api {
                 // if ($cm) { $success = true; $message = 'Content added.'; }
                 $message = 'ADD_CONTENT of type ' . $action->add_content_child_identifier . ' to section ID ' . $sectionid . ' - placeholder.';
             } else {
-                 $message = 'Target section ID not found in targetentityidsjson or action target segment misconfigured for ADD_CONTENT.';
+                $message = 'Target section ID not found in targetentityidsjson or action target segment misconfigured for ADD_CONTENT.';
             }
         }
 
@@ -154,7 +158,8 @@ class block_course_audit_external extends external_api {
      * Describes the return value for the execute_action external function.
      * @return external_single_structure
      */
-    public static function execute_action_returns(): external_single_structure {
+    public static function execute_action_returns(): external_single_structure
+    {
         return new external_single_structure(
             array(
                 'success' => new external_value(PARAM_BOOL, 'True if the action was successfully executed, false otherwise.'),
@@ -162,4 +167,4 @@ class block_course_audit_external extends external_api {
             )
         );
     }
-} 
+}

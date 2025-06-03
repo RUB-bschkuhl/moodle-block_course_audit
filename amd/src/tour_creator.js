@@ -16,7 +16,7 @@
 * JavaScript for handling tour creation via button click.
 *
 * @module block_course_audit/tour_creator
-* @copyright 2024 Your Name <your.email@example.com>
+* @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
 * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 */
 

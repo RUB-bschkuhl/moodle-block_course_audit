@@ -18,7 +18,7 @@
  * External API for creating tours.
  *
  * @package block_course_audit
- * @copyright 2024 Your Name <your.email@example.com>
+ * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -45,7 +45,7 @@ use tool_usertours\target;
  * External API for creating tours
  *
  * @package block_course_audit
- * @copyright 2024 Your Name <your.email@example.com>
+ * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class create_tour extends external_api

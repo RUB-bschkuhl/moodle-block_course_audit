@@ -18,7 +18,7 @@
  * Upgrade script for the Course Audit block.
  *
  * @package    block_course_audit
- * @copyright  2024 Your Name <your.email@example.com> // Please replace with actual details
+ * @copyright  2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
