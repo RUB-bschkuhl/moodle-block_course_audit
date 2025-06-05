@@ -41,6 +41,7 @@ $PAGE->set_context($context);
 $title = $id ? get_string('editrule', 'block_course_audit') : get_string('createnewrule', 'block_course_audit');
 $PAGE->set_title($title);
 $PAGE->set_heading($title);
+$PAGE->requires->js_call_amd('block_course_audit/rule_form', 'init');
 
 echo $OUTPUT->header();
 

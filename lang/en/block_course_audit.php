@@ -219,6 +219,7 @@ $string['expectedvalue'] = 'Expected Value';
 $string['comparisonoperator'] = 'Comparison';
 $string['hascontent_targetchild'] = 'Child Element Type';
 $string['addconditionchain'] = 'Add Condition Group (AND/OR)';
+$string['addconditionsegment'] = 'Add Condition Segment';
 $string['logicaloperator'] = 'Logic to next group';
 $string['failureactions'] = 'Actions on Failure';
 $string['failurehint'] = 'Hint Text on Failure';

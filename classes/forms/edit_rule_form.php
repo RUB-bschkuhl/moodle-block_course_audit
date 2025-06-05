@@ -113,7 +113,7 @@ class block_course_audit_edit_rule_form extends moodleform {
         $mform->setType('chain_0_segment_0_setting_expected_value', PARAM_RAW); // Type might change based on setting_name (JS).
 
         // TODO: Add button here for JS to add more segments to this chain.
-        // $mform->addElement('button', 'add_segment_to_chain_0', get_string('addconditionsegment', 'block_course_audit'));
+        $mform->addElement('button', 'add_segment_to_chain_0', get_string('addconditionsegment', 'block_course_audit'));
         $mform->addElement('html', '</div>'); // End segment wrapper.
 
         $mform->addElement('html', '</div>'); // End chain wrapper.
@@ -122,7 +122,7 @@ class block_course_audit_edit_rule_form extends moodleform {
         $mform->addElement('select', 'chain_0_logical_operator_to_next', get_string('logicaloperator', 'block_course_audit'), $logicaloperators);
 
         // TODO: Add button here for JS to add more condition chains.
-        // $mform->addElement('button', 'add_condition_chain', get_string('addconditionchain', 'block_course_audit'));
+        $mform->addElement('button', 'add_condition_chain', get_string('addconditionchain', 'block_course_audit'));
 
         // --- Failure Actions (Repeatable via JS) --- //
         $mform->addElement('header', 'failureactionsheader', get_string('failureactions', 'block_course_audit'));
@@ -156,7 +156,7 @@ class block_course_audit_edit_rule_form extends moodleform {
 
         $mform->addElement('html', '</div>'); // End action wrapper.
         // TODO: Add button here for JS to add more actions.
-        // $mform->addElement('button', 'add_failure_action', get_string('addaction', 'block_course_audit'));
+        $mform->addElement('button', 'add_failure_action', get_string('addaction', 'block_course_audit'));
 
 
         $this->add_action_buttons();
