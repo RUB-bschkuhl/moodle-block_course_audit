@@ -51,12 +51,4 @@ $capabilities = [
             'manager' => CAP_ALLOW
         ]
     ],
-    'block/course_audit:managerules' => [
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_COURSE,
-        'archetypes' => [
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ]
-    ]
 ];

@@ -147,7 +147,7 @@ class block_course_audit extends block_base
      */
     public function get_content()
     {
-        global $OUTPUT, $USER, $PAGE, $COURSE;
+        global $OUTPUT, $USER, $PAGE;
 
         if ($this->content !== null) {
             return $this->content;
@@ -202,10 +202,6 @@ class block_course_audit extends block_base
         if (!has_capability('moodle/course:update', $this->context)) {
             $this->content->text = '';
         }
-
-        // Link to the rule management page.
-        $manageRulesUrl = new moodle_url('/blocks/course_audit/manage_rules.php', ['courseid' => $COURSE->id]);
-        $this->content->text .= $OUTPUT->action_link($manageRulesUrl, get_string('managerules', 'block_course_audit'));
 
         return $this->content;
     }

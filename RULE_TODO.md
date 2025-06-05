@@ -142,58 +142,77 @@ This document outlines the information needed to build a dynamic rule creation s
             - Contains: Packaged resources and organization (defined by IMS Content Packaging standard).
         - *(Note: Modules like Forum, Wiki, Assignment, etc., while containing user-generated content or submissions, are generally not treated as containers of distinct, structurally configurable sub-elements in the same way as the above for rule-making purposes, though their own settings can be subject to rules.)*
 
-- [ ] **8. Define Rule Creation Form Structure and Components:**
-    - [ ] **A. Base Rule Condition Structure:**
-        - [ ] Target Selector: Dropdown for selecting the primary target of the rule.
-            - Options: "Course", "Section", "Mod" (Activity), "Sub-Elements" (e.g., Quiz Question, Book Chapter).
-            - Hierarchical drill-down: If "Mod" is selected, a further selector for specific Mod type appears. If "Sub-Elements" is selected, context-aware selectors for parent Mod and then sub-element type appear.
-        - [ ] Condition Type Selector: Dropdown for the type of check.
-            - Options: "Has Content", "Has Setting", "NOT Has Content", "NOT Has Setting".
+- [ ] **8. Define Structure for the Rule Creation Form:**
+    - [ ] Design the UI/UX flow for creating and managing rules.
+    - [ ] Detail the components and fields for a single "Check" within a rule.
+    - [ ] Detail how multiple "Checks" are combined (logical operators).
+    - [ ] Detail the fields for the "Resolution" part of a rule.
+    - [*] *Form Structure Details (to be refined during implementation):*
 
-    - [ ] **B. "Has Content" / "NOT Has Content" Logic:**
-        - [ ] If selected, allows further selection of a child element type down the hierarchy.
-            - Hierarchy: Course -> Section -> Mod -> Sub-Element.
-            - Example: Course "Has Content" -> Section (selector) "Has Content" -> Quiz (mod type selector) "Has Content" -> Question (sub-element type selector).
-        - [ ] Maximum depth of 4 levels (e.g., Course -> Section -> Container Mod -> Specific Sub-Element Type).
+        **I. Rule Structure Overview:**
+        A rule is composed of:
+        1.  One or more "Check" blocks.
+        2.  Logical operators (AND/OR) connecting multiple "Check" blocks.
+        3.  One or more "Resolution" blocks that define actions/hints if all checks evaluate to true.
+        A button "Add another Check" will allow users to extend the rule with more checks.
+        A button "Add another Resuloution" will allow users to extend the rule with more resolutions.
 
-    - [ ] **C. "Has Setting" / "NOT Has Setting" Logic:**
-        - [ ] If selected, dynamically display a "Setting Name" dropdown.
-            - Options populated based on the last selected Target in the hierarchy (e.g., if Course is target, show course settings; if Quiz mod is target, show Quiz settings).
-        - [ ] "Expected Value" Input Field: Type-aware based on the selected setting (e.g., text input, number input, boolean toggle/dropdown).
-        - [ ] Comparison Operator Selector (for Expected Value):
-            - Options: "equals", "does not equal", "contains" (for text), "does not contain" (for text), "matches regex" (for text), ">", "<", ">=", "<=", etc. (for numerical).
-            - Boolean settings might just check for "is true" / "is false".
+        **II. "Check" Component (Base Fields for the First Check):**
+        - `CHECK_SCOPE`: Select Dropdown.
+            - *Purpose:* Defines the broad context or container type for this check.
+            - *Options:* Container-type Modules (refer to Task 7, e.g., Quiz, Lesson, Folder).
+        - `CHECK_NOT`: Checkbox.
+            - *Purpose:* Inverts the logic of this individual check (e.g., "NOT (Source Has Setting X)").
+        - `CHECK_SOURCE`: Select Dropdown.
+            - *Purpose:* Specifies the Moodle element to be inspected.
+            - *Options:* `course`, `section`, specific Moodle Modules/Activities (from Task 1, e.g., `assign`, `forum`, `quiz`), specific sub-elements (from Task 7, e.g., `quiz_question`, `folder_file`, `lesson_page`). The list should be filtered by `CHECK_SCOPE` if applicable.
+        - `CHECK_CONDITION_TYPE`: Select Dropdown.
+            - *Purpose:* Determines what aspect of the `CHECK_SOURCE` is being evaluated.
+            - *Options:* "Has Setting", "Has Content".
+        - `CHECK_TARGET`: Select Dropdown (Dynamically populated based on `CHECK_SOURCE` and `CHECK_CONDITION_TYPE`).
+            - *Purpose:* Specifies the particular setting or type of content to look for.
+            - *If `CHECK_CONDITION_TYPE` = "Has Setting":* Options list available settings for the selected `CHECK_SOURCE` (e.g., if `CHECK_SOURCE` is `quiz`, `CHECK_TARGET` could be `timeopen`, `grade`, `shuffleanswers`; if `CHECK_SOURCE` is `course`, `CHECK_TARGET` could be `fullname`, `visible`). (Refer to Tasks 3, 4, 5, 6 for settings lists).
+            - *If `CHECK_CONDITION_TYPE` = "Has Content":* Options list elements that can be contained by the `CHECK_SOURCE` (e.g., if `CHECK_SOURCE` is `quiz`, `CHECK_TARGET` could be `question_type_multichoice`; if `CHECK_SOURCE` is `folder`, `CHECK_TARGET` could be `file_type_pdf`).
+        - `CHECK_COMPARE_OPERATOR`: Select Dropdown.
+            - *Purpose:* Defines how the `CHECK_TARGET` (or its value) is compared.
+            - *Options:* "equals", "not equals", "contains", "does not contain", "regex matches", "is greater than", "is less than", "is empty", "is not empty", "is one of", "is not one of".
+        - `CHECK_VALUE_TO_COMPARE`: Text Input Field (or other appropriate input based on `CHECK_TARGET` and `CHECK_COMPARE_OPERATOR`, e.g., a multi-select for "is one of").
+            - *Purpose:* The value to use for the comparison.
+        - `CHECK_VALUE_TYPE_INFO`: Disabled Text Field (Display Only).
+            - *Purpose:* Informs the user about the expected data type of the selected `CHECK_TARGET` setting (e.g., "Integer", "String", "Boolean", "Timestamp", "Comma-separated list").
 
-    - [ ] **D. Multiple Conditions (Rule Chaining):**
-        - [ ] UI element (e.g., "+" button) to add an additional condition block to the current rule.
-        - [ ] Logical Operator Selector (AND/OR) to connect the current condition block with the next one.
-        - [ ] Example Rule: (Course "Has Setting" fullname "contains" "Introduction") AND (Course "Has Content" Section "Has Content" Quiz "Has Setting" attempts "equals" 1).
+        **III. Subsequent "Checks" (For the second check onwards):**
+        - `CHECK_LOGICAL_OPERATOR_WITH_PREVIOUS`: Select Dropdown (appears *before* each subsequent check).
+            - *Purpose:* Connects this check to the previous one.
+            - *Options:* "AND", "OR".
+        - `CHECK_SCOPE`, `CHECK_SOURCE`, `CHECK_TARGET` fields will have modified options:
+            - *Options will include references to elements from the **first check** (e.g., `same_SCOPE_as_Check1`, `same_SOURCE_as_Check1`, `same_TARGET_as_Check1`) alongside options to select a new/different element (`other_SCOPE`, `other_SOURCE`, `other_TARGET`).*
+            - *Detailed logic for how "same_" and "other_" propagate or refer needs to be defined during UI design. The primary goal is to allow referencing elements from the initial check or introducing new ones.*
+        - Other fields (`CHECK_NOT`, `CHECK_CONDITION_TYPE`, `CHECK_COMPARE_OPERATOR`, `CHECK_VALUE_TO_COMPARE`, `CHECK_VALUE_TYPE_INFO`) are the same as in the first check.
 
-    - [ ] **E. Failure Actions (What to do if the rule check fails):**
-        - [ ] Optional: Hint Text Field: User can input a message/guidance to be shown if the rule fails.
-        - [ ] Optional: Action Button Configuration:
-            - [ ] Define Button Label (e.g., "Fix This", "Set Attempts to 1").
-            - [ ] Action Type Selector:
-                - Option 1: "Change Setting":
-                    - Target: Automatically infers the element checked by the rule condition (e.g., the specific Quiz instance).
-                    - Setting Name: Dropdown of settings for the inferred target.
-                    - New Value: Input field for the desired value.
-                    - Example: For a rule checking Quiz attempts, action could be "Change Setting" -> attempts -> to value "1".
-                - Option 2: "Add Content":
-                    - Target: Automatically infers the parent element where content can be added (e.g., the specific Section checked).
-                    - Content Type to Add: Dropdown of addable elements (e.g., Mod types like "Quiz", "Page").
-                    - (Optional) Basic settings for the new content: Allow specifying a few key initial settings for the added content (e.g., name/title for a new Quiz).
-                    - Example: For a rule checking if a Section has a Quiz, action could be "Add Content" -> to the checked Section -> content type "Quiz".
-
-    - [ ] **F. Rule Set Management (Grouping Rules):**
-        - [ ] Interface to create a new Rule Set (e.g., "Adaptivity Rules", "General Content Check Rules").
-            - [ ] Input field for Rule Set Name.
-            - [ ] Optional: Input field for Rule Set Description.
-        - [ ] Mechanism to assign individual rules (defined by sections A-E) to one or more Rule Sets.
-            - This could be part of the individual rule creation/editing interface (e.g., a multi-select dropdown for Rule Sets).
-            - Or, an interface within the Rule Set management area to add/remove rules from a set.
-        - [ ] Interface to view and manage existing Rule Sets.
-            - [ ] List all Rule Sets.
-            - [ ] For each set, show contained rules (or a count).
-            - [ ] Options to edit Rule Set name/description.
-            - [ ] Option to delete a Rule Set (should clarify if this deletes the rules within it or just unassigns them).
+        **IV. "Resolution" Component (Defines action/hint if all combined checks pass):**
+        - `RESOLUTION_CONTEXT`: Select Dropdown.
+            - *Purpose:* Defines the Moodle element that the resolution will apply to.
+            - *Options:* May include `same_SCOPE_as_Check1`, `same_SOURCE_as_Check1`, `same_TARGET_as_Check1`, or allow selection of a new specific context (e.g., `course`, a specific Module instance identified by the checks).
+        - `RESOLUTION_TYPE`: Select Dropdown.
+            - *Purpose:* Specifies the nature of the resolution.
+            - *Options:* "HINT" (provide a message/suggestion to the user), "ACTION" (propose an automated modification).
+        - **If `RESOLUTION_TYPE` = "HINT":**
+            - `RESOLUTION_HINT_MESSAGE`: Text Area.
+                - *Purpose:* The guidance or warning message to be displayed.
+        - **If `RESOLUTION_TYPE` = "ACTION":**
+            - `RESOLUTION_ACTION_TYPE`: Select Dropdown.
+                - *Purpose:* Specifies the type of automated action.
+                - *Options:* "Change Setting", "Add Content".
+            - **If `RESOLUTION_ACTION_TYPE` = "Change Setting":**
+                - `RESOLUTION_SETTING_TO_CHANGE`: Select Dropdown.
+                    - *Purpose:* The specific setting to modify on the `RESOLUTION_CONTEXT`.
+                    - *Options:* Dynamically populated list of available settings for the selected `RESOLUTION_CONTEXT`.
+                - `RESOLUTION_NEW_SETTING_VALUE`: Text Input Field.
+                    - *Purpose:* The new value for the selected setting.
+            - **If `RESOLUTION_ACTION_TYPE` = "Add Content":**
+                - `RESOLUTION_CONTENT_TO_ADD`: Select Dropdown.
+                    - *Purpose:* The type of Moodle module/activity to add.
+                    - *Options:* List of all available Moodle Modules/Activities (from Task 1).
+                - `RESOLUTION_CONTENT_LOCATION` (Optional, context-dependent): Select Dropdown or other appropriate input.
+                    - *Purpose:* Specifies where the new content should be placed (e.g., a specific course section if `RESOLUTION_CONTEXT` is a course or within a container module).

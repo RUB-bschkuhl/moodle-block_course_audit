@@ -30,26 +30,4 @@ if ($ADMIN->fulltree) {
         '',
         PARAM_TEXT
     ));
-
-    // Link to manage rules page, only if user has the capability.
-    // The $this->page->course->id is not directly available here in this script.
-    // We need to ensure we are in a course context for this link to make sense.
-    // Typically, block settings are edited at course or site level.
-    // If this settings page is for the block instance in a course:
-    if (!empty($this->instance) && $this->instance->pagetypepattern == 'course-view-*') {
-        $courseid = $this->instance->pageid;
-        $coursecontext = context_course::instance($courseid);
-        if (has_capability('block/course_audit:managerules', $coursecontext)) {
-            $url = new moodle_url('/blocks/course_audit/manage_rules.php', array('courseid' => $courseid));
-            $settings->add(new admin_setting_heading(
-                'block_course_audit_managerules_link_heading',
-                get_string('managerules', 'block_course_audit'),
-                format_text(
-                    html_writer::link($url, get_string('managerules', 'block_course_audit')),
-                    FORMAT_HTML,
-                    array('trusted' => true)
-                )
-            ));
-        }
-    }
 } 
