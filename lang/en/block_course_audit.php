@@ -201,3 +201,7 @@ $string['failedrules'] = 'Failed';
 
 $string['courselevel'] = 'Course Level';
 $string['startnewaudit'] = 'Start New Audit';
+
+$string['settings:managesettings'] = 'Course Audit Settings';
+$string['settings:placeholder'] = 'Placeholder';
+$string['settings:placeholder_desc'] = 'Placeholder for the Course Audit block';

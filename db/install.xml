@@ -36,5 +36,79 @@
                 <KEY NAME="auditid" TYPE="foreign" FIELDS="auditid" REFTABLE="block_course_audit_tours" REFFIELDS="id"/>
             </KEYS>
         </TABLE>
+        <TABLE NAME="block_course_audit_rule_coll" COMMENT="Stores collections or groups of rules.">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="collection_name" TYPE="text" NOTNULL="true"/>
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+                <FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="true"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+                <KEY NAME="fk_createdby" TYPE="foreign" FIELDS="createdby" REFTABLE="user" REFFIELDS="id"/>
+            </KEYS>
+        </TABLE>
+        <TABLE NAME="block_course_audit_rule" COMMENT="Defines a single, named rule with a description.">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="rule_name" TYPE="text" NOTNULL="true"/>
+                <FIELD NAME="rule_description" TYPE="text" NOTNULL="false"/>
+                <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+                <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+                <FIELD NAME="createdby" TYPE="int" LENGTH="10" NOTNULL="true"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+                <KEY NAME="fk_createdby" TYPE="foreign" FIELDS="createdby" REFTABLE="user" REFFIELDS="id"/>
+            </KEYS>
+        </TABLE>
+        <TABLE NAME="block_course_audit_coll_rule" COMMENT="Maps rules to rule collections (many-to-many).">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="rule_collection_id" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="rule_id" TYPE="int" LENGTH="10" NOTNULL="true"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+                <KEY NAME="fk_rule_collection_id" TYPE="foreign" FIELDS="rule_collection_id" REFTABLE="block_course_audit_rule_coll" REFFIELDS="id"/>
+                <KEY NAME="fk_rule_id" TYPE="foreign" FIELDS="rule_id" REFTABLE="block_course_audit_rule" REFFIELDS="id"/>
+            </KEYS>
+        </TABLE>
+        <TABLE NAME="block_course_audit_check" COMMENT="Defines a single check condition within a rule.">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="rule_id" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="next_logic" TYPE="char" LENGTH="3" NOTNULL="false" COMMENT="Logic (AND/OR) connecting to the next check."/>
+                <FIELD NAME="sort_order" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
+                <FIELD NAME="scope" TYPE="text" NOTNULL="true"/>
+                <FIELD NAME="not_check" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" COMMENT="Boolean flag to invert the check."/>
+                <FIELD NAME="source" TYPE="text" NOTNULL="true"/>
+                <FIELD NAME="check_type" TYPE="char" LENGTH="10" NOTNULL="true" COMMENT="E.g., SETTING, CONTENT"/>
+                <FIELD NAME="target" TYPE="text" NOTNULL="true"/>
+                <FIELD NAME="comp" TYPE="char" LENGTH="20" NOTNULL="true" COMMENT="Comparison operator, e.g., equals, contains"/>
+                <FIELD NAME="value" TYPE="text" NOTNULL="false"/>
+                <FIELD NAME="value_type" TYPE="char" LENGTH="10" NOTNULL="false" COMMENT="E.g., bool, text, int"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+                <KEY NAME="fk_rule_id" TYPE="foreign" FIELDS="rule_id" REFTABLE="block_course_audit_rule" REFFIELDS="id"/>
+            </KEYS>
+        </TABLE>
+        <TABLE NAME="block_course_audit_resolution" COMMENT="Defines a resolution (hint or action) for a rule.">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="rule_id" TYPE="int" LENGTH="10" NOTNULL="true"/>
+                <FIELD NAME="scope" TYPE="text" NOTNULL="true"/>
+                <FIELD NAME="type" TYPE="char" LENGTH="10" NOTNULL="true" COMMENT="E.g., HINT, ACTION"/>
+                <FIELD NAME="actiontype" TYPE="char" LENGTH="20" NOTNULL="false" COMMENT="E.g., ChangeSetting, AddContent"/>
+                <FIELD NAME="settingorcontent" TYPE="text" NOTNULL="false" COMMENT="The setting or content to act upon."/>
+                <FIELD NAME="value" TYPE="text" NOTNULL="false" COMMENT="The value to use in the action."/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+                <KEY NAME="fk_rule_id" TYPE="foreign" FIELDS="rule_id" REFTABLE="block_course_audit_rule" REFFIELDS="id"/>
+            </KEYS>
+        </TABLE>
     </TABLES>
 </XMLDB>

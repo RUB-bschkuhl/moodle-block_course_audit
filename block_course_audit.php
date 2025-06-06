@@ -244,4 +244,9 @@ class block_course_audit extends block_base
     {
         return true;
     }
+
+    public function instance_allow_config()
+    {
+        return true;
+    }
 }

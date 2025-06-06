@@ -189,3 +189,7 @@ $string['failedrules'] = 'Fehlgeschlagen';
 
 $string['courselevel'] = 'Kurs Ebene';
 $string['startnewaudit'] = 'Neue Überprüfung starten';
+
+$string['settings:managesettings'] = 'Kurs-Prüfer Einstellungen';
+$string['settings:placeholder'] = 'Platzhalter';
+$string['settings:placeholder_desc'] = 'Platzhalter für den Kurs-Prüfer-Block';

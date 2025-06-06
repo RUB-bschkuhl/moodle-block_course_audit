@@ -24,9 +24,9 @@ if ($ADMIN->fulltree) {
     ));
 
     $settings->add(new admin_setting_configtext(
-        'block_course_audit/example_setting',
-        get_string('example_setting_name', 'block_course_audit'),
-        get_string('example_setting_desc', 'block_course_audit'),
+        'block_course_audit/placeholder',
+        get_string('settings:placeholder', 'block_course_audit'),
+        get_string('settings:placeholder_desc', 'block_course_audit'),
         '',
         PARAM_TEXT
     ));
