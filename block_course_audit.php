@@ -147,20 +147,35 @@ class block_course_audit extends block_base
      */
     public function get_content()
     {
-        global $OUTPUT, $USER, $PAGE;
+        global $OUTPUT;
 
         if ($this->content !== null) {
             return $this->content;
         }
 
         $this->content = new stdClass();
+        $this->content->text = '';
         $this->content->footer = '';
 
-        if (!isloggedin() || isguestuser()) {
+        if (empty($this->instance)) {
             return $this->content;
         }
 
         $courseid = $this->page->course->id;
+        $context = context_course::instance($courseid);
+
+        // Don't display the block content if the user can't view it.
+        if (!has_capability('block/course_audit:view', $this->context)) {
+            return $this->content;
+        }
+
+        // Generate managerules button HTML if user has capability.
+        $manageruleshtml = '';
+        if (has_capability('block/course_audit:managerules', $context)) {
+            $url = new moodle_url('/blocks/course_audit/edit_rule.php', ['courseid' => $courseid]);
+            $button = new \single_button($url, get_string('managerules', 'block_course_audit'), 'get');
+            $manageruleshtml = $OUTPUT->render($button);
+        }
 
         $latest_auditrunid = $this->get_latest_audit_run_id($courseid);
 
@@ -179,7 +194,8 @@ class block_course_audit extends block_base
                         'button_done' => get_string('disclaimer_button', 'block_course_audit')
                     ],
                 ],
-                'summary_data' => $template_data
+                'summary_data' => $template_data,
+                'manageruleshtml' => $manageruleshtml
             ];
             $this->content->text = $OUTPUT->render_from_template('block_course_audit/main', $data);
         } else {

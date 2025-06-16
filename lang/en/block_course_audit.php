@@ -205,3 +205,54 @@ $string['startnewaudit'] = 'Start New Audit';
 $string['settings:managesettings'] = 'Course Audit Settings';
 $string['settings:placeholder'] = 'Placeholder';
 $string['settings:placeholder_desc'] = 'Placeholder for the Course Audit block';
+
+// --- Rule Creation Form ---
+$string['ruledetails'] = 'Rule Details';
+$string['rulename'] = 'Rule name';
+$string['ruledescription'] = 'Rule description';
+
+// Checks
+$string['checks'] = 'Checks';
+$string['addcheck'] = 'Add another check';
+$string['logicaloperator'] = 'Logical Operator';
+$string['scope'] = 'Scope';
+$string['not'] = 'Invert this check (NOT)';
+$string['source'] = 'Source Element';
+$string['conditiontype'] = 'Check Type';
+$string['has_setting'] = 'Has Setting';
+$string['has_content'] = 'Has Content';
+$string['target'] = 'Target Setting/Content';
+$string['compareoperator'] = 'Comparison';
+$string['valuetocompare'] = 'Value';
+$string['valuetype'] = 'Value Type';
+
+// Compare Operators
+$string['equals'] = 'equals';
+$string['notequals'] = 'not equals';
+$string['contains'] = 'contains';
+$string['doesnotcontain'] = 'does not contain';
+$string['regexmatches'] = 'regex matches';
+$string['greaterthan'] = 'is greater than';
+$string['lessthan'] = 'is less than';
+$string['isempty'] = 'is empty';
+$string['isnotempty'] = 'is not empty';
+
+// Resolutions
+$string['resolutions'] = 'Resolutions';
+$string['addresolution'] = 'Add another resolution';
+$string['resolutioncontext'] = 'Resolution Target';
+$string['resolutiontype'] = 'Resolution Type';
+$string['hint'] = 'Hint';
+$string['action'] = 'Action';
+$string['hintmessage'] = 'Hint Message';
+$string['actiontype'] = 'Action Type';
+$string['changesetting'] = 'Change Setting';
+$string['addcontent'] = 'Add Content';
+$string['settingorcontent'] = 'Setting / Content to Add';
+$string['newsettingvalue'] = 'New Value';
+
+// Rule management pages
+$string['editrule'] = 'Create/Edit Rule';
+$string['rules'] = 'Rules';
+$string['rulesaved'] = 'Rule saved successfully';
+$string['managerules'] = 'Manage rules';

@@ -186,7 +186,7 @@ This document outlines the information needed to build a dynamic rule creation s
             - *Purpose:* Connects this check to the previous one.
             - *Options:* "AND", "OR".
         - `CHECK_SCOPE`, `CHECK_SOURCE`, `CHECK_TARGET` fields will have modified options:
-            - *Options will include references to elements from the **first check** (e.g., `same_SCOPE_as_Check1`, `same_SOURCE_as_Check1`, `same_TARGET_as_Check1`) alongside options to select a new/different element (`other_SCOPE`, `other_SOURCE`, `other_TARGET`).*
+            - *Options will include references to elements from the **first check** (e.g., `same_SCOPE_as_Check1`, `same_SOURCE_as_Check2`, `same_TARGET_as_Check3`) alongside options to select a new/different element (`other_SCOPE_as_Check2`, `other_SOURCE_as_Check1`, `other_TARGET_as_Check3`).*
             - *Detailed logic for how "same_" and "other_" propagate or refer needs to be defined during UI design. The primary goal is to allow referencing elements from the initial check or introducing new ones.*
         - Other fields (`CHECK_NOT`, `CHECK_CONDITION_TYPE`, `CHECK_COMPARE_OPERATOR`, `CHECK_VALUE_TO_COMPARE`, `CHECK_VALUE_TYPE_INFO`) are the same as in the first check.
 
