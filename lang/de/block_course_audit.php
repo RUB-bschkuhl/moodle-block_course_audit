@@ -193,3 +193,200 @@ $string['startnewaudit'] = 'Neue Überprüfung starten';
 $string['settings:managesettings'] = 'Kurs-Prüfer Einstellungen';
 $string['settings:placeholder'] = 'Platzhalter';
 $string['settings:placeholder_desc'] = 'Platzhalter für den Kurs-Prüfer-Block';
+
+// Rule management
+$string['course_audit:managerules'] = 'Regeln verwalten';
+$string['managerules'] = 'Regeln verwalten';
+$string['editrule'] = 'Regel bearbeiten';
+
+// Comparison operators for rules
+$string['equals'] = 'ist gleich';
+$string['contains'] = 'enthält';
+$string['regexmatches'] = 'entspricht Regex';
+$string['greaterthan'] = 'ist größer als';
+$string['lessthan'] = 'ist kleiner als';
+$string['greaterthanorequal'] = 'ist größer oder gleich';
+$string['lessthanorequal'] = 'ist kleiner oder gleich';
+$string['isempty'] = 'ist leer';
+$string['isnotempty'] = 'ist nicht leer';
+$string['any'] = 'beliebig';
+
+// Content comparison
+$string['contentcompareoperator'] = 'Anzahl-Vergleich';
+$string['contentcount'] = 'Zahl';
+$string['source'] = 'Geprüftes Element';
+$string['target_setting'] = 'Einstellung';
+$string['target_content'] = 'Inhalt-Typ';
+$string['createrule'] = 'Regel erstellen';
+$string['editingrule'] = 'Regel bearbeiten: {$a}';
+$string['creatingrule'] = 'Neue Regel erstellen';
+
+// Rule form strings
+$string['ruledetails'] = 'Regeldetails';
+$string['rulename'] = 'Regelname';
+$string['ruledescription'] = 'Regelbeschreibung';
+$string['logicaloperator'] = 'Verknüpfen mit';
+$string['not'] = 'Diese Prüfung umkehren (NICHT)';
+$string['conditiontype'] = 'Typ';
+$string['has_setting'] = 'Einstellungswert';
+$string['has_content'] = 'Inhaltsanzahl';
+$string['compareoperator'] = 'Vergleich';
+$string['valuetocompare'] = 'Erwarteter Wert';
+$string['valuetype'] = 'Wertetyp';
+
+// Resolution strings
+$string['resolutioncontext'] = 'Lösungskontext';
+$string['resolutiontype'] = 'Lösungstyp';
+$string['hint'] = 'Hinweis';
+$string['action'] = 'Aktion';
+$string['hintmessage'] = 'Hinweisnachricht';
+$string['actiontype'] = 'Aktionstyp';
+$string['changesetting'] = 'Einstellung ändern';
+$string['addcontent'] = 'Inhalt hinzufügen';
+$string['settingorcontent'] = 'Einstellung oder Inhalt';
+$string['newsettingvalue'] = 'Neuer Einstellungswert';
+
+// Form validation and saving
+$string['rulesaved'] = 'Regel erfolgreich gespeichert';
+$string['rules'] = 'Regeln';
+
+// Rule form - Basic fields
+$string['rule_name'] = 'Regelname';
+$string['rule_name_help'] = 'Ein eindeutiger Name für diese Regel';
+$string['rule_description'] = 'Beschreibung';
+$string['rule_description_help'] = 'Detaillierte Beschreibung dessen, was diese Regel überprüft';
+$string['rule_active'] = 'Aktiv';
+$string['rule_active_help'] = 'Ob diese Regel derzeit aktiv ist und ausgeführt wird';
+
+// Rule form - Checks section
+$string['checks'] = 'Prüfungen';
+$string['checks_help'] = 'Bedingungen, die erfüllt sein müssen, damit diese Regel ausgelöst wird';
+$string['check_type'] = 'Prüfungstyp';
+$string['check_type_help'] = 'Art der durchzuführenden Prüfung';
+$string['check_type_setting'] = 'Einstellung';
+$string['check_type_content'] = 'Inhalt';
+
+// Source field
+$string['source'] = 'Quelle';
+$string['source_help'] = 'Das Moodle-Element, das überprüft werden soll';
+$string['source_course'] = 'Kurs';
+$string['source_section'] = 'Abschnitt';
+$string['source_assign'] = 'Aufgabe';
+$string['source_quiz'] = 'Test';
+$string['source_forum'] = 'Forum';
+$string['source_resource'] = 'Ressource';
+$string['source_url'] = 'URL';
+$string['source_page'] = 'Seite';
+$string['source_book'] = 'Buch';
+$string['source_folder'] = 'Ordner';
+$string['source_workshop'] = 'Workshop';
+$string['source_wiki'] = 'Wiki';
+$string['source_glossary'] = 'Glossar';
+$string['source_lesson'] = 'Lektion';
+$string['source_scorm'] = 'SCORM-Paket';
+
+// Target fields - Settings
+$string['target_setting'] = 'Zieleinstellung';
+$string['target_setting_help'] = 'Die spezifische Einstellung, die überprüft werden soll';
+$string['target_content'] = 'Zielinhalt';
+$string['target_content_help'] = 'Der spezifische Inhalt, der überprüft werden soll';
+
+// Course settings targets
+$string['target_course_fullname'] = 'Vollständiger Name';
+$string['target_course_shortname'] = 'Kurzer Name';
+$string['target_course_visible'] = 'Sichtbar';
+$string['target_course_startdate'] = 'Startdatum';
+$string['target_course_enddate'] = 'Enddatum';
+$string['target_course_format'] = 'Kursformat';
+$string['target_course_numsections'] = 'Anzahl Abschnitte';
+$string['target_course_groupmode'] = 'Gruppenmodus';
+$string['target_course_enablecompletion'] = 'Abschlussverfolgung aktiviert';
+
+// Section settings targets
+$string['target_section_name'] = 'Name';
+$string['target_section_summary'] = 'Zusammenfassung';
+$string['target_section_visible'] = 'Sichtbar';
+
+// Quiz settings targets
+$string['target_quiz_timeopen'] = 'Öffnungszeit';
+$string['target_quiz_timeclose'] = 'Schließungszeit';
+$string['target_quiz_attempts'] = 'Erlaubte Versuche';
+$string['target_quiz_timelimit'] = 'Zeitbegrenzung';
+$string['target_quiz_grade'] = 'Bewertung';
+
+// Assignment settings targets
+$string['target_assign_duedate'] = 'Abgabetermin';
+$string['target_assign_cutoffdate'] = 'Stichtag';
+$string['target_assign_allowsubmissionsfromdate'] = 'Abgaben erlaubt ab';
+$string['target_assign_grade'] = 'Bewertung';
+
+// Course content targets
+$string['target_course_has_sections'] = 'Hat Abschnitte';
+$string['target_course_has_activities'] = 'Hat Aktivitäten';
+
+// Section content targets
+$string['target_section_has_activities'] = 'Hat Aktivitäten';
+$string['target_section_has_resources'] = 'Hat Ressourcen';
+
+// Quiz content targets
+$string['target_quiz_has_questions'] = 'Hat Fragen';
+$string['target_quiz_has_multichoice'] = 'Hat Multiple-Choice-Fragen';
+$string['target_quiz_has_truefalse'] = 'Hat Wahr/Falsch-Fragen';
+$string['target_quiz_has_essay'] = 'Hat Textfragen';
+
+// Assignment content targets
+$string['target_assign_has_submissions'] = 'Hat Abgaben';
+$string['target_assign_has_rubric'] = 'Hat Bewertungsraster';
+
+// Comparison operators
+$string['comp'] = 'Vergleich';
+$string['comp_help'] = 'Vergleichsoperator für die Prüfung';
+$string['comp_eq'] = 'gleich';
+$string['comp_neq'] = 'ungleich';
+$string['comp_gt'] = 'größer als';
+$string['comp_gte'] = 'größer oder gleich';
+$string['comp_lt'] = 'kleiner als';
+$string['comp_lte'] = 'kleiner oder gleich';
+$string['comp_contains'] = 'enthält';
+$string['comp_not_contains'] = 'enthält nicht';
+$string['comp_empty'] = 'ist leer';
+$string['comp_not_empty'] = 'ist nicht leer';
+
+// Value fields
+$string['value'] = 'Wert';
+$string['value_help'] = 'Der Wert zum Vergleichen';
+$string['value_type'] = 'Wertetyp';
+$string['value_type_help'] = 'Der Datentyp des Vergleichswerts';
+$string['value_type_string'] = 'Text';
+$string['value_type_int'] = 'Ganzzahl';
+$string['value_type_float'] = 'Dezimalzahl';
+$string['value_type_bool'] = 'Boolean';
+$string['value_type_date'] = 'Datum';
+
+// Logical operators
+$string['logic_operator'] = 'Logischer Operator';
+$string['logic_operator_help'] = 'Logischer Operator zur Verknüpfung mit der nächsten Prüfung';
+$string['logic_and'] = 'UND';
+$string['logic_or'] = 'ODER';
+
+// Resolutions section
+$string['resolutions'] = 'Lösungen';
+$string['resolutions_help'] = 'Aktionen oder Hinweise, die angezeigt werden, wenn diese Regel ausgelöst wird';
+$string['resolution_type'] = 'Lösungstyp';
+$string['resolution_type_help'] = 'Art der Lösung';
+$string['resolution_type_hint'] = 'Hinweis';
+$string['resolution_type_action'] = 'Aktion';
+$string['resolution_message'] = 'Nachricht';
+$string['resolution_message_help'] = 'Die Nachricht, die dem Benutzer angezeigt wird';
+
+// Form buttons and validation
+$string['addmoreitems'] = 'Weitere {no} Elemente hinzufügen';
+$string['required'] = 'Dieses Feld ist erforderlich';
+
+// Success/error messages
+$string['rulecreated'] = 'Regel erfolgreich erstellt';
+$string['ruleupdated'] = 'Regel erfolgreich aktualisiert';
+$string['ruledeleted'] = 'Regel erfolgreich gelöscht';
+$string['error_creating_rule'] = 'Fehler beim Erstellen der Regel';
+$string['error_updating_rule'] = 'Fehler beim Aktualisieren der Regel';
+$string['error_deleting_rule'] = 'Fehler beim Löschen der Regel';

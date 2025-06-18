@@ -744,3 +744,20 @@ span[data-flexitour="container"] .disabled-button-visuals {
 
 
 /*End Summary Card Visual Enhancements v3*/
+
+/* Rule form styles for Course Audit block */
+
+/* Hide the logical operator for the first check */
+#fitem_id_next_logic_0 {
+    display: none !important;
+}
+
+/* Hide the delete button for the first check */
+#fitem_id_delete_check_button_0 {
+    display: none !important;
+}
+
+/* Hide the delete button for the first resolution */
+#fitem_id_delete_resolution_button_0 {
+    display: none !important;
+}

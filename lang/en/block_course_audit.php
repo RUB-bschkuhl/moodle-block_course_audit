@@ -199,6 +199,50 @@ $string['checksprocessed'] = 'Total checks';
 $string['passedrules'] = 'Passed';
 $string['failedrules'] = 'Failed';
 
+// Rule form strings
+$string['ruledetails'] = 'Rule Details';
+$string['rulename'] = 'Rule Name';
+$string['ruledescription'] = 'Rule Description';
+$string['checks'] = 'Checks';
+$string['resolutions'] = 'Resolutions';
+$string['logicaloperator'] = 'Logical Operator';
+$string['not'] = 'NOT (Invert this check)';
+$string['source'] = 'Checked Element';
+$string['conditiontype'] = 'Check Type';
+$string['has_setting'] = 'Has Setting';
+$string['has_content'] = 'Has Content';
+$string['target_setting'] = 'Setting';
+$string['target_content'] = 'Content Type';
+$string['compareoperator'] = 'Comparison';
+$string['valuetocompare'] = 'Value';
+$string['valuetype'] = 'Value Type';
+$string['addcheck'] = 'Add Check';
+$string['addresolution'] = 'Add Resolution';
+$string['resolutioncontext'] = 'Resolution Context';
+$string['resolutiontype'] = 'Resolution Type';
+$string['hint'] = 'Hint';
+$string['action'] = 'Action';
+$string['hintmessage'] = 'Hint Message';
+$string['actiontype'] = 'Action Type';
+$string['changesetting'] = 'Change Setting';
+$string['addcontent'] = 'Add Content';
+$string['settingorcontent'] = 'Setting/Content';
+$string['newsettingvalue'] = 'New Setting Value';
+$string['editrule'] = 'Edit Rule';
+$string['rules'] = 'Rules';
+$string['rulesaved'] = 'Rule saved successfully';
+
+// Comparison operators
+$string['equals'] = 'Equals';
+$string['notequals'] = 'Not equals';
+$string['contains'] = 'Contains';
+$string['doesnotcontain'] = 'Does not contain';
+$string['regexmatches'] = 'Regex matches';
+$string['greaterthan'] = 'Greater than';
+$string['lessthan'] = 'Less than';
+$string['isempty'] = 'Is empty';
+$string['isnotempty'] = 'Is not empty';
+
 $string['courselevel'] = 'Course Level';
 $string['startnewaudit'] = 'Start New Audit';
 
@@ -214,16 +258,16 @@ $string['ruledescription'] = 'Rule description';
 // Checks
 $string['checks'] = 'Checks';
 $string['addcheck'] = 'Add another check';
-$string['logicaloperator'] = 'Logical Operator';
+$string['logicaloperator'] = 'Combine with';
 $string['scope'] = 'Scope';
 $string['not'] = 'Invert this check (NOT)';
-$string['source'] = 'Source Element';
-$string['conditiontype'] = 'Check Type';
-$string['has_setting'] = 'Has Setting';
-$string['has_content'] = 'Has Content';
+$string['source'] = 'Check';
+$string['conditiontype'] = 'Type';
+$string['has_setting'] = 'Setting Value';
+$string['has_content'] = 'Content Count';
 $string['target'] = 'Target Setting/Content';
 $string['compareoperator'] = 'Comparison';
-$string['valuetocompare'] = 'Value';
+$string['valuetocompare'] = 'Expected Value';
 $string['valuetype'] = 'Value Type';
 
 // Compare Operators
@@ -234,8 +278,13 @@ $string['doesnotcontain'] = 'does not contain';
 $string['regexmatches'] = 'regex matches';
 $string['greaterthan'] = 'is greater than';
 $string['lessthan'] = 'is less than';
+$string['greaterthanorequal'] = 'is greater than or equal to';
+$string['lessthanorequal'] = 'is less than or equal to';
+$string['any'] = 'any';
 $string['isempty'] = 'is empty';
 $string['isnotempty'] = 'is not empty';
+$string['contentcompareoperator'] = 'Count Comparison';
+$string['contentcount'] = 'Number';
 
 // Resolutions
 $string['resolutions'] = 'Resolutions';

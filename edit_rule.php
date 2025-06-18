@@ -20,7 +20,8 @@ $PAGE->set_context($context);
 $PAGE->set_pagelayout('standard');
 
 // Instantiate the form.
-$mform = new rule_form();
+$formurl = new moodle_url('/blocks/course_audit/edit_rule.php', ['courseid' => $courseid, 'id' => $id]);
+$mform = new rule_form($formurl);
 
 // Handle form submission.
 if ($mform->is_cancelled()) {
@@ -47,19 +48,29 @@ if ($mform->is_cancelled()) {
         }
 
         // 2. Save the checks.
-        $numchecks = count($fromform->scope);
+        $numchecks = count($fromform->source);
         for ($i = 0; $i < $numchecks; $i++) {
             $check = new stdClass();
             $check->rule_id = $id;
             $check->sort_order = $i;
-            $check->scope = $fromform->scope[$i];
             $check->not_check = !empty($fromform->not[$i]);
             $check->source = $fromform->source[$i];
             $check->check_type = $fromform->check_type[$i];
-            $check->target = $fromform->target[$i];
+            
+            // Determine target based on check_type and source
+            if ($fromform->check_type[$i] == 'setting') {
+                $target_field = 'target_setting_' . $fromform->source[$i];
+                $check->target = $fromform->$target_field[$i];
+            } else { // content
+                $target_field = 'target_content_' . $fromform->source[$i];
+                $check->target = $fromform->$target_field[$i];
+            }
+            
             $check->comp = $fromform->comp[$i];
             $check->value = $fromform->value[$i];
             $check->value_type = $fromform->value_type[$i];
+            $check->content_comp = $fromform->content_comp[$i];
+            $check->content_count = $fromform->content_count[$i];
 
             if ($i < ($numchecks - 1)) {
                 $check->next_logic = $fromform->next_logic[$i];
@@ -107,14 +118,43 @@ if ($mform->is_cancelled()) {
 
         $i = 0;
         foreach ($checks as $check) {
-            $toform->scope[$i] = $check->scope;
             $toform->not[$i] = $check->not_check;
             $toform->source[$i] = $check->source;
             $toform->check_type[$i] = $check->check_type;
-            $toform->target[$i] = $check->target;
+            
+            // Populate the appropriate target field based on check_type and source
+            $source_types = ['course', 'section', 'quiz', 'assign'];
+            foreach ($source_types as $source_type) {
+                if ($check->check_type == 'setting') {
+                    if ($check->source == $source_type) {
+                        $target_field = 'target_setting_' . $source_type;
+                        $toform->$target_field[$i] = $check->target;
+                    } else {
+                        $target_field = 'target_setting_' . $source_type;
+                        if (!isset($toform->$target_field)) {
+                            $toform->$target_field = [];
+                        }
+                        $toform->$target_field[$i] = '';
+                    }
+                } else { // content
+                    if ($check->source == $source_type) {
+                        $target_field = 'target_content_' . $source_type;
+                        $toform->$target_field[$i] = $check->target;
+                    } else {
+                        $target_field = 'target_content_' . $source_type;
+                        if (!isset($toform->$target_field)) {
+                            $toform->$target_field = [];
+                        }
+                        $toform->$target_field[$i] = '';
+                    }
+                }
+            }
+            
             $toform->comp[$i] = $check->comp;
             $toform->value[$i] = $check->value;
             $toform->value_type[$i] = $check->value_type;
+            $toform->content_comp[$i] = $check->content_comp ?? 'eq';
+            $toform->content_count[$i] = $check->content_count ?? '1';
             if (isset($check->next_logic)) {
                 $toform->next_logic[$i] = $check->next_logic;
             }

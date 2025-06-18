@@ -142,6 +142,12 @@ This document outlines the information needed to build a dynamic rule creation s
             - Contains: Packaged resources and organization (defined by IMS Content Packaging standard).
         - *(Note: Modules like Forum, Wiki, Assignment, etc., while containing user-generated content or submissions, are generally not treated as containers of distinct, structurally configurable sub-elements in the same way as the above for rule-making purposes, though their own settings can be subject to rules.)*
 
+        **I. Additional Containers:**
+        - **Course (`course`):**
+            - Contains: **Sections** (course sections), **Activities/Modules** (assignments, quizzes, forums, etc.).
+        - **Section (`section`):**
+            - Contains: **Activities/Modules** (any module/activity placed within that section). 
+
 - [ ] **8. Define Structure for the Rule Creation Form:**
     - [ ] Design the UI/UX flow for creating and managing rules.
     - [ ] Detail the components and fields for a single "Check" within a rule.

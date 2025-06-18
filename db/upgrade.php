@@ -82,5 +82,26 @@ function xmldb_block_course_audit_upgrade($oldversion)
 
     // Add future upgrade steps here below this line, using similar if ($oldversion < X) conditions.
 
+    if ($oldversion < 2024031801) {
+        // Define fields to be added to block_course_audit_check.
+        $table = new xmldb_table('block_course_audit_check');
+        
+        $field1 = new xmldb_field('content_comp', XMLDB_TYPE_CHAR, '20', null, null, null, null, 'value_type');
+        $field2 = new xmldb_field('content_count', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'content_comp');
+
+        // Conditionally launch add field content_comp.
+        if (!$dbman->field_exists($table, $field1)) {
+            $dbman->add_field($table, $field1);
+        }
+
+        // Conditionally launch add field content_count.
+        if (!$dbman->field_exists($table, $field2)) {
+            $dbman->add_field($table, $field2);
+        }
+
+        // Course audit savepoint reached.
+        upgrade_block_savepoint(true, 2024031801, 'course_audit');
+    }
+
     return true;
 }
