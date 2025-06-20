@@ -83,6 +83,9 @@
                 <FIELD NAME="sort_order" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0"/>
                 <FIELD NAME="not_check" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" COMMENT="Boolean flag to invert the check."/>
                 <FIELD NAME="source" TYPE="text" NOTNULL="true"/>
+                <FIELD NAME="source_instance_first" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" COMMENT="Boolean flag for checking first instance of source type"/>
+                <FIELD NAME="source_instance_last" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" COMMENT="Boolean flag for checking last instance of source type"/>
+                <FIELD NAME="other_source" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" COMMENT="Boolean flag for checking other instances of same source type."/>
                 <FIELD NAME="check_type" TYPE="char" LENGTH="10" NOTNULL="true" COMMENT="E.g., SETTING, CONTENT"/>
                 <FIELD NAME="target" TYPE="text" NOTNULL="true"/>
                 <FIELD NAME="comp" TYPE="char" LENGTH="20" NOTNULL="true" COMMENT="Comparison operator, e.g., equals, contains"/>
@@ -101,15 +104,34 @@
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
                 <FIELD NAME="rule_id" TYPE="int" LENGTH="10" NOTNULL="true"/>
                 <FIELD NAME="scope" TYPE="text" NOTNULL="true"/>
-                <FIELD NAME="type" TYPE="char" LENGTH="10" NOTNULL="true" COMMENT="E.g., HINT, ACTION"/>
+                <FIELD NAME="other_target" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" COMMENT="Boolean flag for targeting other instances of same scope type"/>
+                <FIELD NAME="type" TYPE="char" LENGTH="10" NOTNULL="true" COMMENT="E.g., HINT, ACTION, SHOW"/>
+                <FIELD NAME="hint_message" TYPE="text" NOTNULL="false" COMMENT="Message for hint type resolutions"/>
+                <FIELD NAME="show_message" TYPE="text" NOTNULL="false" COMMENT="Message for show type resolutions"/>
                 <FIELD NAME="actiontype" TYPE="char" LENGTH="20" NOTNULL="false" COMMENT="E.g., ChangeSetting, AddContent"/>
                 <FIELD NAME="settingorcontent" TYPE="text" NOTNULL="false" COMMENT="The setting or content to act upon."/>
+                <FIELD NAME="content_type" TYPE="text" NOTNULL="false" COMMENT="The type of content to add when actiontype is AddContent"/>
                 <FIELD NAME="value" TYPE="text" NOTNULL="false" COMMENT="The value to use in the action."/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
                 <KEY NAME="fk_rule_id" TYPE="foreign" FIELDS="rule_id" REFTABLE="block_course_audit_rule" REFFIELDS="id"/>
             </KEYS>
+        </TABLE>
+        <TABLE NAME="block_course_audit_precond" COMMENT="Defines precondition relationships between rules.">
+            <FIELDS>
+                <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+                <FIELD NAME="rule_id" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="The rule that has preconditions"/>
+                <FIELD NAME="precondition_rule_id" TYPE="int" LENGTH="10" NOTNULL="true" COMMENT="The rule that must pass as a precondition"/>
+            </FIELDS>
+            <KEYS>
+                <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+                <KEY NAME="fk_rule_id" TYPE="foreign" FIELDS="rule_id" REFTABLE="block_course_audit_rule" REFFIELDS="id"/>
+                <KEY NAME="fk_precondition_rule_id" TYPE="foreign" FIELDS="precondition_rule_id" REFTABLE="block_course_audit_rule" REFFIELDS="id"/>
+            </KEYS>
+            <INDEXES>
+                <INDEX NAME="rule_precond_unique" UNIQUE="true" FIELDS="rule_id, precondition_rule_id"/>
+            </INDEXES>
         </TABLE>
     </TABLES>
 </XMLDB>

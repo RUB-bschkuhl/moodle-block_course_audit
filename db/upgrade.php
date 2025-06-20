@@ -103,5 +103,115 @@ function xmldb_block_course_audit_upgrade($oldversion)
         upgrade_block_savepoint(true, 2024031801, 'course_audit');
     }
 
+    if ($oldversion < 2024031802) {
+        // Define field to be added to block_course_audit_check.
+        $table = new xmldb_table('block_course_audit_check');
+        
+        $field = new xmldb_field('other_source', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'source');
+
+        // Conditionally launch add field other_source.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Course audit savepoint reached.
+        upgrade_block_savepoint(true, 2024031802, 'course_audit');
+    }
+
+    if ($oldversion < 2024031803) {
+        // Define fields to be added to block_course_audit_check.
+        $table = new xmldb_table('block_course_audit_check');
+        
+        // Remove old source_instance field if it exists (from previous version)
+        $old_field = new xmldb_field('source_instance');
+        if ($dbman->field_exists($table, $old_field)) {
+            $dbman->drop_field($table, $old_field);
+        }
+        
+        // Add new boolean fields for first and last instance selection
+        $field1 = new xmldb_field('source_instance_first', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'source');
+        $field2 = new xmldb_field('source_instance_last', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'source_instance_first');
+
+        // Conditionally launch add field source_instance_first.
+        if (!$dbman->field_exists($table, $field1)) {
+            $dbman->add_field($table, $field1);
+        }
+
+        // Conditionally launch add field source_instance_last.
+        if (!$dbman->field_exists($table, $field2)) {
+            $dbman->add_field($table, $field2);
+        }
+
+        // Course audit savepoint reached.
+        upgrade_block_savepoint(true, 2024031803, 'course_audit');
+    }
+
+    if ($oldversion < 2024031804) {
+        // Define table block_course_audit_precond to be created.
+        $table = new xmldb_table('block_course_audit_precond');
+
+        // Adding fields to table block_course_audit_precond.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('rule_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('precondition_rule_id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table block_course_audit_precond.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('fk_rule_id', XMLDB_KEY_FOREIGN, ['rule_id'], 'block_course_audit_rule', ['id']);
+        $table->add_key('fk_precondition_rule_id', XMLDB_KEY_FOREIGN, ['precondition_rule_id'], 'block_course_audit_rule', ['id']);
+
+        // Adding indexes to table block_course_audit_precond.
+        $table->add_index('rule_precond_unique', XMLDB_INDEX_UNIQUE, ['rule_id', 'precondition_rule_id']);
+
+        // Conditionally launch create table for block_course_audit_precond.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Course audit savepoint reached.
+        upgrade_block_savepoint(true, 2024031804, 'course_audit');
+    }
+
+    if ($oldversion < 2024031805) {
+        // Define field to be added to block_course_audit_resolution.
+        $table = new xmldb_table('block_course_audit_resolution');
+        
+        $field = new xmldb_field('other_target', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'scope');
+
+        // Conditionally launch add field other_target.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Course audit savepoint reached.
+        upgrade_block_savepoint(true, 2024031805, 'course_audit');
+    }
+
+    if ($oldversion < 2024031806) {
+        // Add new fields for show resolution type and structured content handling.
+        $table = new xmldb_table('block_course_audit_resolution');
+        
+        // Add hint_message field
+        $field1 = new xmldb_field('hint_message', XMLDB_TYPE_TEXT, null, null, null, null, null, 'type');
+        if (!$dbman->field_exists($table, $field1)) {
+            $dbman->add_field($table, $field1);
+        }
+
+        // Add show_message field
+        $field2 = new xmldb_field('show_message', XMLDB_TYPE_TEXT, null, null, null, null, null, 'hint_message');
+        if (!$dbman->field_exists($table, $field2)) {
+            $dbman->add_field($table, $field2);
+        }
+
+        // Add content_type field for structured addcontent actions
+        $field3 = new xmldb_field('content_type', XMLDB_TYPE_TEXT, null, null, null, null, null, 'settingorcontent');
+        if (!$dbman->field_exists($table, $field3)) {
+            $dbman->add_field($table, $field3);
+        }
+
+        // Course audit savepoint reached.
+        upgrade_block_savepoint(true, 2024031806, 'course_audit');
+    }
+
     return true;
 }
