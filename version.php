@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'block_course_audit';
-$plugin->release = '0.1.18';
-$plugin->version = 2024031806;
+$plugin->release = '0.1.19';
+$plugin->version = 2025062008;
 $plugin->requires = 2024042200;
 $plugin->supported = [404, 405];
 $plugin->maturity = MATURITY_STABLE;

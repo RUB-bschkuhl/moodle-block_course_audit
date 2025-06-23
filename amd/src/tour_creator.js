@@ -61,7 +61,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
         };
 
         const bindStartAudit = function (courseId) {
-            console.log("bindStartAudit", courseId);
             $('.audit-start-button').on('click', function (e) {
                 e.preventDefault();
 
@@ -133,7 +132,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                             methodname: details.endpoint,
                             args: args
                         }])[0].then(function (response) {
-                            console.log("response", response, response.status);
                             if (response && response.status) {
                                 currentButton.html('&#10004; Done');
                                 currentButton.removeClass('btn-primary');
@@ -171,7 +169,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
             /*             document.addEventListener(userTourEvents.stepRendered, function () {
                         }); */
             document.addEventListener(userTourEvents.stepHide, function () {
-                console.log("stepHide");
                 // TODO klick neben Tour Element cancelled Tour.
                 // Dieses Event hier wird gefeuert, danach wird der nächste Step nicht gerendered.
                 // event genauer betrachten wodurch es ausgelöst wird.

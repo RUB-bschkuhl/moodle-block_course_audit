@@ -761,3 +761,104 @@ span[data-flexitour="container"] .disabled-button-visuals {
 #fitem_id_delete_resolution_button_0 {
     display: none !important;
 }
+
+/* Hide "Other source" checkbox for first check */
+#fitem_id_other_source_0 {
+    display: none !important;
+}
+
+/* Style disabled source fields */
+select[id^="id_source_"]:disabled,
+select[id^="id_res_scope_"]:disabled {
+    background-color: #f5f5f5;
+    color: #666;
+    cursor: not-allowed;
+}
+
+/* Visual styling for check and resolution containers */
+.check-group-container {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #f9f9f9;
+    position: relative;
+}
+
+.check-group-container:first-of-type {
+    background-color: #fff;
+    border-color: #ccc;
+}
+
+.check-group-container:not(:first-of-type) {
+    background-color: #f0f8ff;
+    border-color: #87ceeb;
+}
+
+.check-group-container:not(:first-of-type)::before {
+    content: "Additional Check";
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: white;
+    padding: 0 10px;
+    color: #007cba;
+    font-size: 12px;
+    font-weight: bold;
+    border: 1px solid #87ceeb;
+    border-radius: 3px;
+}
+
+.resolution-group-container {
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #fafafa;
+    position: relative;
+}
+
+.resolution-group-container:not(:first-of-type)::before {
+    content: "Additional Resolution";
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: white;
+    padding: 0 10px;
+    color: #666;
+    font-size: 12px;
+    font-weight: bold;
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+}
+
+/* Content comparison inline styling - only when visible */
+[id*="fitem_id_content_comp_"]:not([hidden]):not([style*="display: none"]) {
+    width: auto !important;
+    margin-right: 10px !important;
+    vertical-align: top !important;
+}
+
+[id*="fitem_id_content_count_"]:not([hidden]):not([style*="display: none"]) {
+    width: auto !important;
+    vertical-align: top !important;
+}
+
+[id*="fitem_id_content_comp_"] .felement,
+[id*="fitem_id_content_count_"] .felement {
+    width: auto !important;
+}
+
+.content-comp-inline {
+    margin-right: 5px !important;
+}
+
+.content-count-inline {
+    width: 80px !important;
+}
+
+/* Ensure hidden elements stay hidden */
+[id*="fitem_id_content_comp_"][hidden],
+[id*="fitem_id_content_count_"][hidden] {
+    display: none !important;
+}

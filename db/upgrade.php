@@ -82,7 +82,7 @@ function xmldb_block_course_audit_upgrade($oldversion)
 
     // Add future upgrade steps here below this line, using similar if ($oldversion < X) conditions.
 
-    if ($oldversion < 2024031801) {
+    if ($oldversion < 2025062002) {
         // Define fields to be added to block_course_audit_check.
         $table = new xmldb_table('block_course_audit_check');
         
@@ -100,10 +100,10 @@ function xmldb_block_course_audit_upgrade($oldversion)
         }
 
         // Course audit savepoint reached.
-        upgrade_block_savepoint(true, 2024031801, 'course_audit');
+        upgrade_block_savepoint(true, 2025062002, 'course_audit');
     }
 
-    if ($oldversion < 2024031802) {
+    if ($oldversion < 2025062003) {
         // Define field to be added to block_course_audit_check.
         $table = new xmldb_table('block_course_audit_check');
         
@@ -115,10 +115,10 @@ function xmldb_block_course_audit_upgrade($oldversion)
         }
 
         // Course audit savepoint reached.
-        upgrade_block_savepoint(true, 2024031802, 'course_audit');
+        upgrade_block_savepoint(true, 2025062003, 'course_audit');
     }
 
-    if ($oldversion < 2024031803) {
+    if ($oldversion < 2025062004) {
         // Define fields to be added to block_course_audit_check.
         $table = new xmldb_table('block_course_audit_check');
         
@@ -143,10 +143,10 @@ function xmldb_block_course_audit_upgrade($oldversion)
         }
 
         // Course audit savepoint reached.
-        upgrade_block_savepoint(true, 2024031803, 'course_audit');
+        upgrade_block_savepoint(true, 2025062004, 'course_audit');
     }
 
-    if ($oldversion < 2024031804) {
+    if ($oldversion < 2025062005) {
         // Define table block_course_audit_precond to be created.
         $table = new xmldb_table('block_course_audit_precond');
 
@@ -169,10 +169,10 @@ function xmldb_block_course_audit_upgrade($oldversion)
         }
 
         // Course audit savepoint reached.
-        upgrade_block_savepoint(true, 2024031804, 'course_audit');
+        upgrade_block_savepoint(true, 2025062005, 'course_audit');
     }
 
-    if ($oldversion < 2024031805) {
+    if ($oldversion < 2025062006) {
         // Define field to be added to block_course_audit_resolution.
         $table = new xmldb_table('block_course_audit_resolution');
         
@@ -184,10 +184,10 @@ function xmldb_block_course_audit_upgrade($oldversion)
         }
 
         // Course audit savepoint reached.
-        upgrade_block_savepoint(true, 2024031805, 'course_audit');
+        upgrade_block_savepoint(true, 2025062006, 'course_audit');
     }
 
-    if ($oldversion < 2024031806) {
+    if ($oldversion < 2025062007) {
         // Add new fields for show resolution type and structured content handling.
         $table = new xmldb_table('block_course_audit_resolution');
         
@@ -210,7 +210,20 @@ function xmldb_block_course_audit_upgrade($oldversion)
         }
 
         // Course audit savepoint reached.
-        upgrade_block_savepoint(true, 2024031806, 'course_audit');
+        upgrade_block_savepoint(true, 2025062007, 'course_audit');
+    }
+
+    if ($oldversion < 2025062008) {
+        // Remove scope field from block_course_audit_check table if it exists (from earlier versions).
+        $table = new xmldb_table('block_course_audit_check');
+        
+        $field = new xmldb_field('scope');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        // Course audit savepoint reached.
+        upgrade_block_savepoint(true, 2025062008, 'course_audit');
     }
 
     return true;

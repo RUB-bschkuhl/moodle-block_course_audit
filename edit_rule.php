@@ -161,7 +161,7 @@ if ($mform->is_cancelled()) {
             $DB->insert_record('block_course_audit_coll_rule', $group_rule);
         }
 
-        $transaction->commit();
+        $transaction->allow_commit();
         \core\notification::add(get_string('rulesaved', 'block_course_audit'), 'success');
     } catch (Exception $e) {
         $transaction->rollback($e);
