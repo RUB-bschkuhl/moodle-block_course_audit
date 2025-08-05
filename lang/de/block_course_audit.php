@@ -119,6 +119,7 @@ $string['analysisfailed'] = 'Analyse fehlgeschlagen: {$a}';
 // Tour creation strings
 $string['creatingtour'] = 'Tour wird erstellt...';
 $string['toursuccess'] = 'Tour erfolgreich erstellt!';
+$string['tourerror'] = 'Tour konnte nicht erstellt werden.';
 $string['startaudit'] = 'Prüfer-Tour starten';
 $string['startaudit_help'] = 'Startet eine interaktive Tour durch die Kurs-Prüfer-Funktionen';
 $string['tourstart_button'] = 'Tour starten';
@@ -420,3 +421,11 @@ $string['ruledeleted'] = 'Regel erfolgreich gelöscht';
 $string['error_creating_rule'] = 'Fehler beim Erstellen der Regel';
 $string['error_updating_rule'] = 'Fehler beim Aktualisieren der Regel';
 $string['error_deleting_rule'] = 'Fehler beim Löschen der Regel';
+
+// Existing rules list functionality
+$string['existingrules'] = 'Vorhandene Regeln';
+$string['existingrules_help'] = 'Klicken Sie auf eine der folgenden Regeln, um ihre Daten in das Formular zu laden und zu bearbeiten. Dadurch können Sie vorhandene Regeln aktualisieren.';
+$string['newrule'] = 'Neue Regel';
+$string['collection'] = 'Sammlung';
+$string['createdby'] = 'Erstellt von';
+$string['modified'] = 'Zuletzt geändert';

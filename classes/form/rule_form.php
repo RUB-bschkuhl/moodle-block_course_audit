@@ -18,6 +18,19 @@ class rule_form extends \moodleform
     {
         $mform = $this->_form;
 
+        // Add hidden fields to preserve URL parameters
+        $mform->addElement('hidden', 'courseid');
+        $mform->setType('courseid', PARAM_INT);
+        if (isset($this->_customdata['courseid'])) {
+            $mform->setDefault('courseid', $this->_customdata['courseid']);
+        }
+
+        $mform->addElement('hidden', 'id');
+        $mform->setType('id', PARAM_INT);
+        if (isset($this->_customdata['id'])) {
+            $mform->setDefault('id', $this->_customdata['id']);
+        }
+
         // --- Static options for dropdowns (placeholders) ---
         $source_options = ['course' => 'Course', 'section' => 'Section', 'quiz' => 'Quiz', 'assign' => 'Assignment', 'quiz_question' => 'Quiz Question']; // From TODO Tasks 1 & 7
         $condition_type_options = ['setting' => get_string('has_setting', 'block_course_audit'), 'content' => get_string('has_content', 'block_course_audit')];
@@ -425,7 +438,10 @@ class rule_form extends \moodleform
         }
 
         // --- Action Buttons ---
-        $this->add_action_buttons();
+        // Check if we're editing an existing rule or creating a new one
+        $is_editing = !empty($this->_customdata['id']) && $this->_customdata['id'] > 0;
+        $submit_label = $is_editing ? get_string('update', 'moodle') : get_string('savechanges', 'moodle');
+        $this->add_action_buttons(true, $submit_label);
 
         // Add CSS and JavaScript to handle logical operators
         $this->add_logic_operator_handling();

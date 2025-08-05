@@ -4,6 +4,66 @@ This file tracks changes made to the Course Audit Block plugin.
 
 ## Changelog
 
+### 2024-12-30 (Version 0.1.25)
+- **Improvement:** Fixed spacing and styling issues in rules tables for better visual hierarchy
+- **Improvement:** Reduced padding and margins for more compact, professional appearance
+- **Improvement:** Changed border colors from black to grey for softer, more consistent styling
+- **Improvement:** Added background color to collection headers for better visual separation
+- **Improvement:** Optimized responsive design for mobile devices
+- **Files Changed:**
+    - `/moodle-500/blocks/course_audit/styles.css`: Adjusted collection header padding and margins, reduced table header and cell sizes, changed border colors to grey, improved spacing between groups, enhanced mobile responsive styles
+
+### 2024-12-30 (Version 0.1.24)
+- **Improvement:** Set existing rules section to be collapsed by default for cleaner initial interface
+- **Improvement:** User preferences are still preserved - if user has previously expanded/collapsed the section, that state is remembered
+- **Files Changed:**
+    - `/moodle-500/blocks/course_audit/amd/src/rule_form.js`: Modified collapsible initialization to default to collapsed state when no user preference is saved
+
+### 2024-12-30 (Version 0.1.23)
+- **Feature:** Added scrollbar functionality for rules table when it exceeds 400px height
+- **Feature:** Made existing rules section collapsible with smooth animations and state persistence
+- **Improvement:** Enhanced UI to handle large numbers of rules while maintaining clean interface
+- **Improvement:** Added visual indicators (expand/collapse arrow) and hover effects for better UX
+- **Files Changed:**
+    - `/moodle-500/blocks/course_audit/edit_rule.php`: Added collapsible HTML structure with header controls and content wrapper, implemented scrollable container for rules tables
+    - `/moodle-500/blocks/course_audit/amd/src/rule_form.js`: Added collapsible functionality with localStorage for state persistence, click handling to prevent conflicts with New Rule button
+    - `/moodle-500/blocks/course_audit/styles.css`: Added scrollbar styling, collapsible animations, hover effects, responsive adjustments for mobile devices, improved table styling within scrollable container
+
+### 2024-12-30 (Version 0.1.22)
+- **Feature:** Grouped existing rules by collection for better organization
+- **Improvement:** Converted rules display from grid layout to compact table format for better scalability
+- **Improvement:** Minimized displayed information to rule name and last modified date for cleaner interface
+- **Improvement:** Enhanced UI to handle dozens of rules without overwhelming the interface
+- **Files Changed:**
+    - `/moodle-500/blocks/course_audit/edit_rule.php`: Modified SQL query to group rules by collection, restructured HTML output to use table format instead of grid, reduced displayed information to essential data only
+    - `/moodle-500/blocks/course_audit/styles.css`: Updated CSS from grid-based layout to table-based layout, added collection grouping styles, improved responsive design for table format
+
+### 2024-12-30 (Version 0.1.21)
+- **Improvement:** Changed save button text to "Update" when editing existing rules for better UX clarity
+- **Improvement:** Enhanced button text update reliability with error handling and proper timing
+- **Fix:** Fixed language string loading in JavaScript to properly display translated button text instead of placeholder strings
+- **Files Changed:**
+    - `/moodle-500/blocks/course_audit/classes/form/rule_form.php`: Modified add_action_buttons() call to dynamically set button text based on whether editing existing rule or creating new one
+    - `/moodle-500/blocks/course_audit/amd/src/rule_form.js`: Added functionality to update submit button text when loading existing rules via AJAX and when clicking "New Rule" button, with improved error handling and timing. Updated to use modern Moodle string loading (core/str) instead of deprecated M.util.get_string() method
+
+### 2024-12-30 (Version 0.1.20)
+- **Feature:** Added existing rules list display before the edit form
+- **Feature:** Click-to-load functionality for existing rules - users can click any rule to populate the form with its data
+- **Feature:** "New Rule" button to clear the form and start creating a fresh rule
+- **Feature:** Visual feedback and loading states for rule selection
+- **Feature:** Responsive grid layout for rules display with metadata (collection, creator, modification date)
+- **Feature:** AJAX-powered rule loading without page refresh
+- **Feature:** URL updates to reflect the currently loaded rule
+- **Feature:** Automatic field visibility updates when loading rules (triggers change events to show/hide conditional fields)
+- **Fix:** Added hidden form fields for courseid and id to preserve URL parameters when adding/removing form fields via "Add Check" or "Add Resolution" buttons
+- **Files Changed:**
+    - `/moodle-500/blocks/course_audit/edit_rule.php`: Added existing rules list display section before form, SQL query to fetch rule data with user and collection information, consolidated AJAX rule loading endpoint, New Rule button in header, courseid parameter in form customdata
+    - `/moodle-500/blocks/course_audit/classes/form/rule_form.php`: Added hidden fields for courseid and id preservation during form submissions
+    - `/moodle-500/blocks/course_audit/amd/src/rule_form.js`: Added rule loading functionality, form population logic, visual feedback, URL history management, change event triggering for conditional field visibility, New Rule button functionality with form clearing and default state reset, hidden field updates for parameter preservation, and JSDoc parameter documentation
+    - `/moodle-500/blocks/course_audit/styles.css`: Added comprehensive CSS for rules list layout, hover effects, loading animations, responsive design, and New Rule button styling
+    - `/moodle-500/blocks/course_audit/lang/en/block_course_audit.php`: Added language strings for existing rules functionality and New Rule button
+    - `/moodle-500/blocks/course_audit/lang/de/block_course_audit.php`: Added German translations for existing rules functionality and New Rule button
+
 ###  (Version 0.1.19)
 - **Feature:** Added "Show" resolution type for displaying informational messages
 - **Feature:** Added dynamic content type selection for "Add Content" actions based on target scope

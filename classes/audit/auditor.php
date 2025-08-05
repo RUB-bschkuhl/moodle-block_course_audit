@@ -26,15 +26,26 @@ namespace block_course_audit\audit;
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/course/lib.php');
-require_once($CFG->dirroot . '/blocks/course_audit/classes/rules/rule_manager.php');
-require_once($CFG->dirroot . '/blocks/course_audit/classes/rules/rule_interface.php'); // Include interface for type hinting
+require_once($CFG->dirroot . '/blocks/course_audit/classes/rules/static/rule_manager.php');
+require_once($CFG->dirroot . '/blocks/course_audit/classes/rules/static/rule_interface.php'); // Include interface for type hinting
+require_once($CFG->dirroot . '/blocks/course_audit/classes/rules/dynamic/dynamic_rule_executor.php');
 
-use block_course_audit\rules\rule_manager;
-use block_course_audit\rules\rule_interface;
+use block_course_audit\rules\static\rule_manager;
+use block_course_audit\rules\dynamic\dynamic_rule_executor;
 use stdClass;
 
 class auditor
 {
+    /** @var dynamic_rule_executor Dynamic rule executor instance */
+    private $dynamic_executor;
+
+    /**
+     * Constructor.
+     */
+    public function __construct() {
+        $this->dynamic_executor = new dynamic_rule_executor();
+    }
+
     /**
      * Return section data as pages for the tour, raw rule results, and action details map.
      *
@@ -55,33 +66,43 @@ class auditor
         $courseformat = course_get_format($course);
         $sections = $courseformat->get_sections();
 
-        //TODO run audit_course first, audit course should only run rule with target_type course
-        $course_results = $this->audit_course($course->id);
-        foreach ($course_results as $result) {
-/*             $raw_results[] = $result;
+        // Execute all dynamic rules for the course
+        $dynamic_results = $this->audit_dynamic_rules($course);
+        
+        // Process all dynamic rule results
+        foreach ($dynamic_results as $result) {
+            $raw_results[] = $result;
+
+            // Handle action button details for dynamic rules
+            if ($result->rule_category == "action" && !empty($result->action_button_details) && $result->status == false) {
+                $action_buttons = is_array($result->action_button_details) && !isset($result->action_button_details['mapkey']) 
+                    ? $result->action_button_details : [$result->action_button_details];
+                
+                foreach ($action_buttons as $button_detail) {
+                    if (is_array($button_detail) && !empty($button_detail['mapkey'])) {
+                        $action_details_map[$button_detail['mapkey']] = $button_detail;
+                    }
+                }
+            }
+
+            // Create tour steps for failed dynamic rules
+            if (!$result->status) {
+                $this->add_tour_step_for_result($result, $course, $sections, $tour_steps, $OUTPUT);
+            }
+        }
+
+        // Execute static course-level rules for backward compatibility
+        $static_course_results = $this->audit_course($course->id);
+        foreach ($static_course_results as $result) {
+            $raw_results[] = $result;
 
             if ($result->rule_category == "action" && !empty($result->action_button_details) && isset($result->action_button_details['mapkey']) && $result->status == false) {
                 $action_details_map[$result->action_button_details['mapkey']] = $result->action_button_details;
             }
 
             if (!$result->status) {
-                // Data for course-level rule results.
-                $course_template_data = [
-                    'section_id' => null, // No specific section for a course-level rule
-                    'section_name' => get_string('courselevel', 'block_course_audit'), // Or $course->fullname
-                    'section_number' => null, // No section number
-                    'course_id' => $course->id,
-                    'course_shortname' => $course->shortname,
-                    'rule_result' => $result,
-                ];
-
-                $tour_steps[] = [
-                    'type' => 'course',
-                    'title' => $result->rule_name . ': ' . $result->rule_category,
-                    // 'number' => null, // No specific section number for course-level items
-                    'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $course_template_data)
-                ];
-            } */
+                $this->add_tour_step_for_result($result, $course, $sections, $tour_steps, $OUTPUT);
+            }
         }
 
         foreach ($sections as $sectionnum => $sectionobj) {
@@ -189,7 +210,7 @@ class auditor
      */
     public function audit_section(int $sectionid): array
     {
-        global $CFG, $DB;
+        global $DB;
 
         $section = $DB->get_record('course_sections', ['id' => $sectionid], '*', MUST_EXIST);
         $course = $DB->get_record('course', ['id' => $section->course], '*', MUST_EXIST);
@@ -221,5 +242,142 @@ class auditor
         $allResults = array_merge($hintResults_section, $actionResults_section, $hintResults_mod, $actionResults_mod);
 
         return $allResults;
+    }
+
+    /**
+     * Execute all dynamic rules for a course.
+     * This method runs all available dynamic rules regardless of target type.
+     * The target distinction is made in the rule results themselves.
+     *
+     * @param stdClass $course The course object
+     * @return array All dynamic rule execution results
+     */
+    public function audit_dynamic_rules(stdClass $course): array
+    {
+        try {
+            return $this->dynamic_executor->execute_all_rules($course);
+        } catch (\Exception $e) {
+            debugging('Error executing dynamic rules: ' . $e->getMessage(), DEBUG_DEVELOPER);
+            
+            // Return error result if something goes wrong
+            return [(object)[
+                'rule_name' => 'Dynamic Rules Error',
+                'rule_category' => 'hint',
+                'status' => false,
+                'messages' => 'Error executing dynamic rules: ' . $e->getMessage(),
+                'rule_target' => 'course',
+                'rule_target_id' => $course->id,
+                'action_button_details' => [],
+                'resolutions' => [],
+                'rule_id' => 0
+                         ]];
+         }
+     }
+
+    /**
+     * Add a tour step for a failed rule result.
+     *
+     * @param object $result Rule result object
+     * @param stdClass $course Course object
+     * @param array $sections Course sections
+     * @param array &$tour_steps Tour steps array to append to
+     * @param object $OUTPUT Moodle output renderer
+     */
+    private function add_tour_step_for_result(object $result, stdClass $course, array $sections, array &$tour_steps, object $OUTPUT): void {
+        switch ($result->rule_target) {
+            case "course":
+                $template_data = [
+                    'section_id' => null,
+                    'section_name' => get_string('courselevel', 'block_course_audit'),
+                    'section_number' => null,
+                    'course_id' => $course->id,
+                    'course_shortname' => $course->shortname,
+                    'rule_result' => $result,
+                ];
+
+                $tour_steps[] = [
+                    'type' => 'course',
+                    'title' => $result->rule_name . ': ' . $result->rule_category,
+                    'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $template_data)
+                ];
+                break;
+
+            case "section":
+                // Find the section object
+                $section_obj = null;
+                foreach ($sections as $section) {
+                    if ($section->id == $result->rule_target_id) {
+                        $section_obj = $section;
+                        break;
+                    }
+                }
+
+                if ($section_obj) {
+                    $template_data = [
+                        'section_id' => $section_obj->id,
+                        'section_name' => get_section_name($course, $section_obj),
+                        'section_number' => $section_obj->section,
+                        'course_id' => $course->id,
+                        'course_shortname' => $course->shortname,
+                        'rule_result' => $result,
+                    ];
+
+                    $tour_steps[] = [
+                        'type' => 'section',
+                        'title' => $result->rule_name,
+                        'number' => $section_obj->section,
+                        'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $template_data)
+                    ];
+                }
+                break;
+
+            case "mod":
+                // For module rules, we need to find which section it belongs to
+                $section_obj = $this->find_section_for_module($result->rule_target_id, $sections, $course);
+                
+                if ($section_obj) {
+                    $template_data = [
+                        'section_id' => $section_obj->id,
+                        'section_name' => get_section_name($course, $section_obj),
+                        'section_number' => $section_obj->section,
+                        'course_id' => $course->id,
+                        'course_shortname' => $course->shortname,
+                        'rule_result' => $result,
+                    ];
+
+                    $tour_steps[] = [
+                        'type' => 'mod',
+                        'title' => $result->rule_name,
+                        'number' => $result->rule_target_id,
+                        'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $template_data)
+                    ];
+                }
+                break;
+        }
+    }
+
+    /**
+     * Find the section that contains a specific module.
+     *
+     * @param int $module_id Module ID to find
+     * @param array $sections Course sections
+     * @param stdClass $course Course object
+     * @return object|null Section object or null if not found
+     */
+    private function find_section_for_module(int $module_id, array $sections, stdClass $course): ?object {
+        $modinfo = get_fast_modinfo($course);
+        
+        foreach ($modinfo->get_cms() as $cm) {
+            if ($cm->id == $module_id) {
+                // Find the section this module belongs to
+                foreach ($sections as $section) {
+                    if ($section->section == $cm->sectionnum) {
+                        return $section;
+                    }
+                }
+            }
+        }
+        
+        return null;
     }
 }

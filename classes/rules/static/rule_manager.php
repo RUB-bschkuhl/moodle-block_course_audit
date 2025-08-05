@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_course_audit\rules;
+namespace block_course_audit\rules\static;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -57,11 +57,11 @@ class rule_manager
         global $CFG;
 
         // Auto-discover and register rules in the hint directory
-        $basedir = $CFG->dirroot . '/blocks/course_audit/classes/rules/hint';
+        $basedir = $CFG->dirroot . '/blocks/course_audit/classes/rules/static/hint';
         $this->register_rules_from_directory($basedir, 'hint');
 
         // Auto-discover and register rules in the action directory  
-        $basedir = $CFG->dirroot . '/blocks/course_audit/classes/rules/action';
+        $basedir = $CFG->dirroot . '/blocks/course_audit/classes/rules/static/action';
         $this->register_rules_from_directory($basedir, 'action');
     }
 

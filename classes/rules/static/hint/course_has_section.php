@@ -22,42 +22,43 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-        namespace block_course_audit\rules\hint;
+namespace block_course_audit\rules\static\hint;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/blocks/course_audit/classes/rules/rule_base.php');
+require_once($CFG->dirroot . '/blocks/course_audit/classes/rules/static/rule_base.php');
 
-use block_course_audit\rules\rule_base;
+use block_course_audit\rules\static\rule_base;
 
 /**
- * Rule that checks if a course has a section.
+ * Rule that checks if a section contains only PDF resources.
  *
  * @package   block_course_audit
  * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class course_has_entry_quiz extends rule_base {
+class course_has_section extends rule_base
+{
 
-    const rule_key = 'course_has_entry_quiz';
+    const rule_key = 'course_has_section';
     const target_type = 'course';
 
     /**
      * Constructor
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct(
             self::rule_key,
             self::target_type,
-            get_string('course_has_entry_quiz_name', 'block_course_audit'),
-            get_string('course_has_entry_quiz_description', 'block_course_audit'),
+            get_string('rule_course_has_section_name', 'block_course_audit'),
+            get_string('rule_course_has_section_description', 'block_course_audit'),
             'hint'
-            //get_string('rule_category_hint', 'block_course_audit')
         );
     }
-    
+
     /**
      * Check if a course has a section
      *
@@ -65,7 +66,8 @@ class course_has_entry_quiz extends rule_base {
      * @param object $course The course the target belongs to
      * @return object Result object with 'status' (boolean) and 'messages' (array of string)
      */
-    public function check_target($target, $course = null) {
+    public function check_target($target, $course = null)
+    {
         return $this->create_result(true, []);
     }
-} 
+}

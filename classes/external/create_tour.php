@@ -160,6 +160,8 @@ class create_tour extends external_api
 
         $auditor = new auditor();
         $audit_data = $auditor->get_audit_results($course);
+        //TODO get_audit_results from rules created with rule form
+        
         $tour_steps_data = $audit_data['tour_steps'];
         $raw_audit_results = $audit_data['raw_results'];
         $action_details_map = $audit_data['action_details_map'];

@@ -76,6 +76,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                         }
                     }])[0];
                 }).then(function (response) {
+                    console.log(response);
                     let tourData = response.tourdata;
                     //TODO tourData.tourDetails[0] might not exist when all checks ok
                     if (tourData.tourDetails[0]) {

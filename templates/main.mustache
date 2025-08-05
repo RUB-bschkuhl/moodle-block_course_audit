@@ -110,7 +110,6 @@
     {{#canmanagecourse}}
         <div class="mt-3 text-center">
             <button class="btn btn-secondary audit-start-button">{{#str}}startnewaudit, block_course_audit{{/str}}</button>
-            {{{ manageruleshtml }}}
         </div>
     {{/canmanagecourse}}
 {{/fromblock}}
@@ -121,6 +120,8 @@
 <button type="button" class="btn btn-secondary page-nav" id="start-course-audit" >
 {{start_hint}}
 </button>
+{{{ manageruleshtml }}}
+
 {{/pre}}
 {{/summary_data}}
     <div id="miau-wrapper" class="slide-in">

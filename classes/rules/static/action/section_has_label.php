@@ -10,15 +10,15 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_course_audit\rules\action;
+namespace block_course_audit\rules\static\action;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/blocks/course_audit/classes/rules/rule_base.php');
+require_once($CFG->dirroot . '/blocks/course_audit/classes/rules/static/rule_base.php');
 
-use block_course_audit\rules\rule_base;
+use block_course_audit\rules\static\rule_base;
 use core_course_list_element; // Needed for type hinting if using modinfo
 
 /**

@@ -210,7 +210,8 @@ class block_course_audit extends block_base
                         ]),
                         'button_done' => get_string('disclaimer_button', 'block_course_audit')
                     ],
-                ]
+                ],
+                'manageruleshtml' => $manageruleshtml
             ];
             $this->content->text = $OUTPUT->render_from_template('block_course_audit/main', $data);
         }

@@ -5,6 +5,111 @@ require_once(__DIR__ . '/classes/form/rule_form.php');
 
 use block_course_audit\form\rule_form;
 
+// Check if this is an AJAX request for loading rule data
+$ajax_load = optional_param('ajax_load', false, PARAM_BOOL);
+if ($ajax_load) {
+    // Handle AJAX rule loading
+    require_login();
+    
+    $ruleid = required_param('ruleid', PARAM_INT);
+    $courseid = required_param('courseid', PARAM_INT);
+    
+    // Verify course and permissions
+    $course = $DB->get_record('course', ['id' => $courseid], '*', MUST_EXIST);
+    $context = context_course::instance($course->id);
+    require_capability('block/course_audit:managerules', $context);
+    
+    header('Content-Type: application/json');
+    
+    try {
+        // Get rule data
+        $rule_data = $DB->get_record('block_course_audit_rule', ['id' => $ruleid], '*', MUST_EXIST);
+        
+        // Get checks
+        $checks = $DB->get_records('block_course_audit_check', ['rule_id' => $ruleid], 'sort_order ASC');
+        
+        // Get resolutions
+        $resolutions = $DB->get_records('block_course_audit_resolution', ['rule_id' => $ruleid]);
+        
+        // Get preconditions
+        $preconditions = $DB->get_records('block_course_audit_precond', ['rule_id' => $ruleid], '', 'precondition_rule_id');
+        
+        // Get group association
+        $group_association = $DB->get_record('block_course_audit_coll_rule', ['rule_id' => $ruleid]);
+        
+        // Prepare form data structure (similar to existing form loading logic)
+        $formdata = new stdClass();
+        $formdata->rule_name = $rule_data->rule_name;
+        $formdata->rule_description = $rule_data->rule_description;
+        
+        // Load preconditions
+        $formdata->preconditions = array_keys($preconditions);
+        
+        // Load group association
+        if ($group_association) {
+            $formdata->existing_group = $group_association->rule_collection_id;
+        }
+        
+        // Process checks
+        $formdata->checks = [];
+        $i = 0;
+        foreach ($checks as $check) {
+            $checkdata = [
+                'not' => $check->not_check,
+                'source' => $check->source,
+                'source_instance_first' => $check->source_instance_first ?? 0,
+                'source_instance_last' => $check->source_instance_last ?? 0,
+                'other_source' => $check->other_source ?? 0,
+                'check_type' => $check->check_type,
+                'target' => $check->target,
+                'comp' => $check->comp,
+                'value' => $check->value,
+                'value_type' => $check->value_type,
+                'content_comp' => $check->content_comp ?? 'eq',
+                'content_count' => $check->content_count ?? '1',
+                'next_logic' => $check->next_logic ?? null
+            ];
+            $formdata->checks[$i] = $checkdata;
+            $i++;
+        }
+        
+        // Process resolutions
+        $formdata->resolutions = [];
+        $i = 0;
+        foreach ($resolutions as $resolution) {
+            $resolutiondata = [
+                'scope' => $resolution->scope,
+                'other_target' => $resolution->other_target ?? 0,
+                'type' => $resolution->type,
+                'hint_message' => $resolution->hint_message ?? '',
+                'show_message' => $resolution->show_message ?? '',
+                'actiontype' => $resolution->actiontype ?? '',
+                'settingorcontent' => $resolution->settingorcontent ?? '',
+                'content_type' => $resolution->content_type ?? '',
+                'value' => $resolution->value ?? ''
+            ];
+            $formdata->resolutions[$i] = $resolutiondata;
+            $i++;
+        }
+        
+        // Return successful response
+        echo json_encode([
+            'success' => true,
+            'data' => $formdata
+        ]);
+
+    } catch (Exception $e) {
+        debugging('Error loading rule data: ' . $e->getMessage(), DEBUG_DEVELOPER);
+        echo json_encode([
+            'success' => false,
+            'error' => 'Failed to load rule data'
+        ]);
+    }
+    
+    // End execution for AJAX requests
+    exit();
+}
+
 // Get params.
 $courseid = required_param('courseid', PARAM_INT);
 $id = optional_param('id', 0, PARAM_INT); // Rule ID, 0 for new rule.
@@ -21,7 +126,7 @@ $PAGE->set_pagelayout('standard');
 
 // Instantiate the form.
 $formurl = new moodle_url('/blocks/course_audit/edit_rule.php', ['courseid' => $courseid, 'id' => $id]);
-$customdata = ['id' => $id];
+$customdata = ['id' => $id, 'courseid' => $courseid];
 $mform = new rule_form($formurl, $customdata);
 
 // Handle form submission.
@@ -285,8 +390,110 @@ $PAGE->set_heading($pagetitle);
 $PAGE->navbar->add(get_string('rules', 'block_course_audit'));
 $PAGE->navbar->add($pagetitle);
 
+// Get all existing rules for the rules list, grouped by collection
+$existing_rules = $DB->get_records_sql("
+    SELECT r.id, r.rule_name, r.timemodified, 
+           COALESCE(coll.collection_name, 'Uncategorized') as collection_name,
+           COALESCE(coll.id, 0) as collection_id
+    FROM {block_course_audit_rule} r
+    LEFT JOIN {block_course_audit_coll_rule} cr ON r.id = cr.rule_id
+    LEFT JOIN {block_course_audit_rule_coll} coll ON cr.rule_collection_id = coll.id
+    ORDER BY COALESCE(coll.collection_name, 'Uncategorized') ASC, r.rule_name ASC
+");
 
 // Display the page.
 echo $OUTPUT->header();
+
+// Display existing rules list
+if (!empty($existing_rules)) {
+    echo html_writer::start_div('existing-rules-section');
+    
+    // Header with New Rule button and collapse functionality
+    echo html_writer::start_div('existing-rules-header', ['id' => 'rules-header']);
+    echo html_writer::start_div('header-left');
+    echo html_writer::tag('h3', get_string('existingrules', 'block_course_audit'));
+    echo html_writer::tag('span', '▼', ['class' => 'collapse-icon', 'id' => 'collapse-icon']);
+    echo html_writer::end_div();
+    echo html_writer::tag('button', get_string('newrule', 'block_course_audit'), [
+        'type' => 'button',
+        'class' => 'btn btn-primary new-rule-button',
+        'id' => 'new-rule-button'
+    ]);
+    echo html_writer::end_div();
+    
+    // Start collapsible content
+    echo html_writer::start_div('existing-rules-content', ['id' => 'rules-content']);
+    echo html_writer::tag('p', get_string('existingrules_help', 'block_course_audit'));
+    
+    // Group rules by collection
+    $grouped_rules = [];
+    foreach ($existing_rules as $rule) {
+        $collection_name = $rule->collection_name;
+        if (!isset($grouped_rules[$collection_name])) {
+            $grouped_rules[$collection_name] = [];
+        }
+        $grouped_rules[$collection_name][] = $rule;
+    }
+    
+    // Start scrollable container
+    echo html_writer::start_div('rules-container');
+    
+    // Display each collection group
+    foreach ($grouped_rules as $collection_name => $rules) {
+        echo html_writer::start_div('collection-group');
+        
+        // Collection header
+        echo html_writer::tag('h4', format_string($collection_name), ['class' => 'collection-header']);
+        
+        // Rules table for this collection
+        echo html_writer::start_tag('table', ['class' => 'rules-table table table-sm table-hover']);
+        echo html_writer::start_tag('thead');
+        echo html_writer::start_tag('tr');
+        echo html_writer::tag('th', get_string('rulename', 'block_course_audit'), ['style' => 'width: 70%;']);
+        echo html_writer::tag('th', get_string('modified', 'block_course_audit'), ['style' => 'width: 30%;']);
+        echo html_writer::end_tag('tr');
+        echo html_writer::end_tag('thead');
+        echo html_writer::start_tag('tbody');
+        
+        foreach ($rules as $rule) {
+            $row_classes = 'existing-rule-item';
+            if ($rule->id == $id) {
+                $row_classes .= ' current-rule table-active';
+            }
+            
+            echo html_writer::start_tag('tr', [
+                'class' => $row_classes,
+                'data-rule-id' => $rule->id,
+                'style' => 'cursor: pointer;'
+            ]);
+            
+            // Rule name column
+            echo html_writer::start_tag('td');
+            echo html_writer::tag('strong', format_string($rule->rule_name));
+            echo html_writer::end_tag('td');
+            
+            // Last modified column
+            echo html_writer::start_tag('td', ['class' => 'text-muted']);
+            if (!empty($rule->timemodified)) {
+                echo userdate($rule->timemodified, get_string('strftimedatetimeshort'));
+            } else {
+                echo '-';
+            }
+            echo html_writer::end_tag('td');
+            
+            echo html_writer::end_tag('tr');
+        }
+        
+        echo html_writer::end_tag('tbody');
+        echo html_writer::end_tag('table');
+        echo html_writer::end_div(); // collection-group
+    }
+    
+    echo html_writer::end_div(); // rules-container
+    echo html_writer::end_div(); // existing-rules-content
+    echo html_writer::end_div(); // existing-rules-section
+    echo html_writer::tag('hr', '');
+}
+
 $mform->display();
 echo $OUTPUT->footer(); 

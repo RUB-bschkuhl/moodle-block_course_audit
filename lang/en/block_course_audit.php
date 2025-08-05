@@ -123,6 +123,7 @@ $string['analysisfailed'] = 'Analysis operation failed: {$a}';
 // Tour creation strings
 $string['creatingtour'] = 'Creating tour...';
 $string['toursuccess'] = 'Tour created!';
+$string['tourerror'] = 'Tour could not be created.';
 $string['startaudit'] = 'Start audit tour';
 $string['startaudit_help'] = 'Start an interactive tour of the course audit features';
 $string['tourstart_button'] = 'Start Tour';
@@ -335,3 +336,73 @@ $string['editrule'] = 'Create/Edit Rule';
 $string['rules'] = 'Rules';
 $string['rulesaved'] = 'Rule saved successfully';
 $string['managerules'] = 'Manage rules';
+
+// Action generator strings
+$string['makevisible'] = 'Make visible';
+$string['confirmvisible'] = 'Are you sure you want to make this visible?';
+$string['createbackup'] = 'Create backup';
+$string['confirmbackup'] = 'Are you sure you want to create a backup?';
+$string['changesetting'] = 'Change {$a->setting} to {$a->value}';
+$string['confirmchangesetting'] = 'Are you sure you want to change {$a->setting} to {$a->value}?';
+$string['addcontent'] = 'Add {$a}';
+$string['confirmaddcontent'] = 'Are you sure you want to add {$a}?';
+$string['enablefeature'] = 'Enable {$a}';
+$string['confirmenablefeature'] = 'Are you sure you want to enable {$a}?';
+
+// Action execution messages
+$string['setting_changed_successfully'] = 'Successfully changed {$a->setting} to {$a->value}';
+$string['section_added_successfully'] = 'Successfully added section {$a}';
+$string['module_added_successfully'] = 'Successfully added {$a->type}: {$a->name}';
+
+// Default module content
+$string['defaultlabelname'] = 'Information';
+$string['defaultlabelcontent'] = 'This is an informational text area for important announcements or content.';
+$string['defaulturlname'] = 'External Link';
+$string['defaultpagename'] = 'Course Page';
+$string['defaultpagecontent'] = 'This is a content page. Please edit this text to add your content.';
+$string['defaultforumname'] = 'General Discussion';
+$string['defaultforumintro'] = 'Use this forum for general discussions related to this course.';
+$string['defaultassignname'] = 'Assignment';
+$string['defaultassignintro'] = 'Complete this assignment following the instructions provided.';
+$string['defaultquizname'] = 'Knowledge Check';
+$string['defaultquizintro'] = 'Test your understanding of the course material.';
+$string['defaultmodulename'] = 'New {$a}';
+
+// Error messages for actions
+$string['error_missing_parameters'] = 'Missing required parameters for action';
+$string['error_unsupported_target'] = 'Unsupported target type: {$a}';
+$string['error_action_failed'] = 'Action execution failed';
+$string['error_no_permission'] = 'You do not have permission to perform this action';
+$string['error_no_permission_course'] = 'You do not have permission to update this course';
+$string['error_no_permission_section'] = 'You do not have permission to update this section';
+$string['error_no_permission_module'] = 'You do not have permission to manage this module';
+$string['error_setting_not_allowed'] = 'Setting {$a} is not allowed to be changed';
+$string['error_invalid_value'] = 'Invalid value: {$a}';
+$string['error_database_update'] = 'Database update failed';
+$string['error_database_insert'] = 'Database insert failed';
+$string['error_no_sections'] = 'No sections found in course';
+$string['error_module_not_available'] = 'Module type {$a} is not available';
+$string['error_module_data_creation'] = 'Failed to create module data';
+$string['error_module_creation'] = 'Failed to create module';
+$string['error_section_creation'] = 'Failed to create section';
+$string['error_target_not_found'] = 'Target {$a} not found';
+$string['error_validation_failed'] = 'Validation failed';
+$string['error_unsupported_action'] = 'Unsupported action type: {$a}';
+$string['error_missing_setting'] = 'Setting name is required';
+$string['error_unsafe_setting_change'] = 'Setting change for {$a} is not safe';
+$string['error_missing_content_type'] = 'Content type is required';
+$string['error_content_addition_not_allowed'] = 'Content addition of {$a} is not allowed';
+$string['error_missing_feature'] = 'Feature name is required';
+$string['error_feature_not_allowed'] = 'Feature {$a} is not allowed to be enabled';
+$string['error_backup_disabled'] = 'Backup functionality is disabled';
+$string['error_backup_only_courses'] = 'Backups can only be created for courses';
+$string['error_no_backup_permission'] = 'You do not have permission to create backups';
+$string['error_unknown_action'] = 'Unknown action type: {$a}';
+
+// Existing rules list functionality
+$string['existingrules'] = 'Existing Rules';
+$string['existingrules_help'] = 'Click on any rule below to load its data into the form for editing. This allows you to update existing rules.';
+$string['newrule'] = 'New Rule';
+$string['collection'] = 'Collection';
+$string['createdby'] = 'Created by';
+$string['modified'] = 'Last modified';

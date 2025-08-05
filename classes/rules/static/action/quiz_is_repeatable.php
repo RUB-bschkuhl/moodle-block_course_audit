@@ -22,15 +22,15 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace block_course_audit\rules\action;
+namespace block_course_audit\rules\static\action;
 
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-require_once($CFG->dirroot . '/blocks/course_audit/classes/rules/rule_base.php');
+require_once($CFG->dirroot . '/blocks/course_audit/classes/rules/static/rule_base.php');
 
-use block_course_audit\rules\rule_base;
+use block_course_audit\rules\static\rule_base;
 
 /**
  * Rule that checks if a course has a section.
@@ -39,10 +39,10 @@ use block_course_audit\rules\rule_base;
  * @copyright 2025 Bastian Schmidt-Kuhl <bastian.schmidt-kuhl@ruhr-uni-bochum.de>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quiz_has_completion extends rule_base
+class quiz_is_repeatable extends rule_base
 {
 
-    const rule_key = 'quiz_has_completion';
+    const rule_key = 'quiz_is_repeatable';
     const target_type = 'mod';
 
     /**
@@ -53,15 +53,15 @@ class quiz_has_completion extends rule_base
         parent::__construct(
             self::rule_key,
             self::target_type,
-            get_string('rule_quiz_has_completion_name', 'block_course_audit'),
-            get_string('rule_quiz_has_completion_description', 'block_course_audit'),
+            get_string('rule_quiz_is_repeatable_name', 'block_course_audit'),
+            get_string('rule_quiz_is_repeatable_description', 'block_course_audit'),
             'action'
             //get_string('rule_category_hint', 'block_course_audit')
         );
     }
 
     /**
-     * Check if a quiz has completion enabled
+     * Check if a quiz is repeatable
      *
      * @param object $target The target to check
      * @param object $course The course the target belongs to
@@ -70,18 +70,28 @@ class quiz_has_completion extends rule_base
     public function check_target($target, $course = null)
     {
         global $DB;
-
-        $quiz = $DB->get_record('quiz', ['id' => $target->id], 'id, attempts');
-
-        if (!$quiz) {
+        
+        if ($target->modname !== 'quiz') {
             return null;
         }
 
-        // TODO check if completion is enabled
-        if ((int)$quiz->attempts === 0) {
-            return $this->create_result(true, []);
-        } else {
-            return $this->create_result(false, ['Quiz allows ' . $quiz->attempts . ' attempt(s).']);
+        try {
+            $quiz = $DB->get_record('quiz', ['id' => $target->instance], 'id, attempts');
+
+            if (!$quiz) {
+                return null;
+            }
+
+            // 0 means unlimited attempts.
+            if ((int)$quiz->attempts === 0) {
+                return $this->create_result(true, []);
+            } else {
+                $messages[] = get_string('rule_quiz_is_repeatable_failure', 'block_course_audit', 
+                    ['attempts' => $quiz->attempts]);
+                return $this->create_result(false, $messages, $target->id, $target->course);
+            }
+        } catch (\Exception $e) {
+            return null;
         }
     }
 
@@ -91,17 +101,17 @@ class quiz_has_completion extends rule_base
      */
     public function get_action_button_details($target_id = null, $courseid = null)
     {
-        return null;
-        //TODO: Implement
-        if (!$context || $context->status === true || empty($context->rule_target_id)) {
+        if (empty($target_id) || empty($courseid)) {
             return null;
         }
-
-        return [
-            'mapkey' => 'section_' . $context->rule_target_id . '_' . self::rule_key,
-            'label' => get_string('button_enable_completion', 'block_course_audit'),
-            'endpoint' => 'block_course_audit_enable_completion',
-            'params' => 'modid=' . $context->rule_target_id . '&courseid=' . $courseid
+        
+        $action_button_details = [];
+        $action_button_details[] = [
+            'mapkey' => 'mod_' . $target_id . '_' . self::rule_key,
+            'label' => get_string('button_enable_repeatable', 'block_course_audit'),
+            'endpoint' => 'block_course_audit_enable_repeatable',
+            'params' => 'modid=' . $target_id . '&courseid=' . $courseid
         ];
+        return $action_button_details;
     }
 }

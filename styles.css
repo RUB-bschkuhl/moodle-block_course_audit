@@ -862,3 +862,266 @@ select[id^="id_res_scope_"]:disabled {
 [id*="fitem_id_content_count_"][hidden] {
     display: none !important;
 }
+
+/* Existing Rules List Styles */
+.existing-rules-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.existing-rules-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.existing-rules-header:hover {
+    background-color: #f8f9fa;
+}
+
+.existing-rules-header .header-left {
+    display: flex;
+    align-items: center;
+}
+
+.existing-rules-header .collapse-icon {
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+    font-size: 1.2rem;
+    color: #6c757d;
+    user-select: none;
+}
+
+.existing-rules-header .collapse-icon.collapsed {
+    transform: rotate(-90deg);
+}
+
+.existing-rules-content {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.existing-rules-content.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin-bottom: 0;
+}
+
+.existing-rules-section h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+    color: #343a40;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.new-rule-button {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.new-rule-button:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+}
+
+.new-rule-button:active {
+    background-color: #1e7e34;
+    border-color: #1c7430;
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(40, 167, 69, 0.3);
+}
+
+.existing-rules-section p {
+    margin-bottom: 15px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Collection groups */
+.collection-group {
+    margin-bottom: 0;
+}
+
+.collection-group:last-child {
+    margin-bottom: 0;
+}
+
+/* Scrollable rules container */
+.rules-container {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    background-color: #ffffff;
+}
+
+.rules-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.rules-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.rules-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.rules-container::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+.collection-header {
+    margin-bottom: 0px;
+    color: #495057;
+    font-size: 1rem;
+    font-weight: 600;
+    border-bottom: 1px solid #dee2e6;
+    padding: 8px 15px 8px 15px;
+    background-color: #f8f9fa;
+}
+
+/* Rules table styling */
+.rules-table {
+    margin-bottom: 0;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 0;
+}
+
+.collection-group:last-child .rules-table {
+    border-bottom: none;
+}
+
+.rules-table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+    padding: 8px 15px;
+    font-size: 0.85rem;
+}
+
+.rules-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.rules-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.existing-rule-item.current-rule {
+    background-color: #e8f5e8 !important;
+    border-left: 4px solid #28a745;
+}
+
+.existing-rule-item.loading {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.existing-rule-item.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid #007bff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.rules-table tbody td {
+    padding: 10px 15px;
+    vertical-align: middle;
+    border-top: 1px solid #dee2e6;
+    border-bottom:1px solid #dee2e6;
+}
+
+.rules-table tbody td strong {
+    color: #343a40;
+    font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .existing-rules-section {
+        padding: 15px;
+    }
+    
+    .rules-table {
+        font-size: 0.9rem;
+    }
+    
+    .rules-table thead th,
+    .rules-table tbody td {
+        padding: 6px 10px;
+    }
+    
+    .collection-header {
+        font-size: 0.9rem;
+        padding: 6px 10px;
+    }
+}
+
+/* Style improvements for form when rule is loaded */
+.rule-loaded {
+    animation: highlight-form 0.5s ease-in-out;
+}
+
+@keyframes highlight-form {
+    0% { background-color: #fff3cd; }
+    100% { background-color: transparent; }
+}
+
+/* Responsive adjustments for header */
+@media (max-width: 768px) {
+    .existing-rules-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .existing-rules-header .header-left {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .new-rule-button {
+        align-self: stretch;
+        text-align: center;
+    }
+    
+    .rules-container {
+        max-height: 300px;
+    }
+}
