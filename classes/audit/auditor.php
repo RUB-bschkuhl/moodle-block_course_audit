@@ -92,95 +92,95 @@ class auditor
         }
 
         // Execute static course-level rules for backward compatibility
-        $static_course_results = $this->audit_course($course->id);
-        foreach ($static_course_results as $result) {
-            $raw_results[] = $result;
+        // $static_course_results = $this->audit_course($course->id);
+        // foreach ($static_course_results as $result) {
+        //     $raw_results[] = $result;
 
-            if ($result->rule_category == "action" && !empty($result->action_button_details) && isset($result->action_button_details['mapkey']) && $result->status == false) {
-                $action_details_map[$result->action_button_details['mapkey']] = $result->action_button_details;
-            }
+        //     if ($result->rule_category == "action" && !empty($result->action_button_details) && isset($result->action_button_details['mapkey']) && $result->status == false) {
+        //         $action_details_map[$result->action_button_details['mapkey']] = $result->action_button_details;
+        //     }
 
-            if (!$result->status) {
-                $this->add_tour_step_for_result($result, $course, $sections, $tour_steps, $OUTPUT);
-            }
-        }
+        //     if (!$result->status) {
+        //         $this->add_tour_step_for_result($result, $course, $sections, $tour_steps, $OUTPUT);
+        //     }
+        // }
 
-        foreach ($sections as $sectionnum => $sectionobj) {
-            // Get all raw results first
-            $section_results = $this->audit_section($sectionobj->id); // Assume this returns raw results
+        // foreach ($sections as $sectionnum => $sectionobj) {
+        //     // Get all raw results first
+        //     $section_results = $this->audit_section($sectionobj->id); // Assume this returns raw results
 
-            foreach ($section_results as $result) {
-                $raw_results[] = $result; // Store raw result regardless of status
+        //     foreach ($section_results as $result) {
+        //         $raw_results[] = $result; // Store raw result regardless of status
 
-                if ($result->rule_category == "action" && !empty($result->action_button_details) && $result->status == false) {
-                    $action_buttons = is_array(reset($result->action_button_details)) && is_string(key(reset($result->action_button_details))) ? $result->action_button_details : [$result->action_button_details];
-                    foreach ($action_buttons as $button_detail) {
-                        if (is_array($button_detail) && !empty($button_detail['mapkey'])) {
-                            $action_details_map[$button_detail['mapkey']] = $button_detail;
-                        }
-                    }
-                }
+        //         if ($result->rule_category == "action" && !empty($result->action_button_details) && $result->status == false) {
+        //             $action_buttons = is_array(reset($result->action_button_details)) && is_string(key(reset($result->action_button_details))) ? $result->action_button_details : [$result->action_button_details];
+        //             foreach ($action_buttons as $button_detail) {
+        //                 if (is_array($button_detail) && !empty($button_detail['mapkey'])) {
+        //                     $action_details_map[$button_detail['mapkey']] = $button_detail;
+        //                 }
+        //             }
+        //         }
 
-                // Only create tour steps for failed checks, as before
-                if (!$result->status) {
-                    switch ($result->rule_target) {
-                        case "section":
-                            $section_template_data = [
-                                'section_id' => $sectionobj->id,
-                                'section_name' => get_section_name($course, $sectionobj),
-                                'section_number' => $sectionobj->section,
-                                'course_id' => $course->id,
-                                'course_shortname' => $course->shortname,
-                                'rule_result' => $result,
-                            ];
+        //         // Only create tour steps for failed checks, as before
+        //         if (!$result->status) {
+        //             switch ($result->rule_target) {
+        //                 case "section":
+        //                     $section_template_data = [
+        //                         'section_id' => $sectionobj->id,
+        //                         'section_name' => get_section_name($course, $sectionobj),
+        //                         'section_number' => $sectionobj->section,
+        //                         'course_id' => $course->id,
+        //                         'course_shortname' => $course->shortname,
+        //                         'rule_result' => $result,
+        //                     ];
 
-                            $tour_steps[] = [
-                                'type' => 'section',
-                                'title' => $result->rule_name,
-                                'number' => $sectionobj->section,
-                                'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
-                            ];
-                            break;
-                        case "mod":
-                            //TODO
-                            $section_template_data = [
-                                'section_id' => $sectionobj->id,
-                                'section_name' => get_section_name($course, $sectionobj),
-                                'section_number' => $sectionobj->section,
-                                'course_id' => $course->id,
-                                'course_shortname' => $course->shortname,
-                                'rule_result' => $result,
-                            ];
+        //                     $tour_steps[] = [
+        //                         'type' => 'section',
+        //                         'title' => $result->rule_name,
+        //                         'number' => $sectionobj->section,
+        //                         'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
+        //                     ];
+        //                     break;
+        //                 case "mod":
+        //                     //TODO
+        //                     $section_template_data = [
+        //                         'section_id' => $sectionobj->id,
+        //                         'section_name' => get_section_name($course, $sectionobj),
+        //                         'section_number' => $sectionobj->section,
+        //                         'course_id' => $course->id,
+        //                         'course_shortname' => $course->shortname,
+        //                         'rule_result' => $result,
+        //                     ];
 
-                            $tour_steps[] = [
-                                'type' => 'mod',
-                                'title' => $result->rule_name,
-                                'number' => $result->rule_target_id,
-                                'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
-                            ];
-                            break;
-                        case "course":
-                            //TODO
-                            $section_template_data = [
-                                'section_id' => $sectionobj->id,
-                                'section_name' => get_section_name($course, $sectionobj),
-                                'section_number' => $sectionobj->section,
-                                'course_id' => $course->id,
-                                'course_shortname' => $course->shortname,
-                                'rule_result' => $result,
-                            ];
+        //                     $tour_steps[] = [
+        //                         'type' => 'mod',
+        //                         'title' => $result->rule_name,
+        //                         'number' => $result->rule_target_id,
+        //                         'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
+        //                     ];
+        //                     break;
+        //                 case "course":
+        //                     //TODO
+        //                     $section_template_data = [
+        //                         'section_id' => $sectionobj->id,
+        //                         'section_name' => get_section_name($course, $sectionobj),
+        //                         'section_number' => $sectionobj->section,
+        //                         'course_id' => $course->id,
+        //                         'course_shortname' => $course->shortname,
+        //                         'rule_result' => $result,
+        //                     ];
 
-                            $tour_steps[] = [
-                                'type' => 'course',
-                                'title' => $result->rule_name,
-                                'number' => $sectionobj->section,
-                                'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
-                            ];
-                            break;
-                    }
-                }
-            }
-        }
+        //                     $tour_steps[] = [
+        //                         'type' => 'course',
+        //                         'title' => $result->rule_name,
+        //                         'number' => $sectionobj->section,
+        //                         'content' => $OUTPUT->render_from_template('block_course_audit/rules/rule_result', $section_template_data)
+        //                     ];
+        //                     break;
+        //             }
+        //         }
+        //     }
+        // }
 
         return [
             'tour_steps' => $tour_steps,

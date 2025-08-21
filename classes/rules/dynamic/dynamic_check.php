@@ -107,7 +107,7 @@ class dynamic_check {
      * Evaluate this check against the target object.
      *
      * @param \stdClass $course The course context
-     * @return object Result object with 'passed' and 'message' properties
+     * @return object Result object with 'passed', 'message', 'evaluated_instance', and 'check_id' properties
      */
     public function evaluate(\stdClass $course): object {
         try {
@@ -115,7 +115,7 @@ class dynamic_check {
             $source_data = $this->get_source_data($course);
             
             if ($source_data === null) {
-                return $this->create_result(false, "Could not retrieve source data for {$this->source}");
+                return $this->create_result(false, "Could not retrieve source data for {$this->source}", null);
             }
 
             // Perform the actual check based on check type
@@ -127,11 +127,11 @@ class dynamic_check {
                 case 'content_count':
                     return $this->evaluate_content_count_check($source_data, $course);
                 default:
-                    return $this->create_result(false, "Unknown check type: {$this->check_type}");
+                    return $this->create_result(false, "Unknown check type: {$this->check_type}", $source_data);
             }
         } catch (\Exception $e) {
             debugging('Error evaluating check: ' . $e->getMessage(), DEBUG_DEVELOPER);
-            return $this->create_result(false, "Error evaluating check: " . $e->getMessage());
+            return $this->create_result(false, "Error evaluating check: " . $e->getMessage(), null);
         }
     }
 
@@ -154,7 +154,7 @@ class dynamic_check {
             case 'section':
                 // Get sections from course
                 $sections = get_fast_modinfo($course)->get_section_info_all();
-                //TODO Debug
+                //TODO only gets 1 section even if multiple exist (reset(objects) is used), should test all sections instead
                 return $this->apply_instance_selection($sections);
             default:
                 // Handle specific module types (quiz, assign, etc.)
@@ -166,48 +166,46 @@ class dynamic_check {
     }
 
     /**
-     * Get other instances of the same type as target for "other source" functionality.
+     * Get other instances of the same type as source for "other source" functionality.
      *
-     * @param object $target The target object
+     * @param string $source_type The source type string
      * @param \stdClass $course The course context
      * @return object|null Other source instance or null if not found
      */
-    private function get_other_source_instances(object $target, \stdClass $course): ?object {
+    private function get_other_source_instances(string $source_type, \stdClass $course): ?object {
         global $DB;
 
-        // Determine target type and get other instances
-        if (isset($target->category) && isset($target->fullname)) {
-            // Target is a course - no other courses in this context
-            return null;
-            
-        } else if (isset($target->section) && isset($target->course)) {
-            // Target is a section - get other sections
-            $sections = get_fast_modinfo($course)->get_section_info_all();
-            $other_sections = [];
-            
-            foreach ($sections as $section) {
-                if ($section->id != $target->id) {
-                    $other_sections[] = $section;
-                }
-            }
-            
-            return $this->apply_instance_selection($other_sections);
-            
-        } else if (isset($target->modname)) {
-            // Target is a module - get other modules of same type or all modules
-            $modinfo = get_fast_modinfo($course);
-            $other_modules = [];
-            
-            foreach ($modinfo->get_cms() as $cm) {
-                if ($cm->id != $target->id) {
-                    // If target has specific module type, get same type; otherwise all modules
-                    if (!isset($target->modname) || $cm->modname === $target->modname) {
-                        $other_modules[] = $cm;
+        // Get instances based on source type
+        switch ($source_type) {
+            case 'course':
+                // Course context - no other courses available
+                return null;
+                
+            case 'section':
+                // Get all sections
+                $sections = get_fast_modinfo($course)->get_section_info_all();
+                return $this->apply_instance_selection($sections);
+                
+            default:
+                // Handle specific module types (quiz, assign, etc.)
+                if (in_array($source_type, ['quiz', 'assign', 'forum', 'lesson', 'scorm', 'url', 'resource'])) {
+                    $modinfo = get_fast_modinfo($course);
+                    $modules = [];
+                    
+                    foreach ($modinfo->get_cms() as $cm) {
+                        if ($cm->modname === $source_type) {
+                            // Get the actual module instance
+                            $instance = $DB->get_record($source_type, ['id' => $cm->instance]);
+                            if ($instance) {
+                                $instance->cm = $cm; // Add course module info
+                                $modules[] = $instance;
+                            }
+                        }
                     }
+                    
+                    return $this->apply_instance_selection($modules);
                 }
-            }
-            
-            return $this->apply_instance_selection($other_modules);
+                break;
         }
         
         return null;
@@ -276,7 +274,7 @@ class dynamic_check {
         $actual_value = $this->get_field_value($source_data, $this->target);
         
         if ($actual_value === null) {
-            return $this->create_result(false, "Field '{$this->target}' not found in source data");
+            return $this->create_result(false, "Field '{$this->target}' not found in source data", $source_data);
         }
 
         // Perform comparison
@@ -286,7 +284,7 @@ class dynamic_check {
             "Setting check passed: {$this->target} {$this->comp} {$this->value}" :
             "Setting check failed: {$this->target} is '{$actual_value}', expected {$this->comp} '{$this->value}'";
 
-        return $this->create_result($passed, $message);
+        return $this->create_result($passed, $message, $source_data);
     }
 
     /**
@@ -306,7 +304,7 @@ class dynamic_check {
             "Content comparison passed: {$this->content_type} count {$this->comp} {$expected_count}" :
             "Content comparison failed: Found {$actual_count} {$this->content_type}, expected {$this->comp} {$expected_count}";
 
-        return $this->create_result($passed, $message);
+        return $this->create_result($passed, $message, $source_data);
     }
 
     /**
@@ -326,7 +324,7 @@ class dynamic_check {
             "Content count passed: {$this->content_type} count {$this->comp} {$expected_count}" :
             "Content count failed: Found {$actual_count} {$this->content_type}, expected {$this->comp} {$expected_count}";
 
-        return $this->create_result($passed, $message);
+        return $this->create_result($passed, $message, $source_data);
     }
 
     /**
@@ -423,12 +421,14 @@ class dynamic_check {
      *
      * @param bool $passed Whether the check passed
      * @param string $message Result message
+     * @param object|null $evaluated_instance The evaluated item instance
      * @return object Result object
      */
-    private function create_result(bool $passed, string $message): object {
+    private function create_result(bool $passed, string $message, ?object $evaluated_instance = null): object {
         return (object)[
             'passed' => $passed,
             'message' => $message,
+            'evaluated_instance' => $evaluated_instance,
             'check_id' => $this->id
         ];
     }

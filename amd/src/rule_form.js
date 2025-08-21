@@ -86,51 +86,10 @@ define(['jquery', 'core/str'], function($, str) {
                     $('.existing-rule-item').removeClass('current-rule');
                     $(this).addClass('current-rule loading');
 
-                    // Load rule data via AJAX
-                    $.ajax({
-                        url: M.cfg.wwwroot + '/blocks/course_audit/edit_rule.php',
-                        type: 'GET',
-                        data: {
-                            ajax_load: 1,
-                            ruleid: ruleId,
-                            courseid: courseid
-                        },
-                        dataType: 'json',
-                        success: function(response) {
-                            if (response.success) {
-                                populateFormWithRuleData(response.data);
-
-                                // Update hidden form fields
-                                $('#id_courseid').val(courseid);
-                                $('#id_id').val(ruleId);
-
-                                // Update submit button text to "Update"
-                                var submitBtn = $('#id_submitbutton');
-                                if (submitBtn.length) {
-                                    str.get_string('update', 'moodle').then(function(updateString) {
-                                        submitBtn.val(updateString);
-                                    }).catch(function() {
-                                        submitBtn.val('Update'); // Fallback
-                                    });
-                                }
-
-                                // Update URL to reflect the loaded rule
-                                var newUrl = new URL(window.location);
-                                newUrl.searchParams.set('id', ruleId);
-                                window.history.pushState({}, '', newUrl);
-                            } else {
-                                window.console.error('Failed to load rule: ' + (response.error || 'Unknown error'));
-                                alert('Failed to load rule data. Please try again.');
-                            }
-                        },
-                        error: function() {
-                            window.console.error('AJAX request failed when loading rule');
-                            alert('Failed to load rule data. Please check your connection.');
-                        },
-                        complete: function() {
-                            $('.existing-rule-item').removeClass('loading');
-                        }
-                    });
+                    // Refresh the page with the rule ID parameter to load fresh data
+                    var newUrl = new URL(window.location);
+                    newUrl.searchParams.set('id', ruleId);
+                    window.location.href = newUrl.toString();
                 });
 
                 // Handle New Rule button click

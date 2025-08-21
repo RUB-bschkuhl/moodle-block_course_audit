@@ -73,7 +73,11 @@ class dynamic_rule_executor
                 // Check preconditions
                 if ($this->check_preconditions($rule, $results)) {
                     $result = $rule->execute($course);
-                    $results[] = $result;
+                    if (is_array($result)) {
+                        $results = array_merge($results, $result);
+                    } else {
+                        $results[] = $result;
+                    }
                 }
             }
         } catch (\Exception $e) {

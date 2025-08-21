@@ -87,10 +87,13 @@ class block_course_audit extends block_base
         $total_count = count($results);
 
         foreach ($results as $result) {
-            $rulename_key = 'rule_' . $result->rulekey . '_name';
-            $rulename_display = get_string_manager()->string_exists($rulename_key, 'block_course_audit')
-                ? get_string($rulename_key, 'block_course_audit')
-                : $result->rulekey;
+            $rule = $DB->get_records('block_course_audit_rule', ['id' => $result->rulekey], 'id ASC', '*');
+            if (empty($rule)) {
+                $rulename_display = $result->category . $result->id;
+            } else {
+                $rule = reset($rule);
+                $rulename_display = $rule->rule_name;
+            }
 
             $messages = [];
             if (!empty($result->messages)) {
@@ -103,7 +106,7 @@ class block_course_audit extends block_base
             }
 
             $processed_results[] = [
-                'rulekey' => $result->rulekey,
+                'rulekey' => $result->rulekey, //TODO can be deleted, not needed in frontend
                 'ruleNameDisplay' => $rulename_display,
                 'status' => $result->status,
                 'isTodo' => ($result->status == '0'),

@@ -4,6 +4,21 @@ This file tracks changes made to the Course Audit Block plugin.
 
 ## Changelog
 
+### 2025-01-02 (Version 0.1.27)
+- **Fix:** Changed existing rule item clicks to refresh the page instead of using AJAX to ensure all data is updated on page load
+- **Files Changed:**
+    - `/moodle-500/blocks/course_audit/amd/src/rule_form.js`: Replaced AJAX rule loading with page refresh to ensure fresh data is loaded
+
+### 2025-01-02 (Version 0.1.26)
+- **Improvement:** Enhanced dynamic rule evaluation to include evaluated item instances in check results
+- **Fix:** Resolved redundant check evaluations by storing check results in rule object
+- **Fix:** Fixed type mismatch in get_other_source_instances method parameter
+- **Improvement:** Added methods to retrieve evaluated check results and instances from rule objects
+- **Improvement:** Added validation of required fields for dynamic checks
+- **Files Changed:**
+    - `/moodle-500/blocks/course_audit/classes/rules/dynamic/dynamic_check.php`: Updated evaluate method to return evaluated instances, fixed create_result method signature, corrected get_other_source_instances method to accept string parameter
+    - `/moodle-500/blocks/course_audit/classes/rules/dynamic/dynamic_rule.php`: Added evaluated_check_results property, eliminated redundant check evaluations, added methods to access evaluated instances, improved check validation
+
 ### 2024-12-30 (Version 0.1.25)
 - **Improvement:** Fixed spacing and styling issues in rules tables for better visual hierarchy
 - **Improvement:** Reduced padding and margins for more compact, professional appearance

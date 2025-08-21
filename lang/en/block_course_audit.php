@@ -128,14 +128,10 @@ $string['startaudit'] = 'Start audit tour';
 $string['startaudit_help'] = 'Start an interactive tour of the course audit features';
 $string['tourstart_button'] = 'Start Tour';
 $string['tourfinished'] = 'Tour finished';
-$string['tour_introduction'] = 'Welcome to the Course Audit Tour! This guided experience will help you improve your course by:
-<ul>
-<li>Analyzing each section for content variety and student engagement</li>
-<li>Identifying missing connections between activities that might disrupt learning flow</li>
-<li>Suggesting improvements to enhance the learning experience</li>
-<li>Providing actionable feedback on activity types, learning paths, and resource organization</li>
-</ul>
-Use the navigation buttons to move through each section. The tour will highlight areas that need attention with specific recommendations. At the end of the tour, you\'ll receive a comprehensive summary with a checklist of all audit results to help you track your progress in optimizing your course structure.';
+$string['tour_introduction'] = 'Welcome to the Course Audit<br><br> 
+This plugin helps you review your course and receive suggestions for improvement.<br>
+The suggestions are based on fixed rules - they may not always fit your course perfectly. Consider them as inspiration and decide for yourself which ones to apply.<br>
+You can pause the review at any time or simply restart it after making changes to your course.';
 
 // API and results strings
 $string['noauditresults'] = 'No audit results found for this course.';
@@ -206,8 +202,8 @@ $string['rulename'] = 'Rule Name';
 $string['ruledescription'] = 'Rule Description';
 $string['preconditions'] = 'Preconditions';
 $string['preconditions_help'] = 'Select rules that must pass before this rule is checked. Hold Ctrl/Cmd to select multiple rules.';
-$string['existinggroup'] = 'Add to Existing Group';
-$string['newgroupname'] = 'Or Create New Group';
+$string['existinggroup'] = 'Select Group';
+$string['newgroupname'] = 'Create New Group';
 $string['newgroupname_help'] = 'Enter a name to create a new group for this rule. Leave empty if adding to existing group.';
 $string['selectgroup'] = 'Choose a group...';
 $string['checks'] = 'Checks';

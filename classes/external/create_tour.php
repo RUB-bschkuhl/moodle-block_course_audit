@@ -160,7 +160,6 @@ class create_tour extends external_api
 
         $auditor = new auditor();
         $audit_data = $auditor->get_audit_results($course);
-        //TODO get_audit_results from rules created with rule form
         
         $tour_steps_data = $audit_data['tour_steps'];
         $raw_audit_results = $audit_data['raw_results'];
@@ -287,7 +286,7 @@ class create_tour extends external_api
         foreach ($raw_audit_results as $result) {
             $resultrecord = new \stdClass();
             $resultrecord->auditid = $auditrunid;
-            $resultrecord->rulekey = $result->rule_key;
+            $resultrecord->rulekey = $result->rule_id;
             $resultrecord->status = $result->status;
             if (isset($result->messages) && is_array($result->messages)) {
                 $resultrecord->messages = json_encode($result->messages);

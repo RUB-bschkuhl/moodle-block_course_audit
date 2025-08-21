@@ -111,6 +111,8 @@ if ($ajax_load) {
 }
 
 // Get params.
+$p = $_POST;
+$g = $_GET;
 $courseid = required_param('courseid', PARAM_INT);
 $id = optional_param('id', 0, PARAM_INT); // Rule ID, 0 for new rule.
 

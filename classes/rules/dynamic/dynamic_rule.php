@@ -62,6 +62,9 @@ class dynamic_rule
     /** @var array Array of precondition rule IDs */
     public $preconditions = [];
 
+    /** @var array Array of evaluated check results with instances */
+    public $evaluated_check_results = [];
+
     /**
      * Constructor.
      *
@@ -102,26 +105,24 @@ class dynamic_rule
      * Execute all checks for this rule and return the result.
      *
      * @param \stdClass $course The course object for context
-     * @return object Result object with status, messages, and applicable resolutions
+     * @return array Array of result objects with status, messages, and applicable resolutions
      */
-    public function execute(\stdClass $course): object
+    public function execute(\stdClass $course): array
     {
         if (empty($this->checks)) {
-            return $this->create_result(true, 'No checks defined for this rule', $course);
+            return $this->create_result(true, 'No checks defined for this rule');
         }
 
-        // Execute checks with logic operators
+        // Execute checks with logic operators and store results
         $overall_result = $this->evaluate_checks_with_logic($course);
 
         $messages = [];
         $failed_checks = [];
 
-        // Collect messages and failed checks
-        foreach ($this->checks as $index => $check) {
-            //TODO redundant checks
-            $check_result = $check->evaluate($course);
+        // Use the stored check results to avoid redundant evaluation
+        foreach ($this->evaluated_check_results as $index => $check_result) {
             if (!$check_result->passed) {
-                $failed_checks[] = $check;
+                $failed_checks[] = $this->checks[$index];
                 if (!empty($check_result->message)) {
                     $messages[] = $check_result->message;
                 }
@@ -130,7 +131,7 @@ class dynamic_rule
 
         $message = implode('; ', $messages);
 
-        return $this->create_result($overall_result, $message, $target, $failed_checks);
+        return $this->create_result($overall_result, $message);
     }
 
     /**
@@ -144,20 +145,28 @@ class dynamic_rule
         if (empty($this->checks)) {
             return true;
         }
+
+        // Clear previous evaluated results
+        $this->evaluated_check_results = [];
         $overall_result = true;
 
         for ($i = 0; $i < count($this->checks); $i++) {
             $current_check = $this->checks[$i];
 
-            // ToDo current_check check required fields
+            // Validate required fields for current check, TODO add more required fields
+            if (empty($current_check->source) || empty($current_check->check_type)) {
+                continue;
+            }
 
-            //TODO current_check evaluate should return passed and message and he evaluated item instance and save it to the rule object
-            $check_result = $current_check->evaluate($course)->passed;
+            // Evaluate the check and store the complete result including evaluated instance
+            $check_result_obj = $current_check->evaluate($course);
 
             // Apply NOT operator if needed
             if ($current_check->not_check) {
-                $check_result = !$check_result;
+                $check_result_obj->passed = !$check_result_obj->passed;
             }
+
+            $this->evaluated_check_results[$i] = $check_result_obj;
 
             if ($i > 0) {
                 $previous_check = $this->checks[$i - 1];
@@ -165,13 +174,13 @@ class dynamic_rule
                 $logic_operator = $previous_check->next_logic ?? 'AND';
 
                 if ($logic_operator === 'OR') {
-                    $overall_result = $overall_result || $check_result;
+                    $overall_result = $overall_result || $check_result_obj->passed;
                 } else { // Default to AND
-                    $overall_result = $overall_result && $check_result;
+                    $overall_result = $overall_result && $check_result_obj->passed;
                 }
             } else {
                 // For the first check, just set the overall result
-                $overall_result = $check_result;
+                $overall_result = $check_result_obj->passed;
             }
         }
 
@@ -196,45 +205,59 @@ class dynamic_rule
      *
      * @param bool $passed Whether the rule passed
      * @param string $message Result message
-     * @param object $target The target object
+     * @param object $course The target course
      * @param array $failed_checks Array of failed checks
-     * @return object Standardized result object
+     * @return array Standardized result object array
      */
-    private function create_result(bool $passed, string $message, object $target, array $failed_checks = []): object
+    private function create_result(bool $passed, string $message): array
     {
-        // Determine target type and ID based on target object
-        $target_info = $this->determine_target_info($target);
+        $results = [];
 
-        // Get applicable resolutions if rule failed
-        $applicable_resolutions = $passed ? [] : $this->get_resolutions($failed_checks);
+        $failed_checks = array_filter($this->evaluated_check_results, function ($result) {
+            return !$result->passed;
+        });
 
-        // Determine rule category based on resolutions
-        $rule_category = $this->determine_rule_category($applicable_resolutions);
+        foreach ($failed_checks as $failed_check) {
+            $target = $failed_check->evaluated_instance;
 
-        // Generate action button details for action-type resolutions
-        $action_button_details = [];
-        if (!$passed && $rule_category === 'action') {
-            foreach ($applicable_resolutions as $resolution) {
-                if ($resolution->type === 'action') {
-                    $button_details = $resolution->generate_action_button($target);
-                    if ($button_details) {
-                        $action_button_details[] = $button_details;
+            $target_info = $this->determine_target_info($target);
+
+            // Get applicable resolutions if rule failed
+            $applicable_resolutions = $passed ? [] : $this->get_resolutions($failed_checks);
+
+            // Determine rule category based on resolutions
+            $rule_category = $this->determine_rule_category($applicable_resolutions);
+
+            // Generate action button details for action-type resolutions
+            $action_button_details = [];
+            if (!$passed && $rule_category === 'action') {
+                foreach ($applicable_resolutions as $resolution) {
+                    if ($resolution->type === 'action') {
+                        $button_details = $resolution->generate_action_button($target);
+                        if ($button_details) {
+                            $action_button_details[] = $button_details;
+                        }
                     }
                 }
             }
+
+
+            $result = (object)[
+                'rule_name' => $this->name,
+                'rule_category' => $rule_category,
+                'status' => $passed,
+                'messages' => $message,
+                'rule_target' => $target_info['type'],
+                'rule_target_id' => $target_info['id'],
+                'action_button_details' => $action_button_details,
+                'resolutions' => $applicable_resolutions,
+                'rule_id' => $this->id
+            ];
+
+            $results[] = $result;
         }
 
-        return (object)[
-            'rule_name' => $this->name,
-            'rule_category' => $rule_category,
-            'status' => $passed,
-            'messages' => $message,
-            'rule_target' => $target_info['type'],
-            'rule_target_id' => $target_info['id'],
-            'action_button_details' => $action_button_details,
-            'resolutions' => $applicable_resolutions,
-            'rule_id' => $this->id
-        ];
+        return $results;
     }
 
     /**
@@ -245,23 +268,15 @@ class dynamic_rule
      */
     private function determine_target_info(object $target): array
     {
-        // Check if it's a course object
-        if (isset($target->category) && isset($target->fullname)) {
+        if ($target instanceof \course_info) {
             return ['type' => 'course', 'id' => $target->id];
-        }
-
-        // Check if it's a section object
-        if (isset($target->section) && isset($target->course)) {
+        } else if ($target instanceof \section_info) {
             return ['type' => 'section', 'id' => $target->id];
+        } else  if (isset($target->cm) && $target->cm instanceof \cm_info) {
+            return ['type' => 'mod', 'id' => $target->cm->id];
+        } else {
+            return ['type' => 'unknown', 'id' => $target->id ?? 0];
         }
-
-        // Check if it's a module object (course module)
-        if (isset($target->module) && isset($target->course) && isset($target->modname)) {
-            return ['type' => 'mod', 'id' => $target->id];
-        }
-
-        // Default fallback
-        return ['type' => 'unknown', 'id' => $target->id ?? 0];
     }
 
     /**
@@ -322,5 +337,31 @@ class dynamic_rule
     public function get_preconditions(): array
     {
         return $this->preconditions;
+    }
+
+    /**
+     * Get the evaluated check results with instances.
+     *
+     * @return array Array of check result objects with evaluated instances
+     */
+    public function get_evaluated_check_results(): array
+    {
+        return $this->evaluated_check_results;
+    }
+
+    /**
+     * Get the evaluated instances from the check results.
+     *
+     * @return array Array of evaluated instance objects
+     */
+    public function get_evaluated_instances(): array
+    {
+        $instances = [];
+        foreach ($this->evaluated_check_results as $check_result) {
+            if (isset($check_result->evaluated_instance) && $check_result->evaluated_instance !== null) {
+                $instances[] = $check_result->evaluated_instance;
+            }
+        }
+        return $instances;
     }
 }

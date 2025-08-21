@@ -124,7 +124,10 @@ $string['startaudit'] = 'Prüfer-Tour starten';
 $string['startaudit_help'] = 'Startet eine interaktive Tour durch die Kurs-Prüfer-Funktionen';
 $string['tourstart_button'] = 'Tour starten';
 $string['tourfinished'] = 'Tour beendet';
-$string['tour_introduction'] = 'Willkommen zur Kurs-Prüfer-Tour! Diese geführte Erfahrung hilft Ihnen, Ihren Kurs zu verbessern durch:<ul><li>Analyse jedes Abschnitts auf Inhaltsvielfalt und Teilnehmerengagement</li><li>Identifizierung fehlender Verbindungen zwischen Aktivitäten, die den Lernfluss stören könnten</li><li>Vorschläge zur Verbesserung des Lernerlebnisses</li><li>Bereitstellung umsetzbarer Rückmeldungen zu Aktivitätstypen, Lernpfaden und Ressourcenorganisation</li></ul>Verwenden Sie die Navigationsschaltflächen, um durch jeden Abschnitt zu navigieren. Die Tour hebt Bereiche hervor, die Aufmerksamkeit benötigen, mit spezifischen Empfehlungen. Am Ende der Tour erhalten Sie eine umfassende Zusammenfassung mit einer Checkliste aller Prüfer-Ergebnisse, um Ihnen zu helfen, Ihren Fortschritt bei der Optimierung Ihrer Kursstruktur zu verfolgen.';
+$string['tour_introduction'] = 'Willkommen beim Kurs-Audit
+Dieses Plugin hilft Ihnen, Ihren Kurs zu überprüfen und Vorschläge zur Verbesserung zu erhalten.
+Die Vorschläge basieren auf fest definierten Regeln - sie passen vielleicht nicht immer perfekt zu Ihrem Kurs. Sehen Sie sie daher als Anregung und entscheiden Sie selbst, was Sie umsetzen möchten.
+Sie können die Überprüfung jederzeit unterbrechen oder nach Änderungen im Kurs einfach neu starten.';
 
 // API and results strings
 $string['noauditresults'] = 'Keine Prüf-Ergebnisse für diesen Kurs gefunden.';
@@ -232,8 +235,8 @@ $string['rulename'] = 'Regelname';
 $string['ruledescription'] = 'Regelbeschreibung';
 $string['preconditions'] = 'Vorbedingungen';
 $string['preconditions_help'] = 'Wählen Sie Regeln aus, die erfolgreich sein müssen, bevor diese Regel geprüft wird. Halten Sie Strg/Cmd gedrückt, um mehrere Regeln auszuwählen.';
-$string['existinggroup'] = 'Zu bestehender Gruppe hinzufügen';
-$string['newgroupname'] = 'Oder neue Gruppe erstellen';
+$string['existinggroup'] = 'Gruppe auswählen';
+$string['newgroupname'] = 'Neue Gruppe erstellen';
 $string['newgroupname_help'] = 'Geben Sie einen Namen ein, um eine neue Gruppe für diese Regel zu erstellen. Lassen Sie das Feld leer, wenn Sie die Regel zu einer bestehenden Gruppe hinzufügen möchten.';
 $string['selectgroup'] = 'Gruppe auswählen...';
 $string['logicaloperator'] = 'Verknüpfen mit';

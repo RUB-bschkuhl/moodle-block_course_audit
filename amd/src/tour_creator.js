@@ -190,6 +190,7 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
                     let summaryContainer = $(speechBubble);
 
                     const processedResultsPromises = response.data.map(async function (result) {
+                        console.log(result);
                         const ruleNameKey = 'rule_' + result.rulekey + '_name';
                         let ruleNameDisplay = '';
                         let parsedMessages = [];
