@@ -4,6 +4,13 @@ This file tracks changes made to the Course Audit Block plugin.
 
 ## Changelog
 
+### 2025-01-02 (Version 0.1.28)
+- **Improvement:** Enhanced form population logic to handle field dependencies correctly when loading existing rules
+- **Feature:** Added sequential field population with proper timing to ensure dependent fields are updated before setting their values
+- **Fix:** Resolved issue where form fields were not properly populated due to JavaScript dependency chain not being respected
+- **Files Changed:**
+    - `/moodle-500/blocks/course_audit/amd/src/rule_form.js`: Replaced synchronous form population with sequential dependency-aware population, added new functions for handling check and resolution dependencies with proper timing
+
 ### 2025-01-02 (Version 0.1.27)
 - **Fix:** Changed existing rule item clicks to refresh the page instead of using AJAX to ensure all data is updated on page load
 - **Files Changed:**

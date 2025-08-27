@@ -165,43 +165,174 @@ define(['jquery', 'core/str'], function($, str) {
                         $('#id_new_group_name').val('');
                     }
 
-                    // Handle checks
+                    // Handle checks and resolutions with proper dependency order
                     if (data.checks && data.checks.length > 0) {
-                        populateChecks(data.checks);
+                        populateChecksWithDependencies(data.checks);
                     }
 
-                    // Handle resolutions
                     if (data.resolutions && data.resolutions.length > 0) {
-                        populateResolutions(data.resolutions);
+                        populateResolutionsWithDependencies(data.resolutions);
                     }
-
-                    // Trigger change events to update field visibility
-                    setTimeout(function() {
-                        // Trigger change events for all form elements that affect visibility
-                        $('[id^="id_source_"]').trigger('change');
-                        $('[id^="id_check_type_"]').trigger('change');
-                        $('[id^="id_res_type_"]').trigger('change');
-                        $('[id^="id_res_actiontype_"]').trigger('change');
-                        $('[id^="id_res_scope_"]').trigger('change');
-                        $('#id_existing_group').trigger('change');
-
-                        // Update internal functions
-                        updateSourceFields();
-                        updateResolutionFieldVisibility();
-                        updateLogicalOperatorVisibility();
-
-                        // Additional trigger for dependent fields after initial setup
-                        setTimeout(function() {
-                            $('[id^="id_source_0"]').trigger('change');
-                            $('[id^="id_check_type_"]').trigger('change');
-                            $('[id^="id_content_comp_"]').trigger('change');
-                        }, 50);
-                    }, 150);
 
                 } catch (error) {
                     window.console.error('Error populating form:', error);
                     alert('Error populating form with rule data.');
                 }
+            }
+
+            /**
+             * Populate checks with proper dependency handling
+             * @param {Array} checks - Array of check objects to populate
+             */
+            function populateChecksWithDependencies(checks) {
+                // Ensure we have enough check fields
+                while ($('#id_source_' + (checks.length - 1)).length === 0 && checks.length > 1) {
+                    $('#id_add_check_button').click();
+                }
+
+                // Populate checks in sequence with proper delays
+                populateCheckSequentially(checks, 0);
+            }
+
+            /**
+             * Populate checks one by one with proper dependency handling
+             * @param {Array} checks - Array of check objects
+             * @param {number} index - Current check index to populate
+             */
+            function populateCheckSequentially(checks, index) {
+                if (index >= checks.length) {
+                    // All checks populated, now handle resolutions
+                    return;
+                }
+
+                var check = checks[index];
+                
+                // Step 1: Set basic check properties
+                $('#id_not_' + index).prop('checked', check.not == 1);
+                $('#id_source_instance_first_' + index).prop('checked', check.source_instance_first == 1);
+                $('#id_source_instance_last_' + index).prop('checked', check.source_instance_last == 1);
+                $('#id_other_source_' + index).prop('checked', check.other_source == 1);
+
+                // Step 2: Set source and trigger change (this updates dependent fields)
+                $('#id_source_' + index).val(check.source).trigger('change');
+                
+                // Step 3: Wait for source change to complete, then set check type
+                setTimeout(function() {
+                    $('#id_check_type_' + index).val(check.check_type).trigger('change');
+                    
+                    // Step 4: Wait for check type change, then set target field
+                    setTimeout(function() {
+                        // Set target field based on check type and source
+                        var targetFieldName = 'target_' + check.check_type + '_' + check.source;
+                        var targetField = $('#id_' + targetFieldName + '_' + index);
+                        if (targetField.length) {
+                            targetField.val(check.target);
+                        }
+
+                        // Step 5: Set remaining fields
+                        $('#id_comp_' + index).val(check.comp);
+                        $('#id_value_' + index).val(check.value);
+                        $('#id_content_comp_' + index).val(check.content_comp).trigger('change');
+                        $('#id_content_count_' + index).val(check.content_count);
+
+                        if (check.next_logic && index < checks.length - 1) {
+                            $('#id_next_logic_' + index).val(check.next_logic);
+                        }
+
+                        // Step 6: Update form state after this check is complete
+                        updateSourceFields();
+                        updateLogicalOperatorVisibility();
+
+                        // Step 7: Move to next check
+                        setTimeout(function() {
+                            populateCheckSequentially(checks, index + 1);
+                        }, 100);
+
+                    }, 100); // Wait for check type change
+                }, 100); // Wait for source change
+            }
+
+            /**
+             * Populate resolutions with proper dependency handling
+             * @param {Array} resolutions - Array of resolution objects to populate
+             */
+            function populateResolutionsWithDependencies(resolutions) {
+                // Ensure we have enough resolution fields
+                while ($('#id_res_scope_' + (resolutions.length - 1)).length === 0 && resolutions.length > 1) {
+                    $('#id_add_res_button').click();
+                }
+
+                // Populate resolutions in sequence with proper delays
+                populateResolutionSequentially(resolutions, 0);
+            }
+
+            /**
+             * Populate resolutions one by one with proper dependency handling
+             * @param {Array} resolutions - Array of resolution objects
+             * @param {number} index - Current resolution index to populate
+             */
+            function populateResolutionSequentially(resolutions, index) {
+                if (index >= resolutions.length) {
+                    // All resolutions populated, final form update
+                    setTimeout(function() {
+                        updateResolutionFieldVisibility();
+                        updateLogicalOperatorVisibility();
+                    }, 100);
+                    return;
+                }
+
+                var resolution = resolutions[index];
+                
+                // Step 1: Set basic resolution properties
+                $('#id_res_other_target_' + index).prop('checked', resolution.other_target == 1);
+
+                // Step 2: Set scope and trigger change
+                $('#id_res_scope_' + index).val(resolution.scope).trigger('change');
+                
+                // Step 3: Wait for scope change, then set resolution type
+                setTimeout(function() {
+                    $('#id_res_type_' + index).val(resolution.type).trigger('change');
+                    
+                    // Step 4: Wait for type change, then handle specific type fields
+                    setTimeout(function() {
+                        if (resolution.type === 'hint') {
+                            $('#id_res_hint_' + index).val(resolution.hint_message);
+                        } else if (resolution.type === 'show') {
+                            $('#id_res_show_' + index).val(resolution.show_message);
+                        } else if (resolution.type === 'action') {
+                            $('#id_res_actiontype_' + index).val(resolution.actiontype).trigger('change');
+                            
+                            // Step 5: Wait for action type change, then set specific action fields
+                            setTimeout(function() {
+                                if (resolution.actiontype === 'changesetting') {
+                                    var settingFieldName = 'res_setting_' + resolution.scope;
+                                    var settingField = $('#id_' + settingFieldName + '_' + index);
+                                    if (settingField.length) {
+                                        settingField.val(resolution.settingorcontent);
+                                    }
+                                    $('#id_res_value_' + index).val(resolution.value);
+                                } else if (resolution.actiontype === 'addcontent') {
+                                    var contentFieldName = 'res_addcontent_' + resolution.scope;
+                                    var contentField = $('#id_' + contentFieldName + '_' + index);
+                                    if (contentField.length) {
+                                        contentField.val(resolution.content_type);
+                                    }
+                                }
+
+                                // Step 6: Move to next resolution
+                                setTimeout(function() {
+                                    populateResolutionSequentially(resolutions, index + 1);
+                                }, 100);
+
+                            }, 100); // Wait for action type change
+                        } else {
+                            // For non-action types, move to next resolution immediately
+                            setTimeout(function() {
+                                populateResolutionSequentially(resolutions, index + 1);
+                            }, 100);
+                        }
+                    }, 100); // Wait for type change
+                }, 100); // Wait for scope change
             }
 
             /**
