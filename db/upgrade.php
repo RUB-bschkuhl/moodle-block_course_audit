@@ -80,7 +80,7 @@ function xmldb_block_course_audit_upgrade($oldversion)
         upgrade_plugin_savepoint(true, 2025041402, 'block', 'course_audit');
     }
 
-    // Add future upgrade steps here below this line, using similar if ($oldversion < X) conditions.
+    // Add future upgrade stepshere below this line, using similar if ($oldversion < X) conditions.
 
     return true;
 }

@@ -61,7 +61,6 @@ define(['jquery', 'core/ajax', 'core/str', 'tool_usertours/events', 'core/templa
         };
 
         const bindStartAudit = function (courseId) {
-            console.log("bindStartAudit", courseId);
             $('.audit-start-button').on('click', function (e) {
                 e.preventDefault();
 

@@ -93,7 +93,18 @@ class rule_manager
             $classname = '\\block_course_audit\\rules\\' . $category . '\\' . pathinfo($file, PATHINFO_FILENAME);
 
             if (class_exists($classname)) {
-                $rule = new $classname();
+                // Check if the rule constructor accepts parameters
+                $reflection = new \ReflectionClass($classname);
+                $constructor = $reflection->getConstructor();
+                
+                if ($constructor && $constructor->getNumberOfParameters() > 0) {
+                    // Rule accepts parameters - create with default parameters
+                    $rule = new $classname([]);
+                } else {
+                    // Rule doesn't accept parameters - create normally
+                    $rule = new $classname();
+                }
+                
                 $this->register_rule($rule);
             }
         }
@@ -123,17 +134,28 @@ class rule_manager
      * Get all registered rules
      *
      * @param string $category Optional category filter
+     * @param string $target_type Optional target type filter
+     * @param array $parameters Optional parameters to configure rules
      * @return array Array of rule objects
      */
-    public function get_rules($category, $target_type)
+    public function get_rules($category, $target_type, $parameters = [])
     {
         //get rules for a specific category and target type
         if ($category !== null && $target_type !== null) {
-            return isset($this->rules[$category])
+            $filtered_rules = isset($this->rules[$category])
                 ? array_filter($this->rules[$category], function ($rule) use ($target_type) {
                     return $rule->get_target() === $target_type;
                 })
                 : [];
+
+            // Apply parameters if provided
+            if (!empty($parameters)) {
+                foreach ($filtered_rules as $rule) {
+                    $rule->set_parameters($parameters);
+                }
+            }
+
+            return $filtered_rules;
         }
 
         return $this->rules;

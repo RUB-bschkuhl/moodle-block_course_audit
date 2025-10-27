@@ -1,0 +1,1 @@
+Loops are hints or actions that are checked consecutively

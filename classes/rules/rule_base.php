@@ -51,6 +51,9 @@ abstract class rule_base implements rule_interface
     /** @var string The rule category */
     protected $category;
 
+    /** @var array Rule parameters for configuration */
+    protected $parameters = [];
+
     /**
      * Constructor.
      *
@@ -59,14 +62,16 @@ abstract class rule_base implements rule_interface
      * @param string $name The rule name
      * @param string $description The rule description
      * @param string $category The rule category ('hint' or 'action')
+     * @param array $parameters Optional parameters for rule configuration
      */
-    public function __construct($key, $target_type, $name, $description, $category)
+    public function __construct($key, $target_type, $name, $description, $category, $parameters = [])
     {
         $this->key = $key;
         $this->target = $target_type;
         $this->name = $name;
         $this->description = $description;
         $this->category = $category;
+        $this->parameters = $parameters;
     }
 
     /**
@@ -117,6 +122,49 @@ abstract class rule_base implements rule_interface
     public function get_category()
     {
         return $this->category;
+    }
+
+    /**
+     * Get rule parameters
+     *
+     * @return array Rule parameters
+     */
+    public function get_parameters()
+    {
+        return $this->parameters;
+    }
+
+    /**
+     * Set rule parameters
+     *
+     * @param array $parameters Rule parameters
+     */
+    public function set_parameters(array $parameters)
+    {
+        $this->parameters = $parameters;
+    }
+
+    /**
+     * Get a specific parameter value
+     *
+     * @param string $key Parameter key
+     * @param mixed $default Default value if parameter doesn't exist
+     * @return mixed Parameter value or default
+     */
+    public function get_parameter($key, $default = null)
+    {
+        return $this->parameters[$key] ?? $default;
+    }
+
+    /**
+     * Set a specific parameter value
+     *
+     * @param string $key Parameter key
+     * @param mixed $value Parameter value
+     */
+    public function set_parameter($key, $value)
+    {
+        $this->parameters[$key] = $value;
     }
 
     /**

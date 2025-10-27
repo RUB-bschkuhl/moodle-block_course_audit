@@ -104,6 +104,28 @@ $string['label_added_failure'] = 'Failed to add label';
 $string['label_intro'] = 'Use labels to add explanatory text, instructions, or headings directly within a course section, helping to structure content and guide learners.';
 $string['label_name'] = 'New Label';
 
+// Course completion rules
+$string['rule_course_has_completions_name'] = 'Course completion tracking';
+$string['rule_course_has_completions_description'] = 'Checks whether course completion is enabled and activities contribute.';
+$string['rule_course_has_completions_disabled'] = 'Course completion tracking is not enabled. Enable completion tracking in the course settings to monitor learner progress.';
+$string['rule_course_has_completions_no_activities'] = 'No activities in this course currently contribute to completion. Enable completion criteria for key activities to provide learners with progress guidance.';
+$string['rule_course_has_completions_success'] = '{$a->count} activity items contribute to course completion.';
+
+// Course format rules
+$string['rule_course_has_format_name'] = 'Course format configuration';
+$string['rule_course_has_format_description'] = 'Checks whether the course uses a recommended format and suggests improvements.';
+$string['rule_course_has_format_missing'] = 'The course format is not defined. Please choose a format in the course settings to structure learners’ navigation.';
+$string['rule_course_has_format_nonpreferred'] = 'Current course format: {$a->format}. Consider using a recommended format for better guidance.';
+$string['rule_course_has_format_topics'] = 'Topics format is ideal for structuring content into thematic units.';
+$string['rule_course_has_format_weekly'] = 'Weekly format helps learners follow time-based schedules and deadlines.';
+
+// Empty course rules
+$string['rule_course_is_empty_name'] = 'Course content availability';
+$string['rule_course_is_empty_description'] = 'Checks whether the course contains visible sections and activities.';
+$string['rule_course_is_empty_no_sections'] = 'No visible sections found. Create and show course sections so learners can access materials.';
+$string['rule_course_is_empty_no_modules'] = 'Course sections exist but do not contain visible activities. Add learning activities to engage learners.';
+$string['rule_course_is_empty_success'] = 'Course contains visible sections and activities.';
+
 // Strings for adding Quiz via AJAX
 $string['button_add_quiz'] = 'Add Quiz';
 $string['quiz_name_default'] = 'New Quiz';
@@ -171,6 +193,12 @@ $string['settings_heading'] = 'Course Audit Settings';
 $string['example_setting_name'] = 'Example Text Setting';
 $string['example_setting_desc'] = 'This is an example text setting for the Course Audit block.';
 $string['settings_link_description'] = 'To configure the settings for the Course Audit block, please go to <a href="{$a}">Block settings</a>.';
+$string['courseauditsettings'] = 'Block-specific loop selection';
+$string['loopsheading'] = 'Loops to execute';
+$string['noloopsdefined'] = 'No loops have been defined yet. Please ask an administrator to add loops in the block settings.';
+$string['loopsheading_help'] = 'Select which loops should run when this block executes the course audit. Hold CTRL or CMD to select multiple items.';
+$string['settings_loop_description'] = 'Enter one loop name per line. Each loop will be available for selection in the block configuration form.';
+$string['error_writing_loops'] = 'Could not save loops: {$a}';
 
 // Standard format keys with section_ prefix
 $string['rule_section_has_connections_name'] = 'Activity Connections in Section';
@@ -201,3 +229,19 @@ $string['failedrules'] = 'Failed';
 
 $string['courselevel'] = 'Course Level';
 $string['startnewaudit'] = 'Start New Audit';
+
+// Section/module hints
+$string['rule_section_has_mods_name'] = 'Activities present in section';
+$string['rule_section_has_mods_description'] = 'Checks if the section contains at least one visible activity.';
+$string['rule_section_has_mods_empty'] = 'No visible activities found in this section. Add resources or activities to guide learners.';
+$string['rule_section_has_mods_success'] = 'Section contains visible activities.';
+
+$string['rule_mod_has_description_name'] = 'Module description quality';
+$string['rule_mod_has_description_description'] = 'Checks whether the activity contains an introductory description.';
+$string['rule_mod_has_description_missing'] = 'Provide a short introduction for "{$a->name}" so learners understand the context and expectations.';
+$string['rule_mod_has_description_success'] = 'Activity contains an introduction.';
+
+$string['rule_quiz_has_connections_name'] = 'Quiz connections';
+$string['rule_quiz_has_connections_description'] = 'Checks if the quiz depends on previous activities via availability conditions.';
+$string['rule_quiz_has_connections_missing'] = 'This quiz is not linked to previous work. Consider adding completion-based availability conditions to create learning pathways.';
+$string['rule_quiz_has_connections_success'] = 'Quiz uses completion-based availability conditions to connect learning activities.';

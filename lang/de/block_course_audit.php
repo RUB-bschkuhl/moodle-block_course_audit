@@ -107,6 +107,28 @@ $string['label_added_failure'] = 'Textfeld konnte nicht hinzugefügt werden';
 $string['label_intro'] = 'Nutzen Sie Textfelder, um erklärende Texte, Anweisungen oder Überschriften direkt in einem Kursabschnitt hinzuzufügen. Dies hilft dabei, Inhalte zu strukturieren und Lernende zu leiten.';
 $string['label_name'] = 'Neues Textfeld';
 
+// Kursabschluss-Regeln
+$string['rule_course_has_completions_name'] = 'Kursabschluss-Konfiguration';
+$string['rule_course_has_completions_description'] = 'Prüft, ob der Kursabschluss aktiviert ist und Aktivitäten dazu beitragen.';
+$string['rule_course_has_completions_disabled'] = 'Der Kursabschluss ist nicht aktiviert. Aktivieren Sie die Abschlussverfolgung in den Kurseinstellungen, um Lernfortschritte sichtbar zu machen.';
+$string['rule_course_has_completions_no_activities'] = 'Keine Aktivität trägt derzeit zum Kursabschluss bei. Aktivieren Sie Abschlussbedingungen für zentrale Aktivitäten, um Lernende zu unterstützen.';
+$string['rule_course_has_completions_success'] = '{$a->count} Aktivitäten tragen zum Kursabschluss bei.';
+
+// Kursformat-Regeln
+$string['rule_course_has_format_name'] = 'Kursformat-Konfiguration';
+$string['rule_course_has_format_description'] = 'Prüft, ob ein empfohlenes Kursformat genutzt wird und gibt Hinweise.';
+$string['rule_course_has_format_missing'] = 'Das Kursformat ist nicht festgelegt. Wählen Sie in den Kurseinstellungen ein Format, um die Navigation für Lernende zu strukturieren.';
+$string['rule_course_has_format_nonpreferred'] = 'Aktuelles Kursformat: {$a->format}. Prüfen Sie, ob ein empfohlenes Format besser passt.';
+$string['rule_course_has_format_topics'] = 'Das Themenformat eignet sich, um Inhalte in thematische Einheiten zu gliedern.';
+$string['rule_course_has_format_weekly'] = 'Das Wochenformat unterstützt zeitlich strukturierte Lernpläne und Abgabefristen.';
+
+// Leere-Kurs-Regeln
+$string['rule_course_is_empty_name'] = 'Verfügbarkeit von Kursinhalten';
+$string['rule_course_is_empty_description'] = 'Prüft, ob der Kurs sichtbare Abschnitte und Aktivitäten enthält.';
+$string['rule_course_is_empty_no_sections'] = 'Es sind keine sichtbaren Abschnitte vorhanden. Legen Sie Kursabschnitte an und machen Sie sie sichtbar.';
+$string['rule_course_is_empty_no_modules'] = 'Abschnitte sind vorhanden, enthalten jedoch keine sichtbaren Aktivitäten. Fügen Sie Lernaktivitäten hinzu, um Lernende anzusprechen.';
+$string['rule_course_is_empty_success'] = 'Kurs enthält sichtbare Abschnitte und Aktivitäten.';
+
 // Summary related
 $string['summary_heading'] = 'Zusammenfassung der Kursüberprüfung';
 $string['summary_button'] = 'Prüfen beenden';
@@ -162,6 +184,12 @@ $string['settings_heading'] = 'Kurs-Prüfer Einstellungen';
 $string['example_setting_name'] = 'Beispiel Texteinstellung';
 $string['example_setting_desc'] = 'Dies ist eine Beispiel-Texteinstellung für den Kurs-Prüfer-Block.';
 $string['settings_link_description'] = 'Um die Einstellungen für den Kurs-Prüfer-Block zu konfigurieren, gehen Sie bitte zu <a href="{$a}">Block-Einstellungen</a>.';
+$string['courseauditsettings'] = 'Loop-Auswahl für diesen Block';
+$string['loopsheading'] = 'Auszuführende Loops';
+$string['noloopsdefined'] = 'Es wurden noch keine Loops definiert. Bitte wenden Sie sich an eine Administratorin oder einen Administrator.';
+$string['loopsheading_help'] = 'Wählen Sie die Loops aus, die bei der Kursprüfung ausgeführt werden sollen. Halten Sie Strg oder Cmd, um mehrere Einträge zu markieren.';
+$string['settings_loop_description'] = 'Geben Sie pro Zeile einen Loop-Namen ein. Jeder Eintrag steht anschließend in der Blockkonfiguration zur Auswahl.';
+$string['error_writing_loops'] = 'Loops konnten nicht gespeichert werden: {$a}';
 
 // Standardisierte Schlüsselnamen mit section_ Präfix für Labels
 $string['rule_section_has_label_name'] = 'Vorhandensein von Textfeldern im Abschnitt';
@@ -189,3 +217,19 @@ $string['failedrules'] = 'Fehlgeschlagen';
 
 $string['courselevel'] = 'Kurs Ebene';
 $string['startnewaudit'] = 'Neue Überprüfung starten';
+
+// Abschnitts-/Modulhinweise
+$string['rule_section_has_mods_name'] = 'Aktivitäten im Abschnitt';
+$string['rule_section_has_mods_description'] = 'Prüft, ob der Abschnitt mindestens eine sichtbare Aktivität enthält.';
+$string['rule_section_has_mods_empty'] = 'Keine sichtbaren Aktivitäten in diesem Abschnitt. Fügen Sie Ressourcen oder Aktivitäten hinzu.';
+$string['rule_section_has_mods_success'] = 'Abschnitt enthält sichtbare Aktivitäten.';
+
+$string['rule_mod_has_description_name'] = 'Aktivitätsbeschreibung';
+$string['rule_mod_has_description_description'] = 'Prüft, ob die Aktivität eine einleitende Beschreibung enthält.';
+$string['rule_mod_has_description_missing'] = 'Ergänzen Sie eine kurze Einführung für „{$a->name}“, damit Lernende Kontext und Erwartungen verstehen.';
+$string['rule_mod_has_description_success'] = 'Aktivität enthält eine Einführung.';
+
+$string['rule_quiz_has_connections_name'] = 'Quiz-Verknüpfungen';
+$string['rule_quiz_has_connections_description'] = 'Prüft, ob das Quiz über Verfügbarkeitsbedingungen mit vorherigen Aktivitäten verbunden ist.';
+$string['rule_quiz_has_connections_missing'] = 'Dieses Quiz ist nicht mit vorherigen Aktivitäten verknüpft. Erwägen Sie Abschluss-bedingte Verfügbarkeiten, um Lernpfade zu schaffen.';
+$string['rule_quiz_has_connections_success'] = 'Quiz nutzt Abschluss-bedingte Verfügbarkeiten, um Aktivitäten zu verknüpfen.';

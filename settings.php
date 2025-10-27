@@ -16,18 +16,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+
 if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_heading(
         'block_course_audit_settings_heading',
         get_string('settings_heading', 'block_course_audit'),
         ''
-    ));
-
-    $settings->add(new admin_setting_configtext(
-        'block_course_audit/example_setting',
-        get_string('example_setting_name', 'block_course_audit'),
-        get_string('example_setting_desc', 'block_course_audit'),
-        '',
-        PARAM_TEXT
     ));
 } 

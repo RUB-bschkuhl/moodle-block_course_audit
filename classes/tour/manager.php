@@ -67,6 +67,10 @@ class manager
         $this->tour->set_description($description);
         $this->tour->set_pathmatch($pathmatch);
         $this->tour->set_enabled(tour::ENABLED);
+        //
+        if (method_exists($this->tour, 'set_ondemand')) {
+            $this->tour->set_ondemand(tour::DISABLED);
+        }
         $this->tour->set_filter_values('cssselector', ['#block-course-audit']);
         $this->tour->set_sortorder(0);
 
